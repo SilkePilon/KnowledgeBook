@@ -1,0 +1,27 @@
+{
+  "-64,104,-29": {
+    "diamond": 206,
+    "iron_ingot": 108,
+    "grass_block": 65
+  },
+  "-63,105,-33": {
+    "dripstone_block": 64,
+    "deepslate_iron_ore": 64
+  },
+  "-68,105,-33": {
+    "grass": 64
+  },
+  "-70,103,-28": {
+    "acacia_log": 64
+  },
+  "-64,109,-37": {
+    "coarse_dirt": 64,
+    "gold_ore": 64
+  },
+  "-67,109,-37": {
+    "bedrock": 64
+  },
+  "-67,110,-37": {
+    "oak_planks": 64
+  }
+}

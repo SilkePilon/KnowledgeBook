@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "minecraft-data": "^3.66.0",
+    "mineflayer": "^4.20.1",
+    "mineflayer-pathfinder": "^2.4.5",
+    "prismarine-viewer": "^1.28.0",
+    "vec3": "^0.1.10"
+  }
+}

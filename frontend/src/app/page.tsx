@@ -448,8 +448,8 @@ const columns: ColumnDef<Payment>[] = [
           className="mr-2 w-8 h-8 object-contain"
           style={{
             imageRendering: "pixelated",
-            width: "32px",
-            height: "32px",
+            width: "42px",
+            height: "42px",
             borderRadius: "0.30rem",
           }}
           src={`https://assets.mcasset.cloud/1.21/assets/minecraft/textures/item/${(

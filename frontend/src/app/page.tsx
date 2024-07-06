@@ -1078,8 +1078,8 @@ export default function Dashboard() {
                       <Button>See Available</Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent
-                      style={{ minWidth: "60vw" }}
-                      className="w-[8000px] sm:w-[80vw]"
+                      style={{ minWidth: "50vw", maxWidth: "60vw" }}
+                      // className="w-[8000px] sm:w-[60vw]"
                     >
                       <AlertDialogHeader>
                         <AlertDialogTitle>

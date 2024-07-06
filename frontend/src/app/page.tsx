@@ -450,6 +450,7 @@ const columns: ColumnDef<Payment>[] = [
             imageRendering: "pixelated",
             width: "32px",
             height: "32px",
+            borderRadius: "0.30rem",
           }}
           src={`https://assets.mcasset.cloud/1.21/assets/minecraft/textures/item/${(
             row.getValue("name") as string

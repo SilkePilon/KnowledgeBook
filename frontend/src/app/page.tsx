@@ -115,7 +115,7 @@ const data: Payment[] = [
   },
 ];
 
-export type Payment = {
+type Payment = {
   id: string;
   amount: number;
   name: string;

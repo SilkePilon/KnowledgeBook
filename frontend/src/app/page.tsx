@@ -18,8 +18,12 @@ import {
   Turtle,
   Power,
   Unplug,
+  ExternalLink,
+  Plus,
+  Minus,
 } from "lucide-react";
 import React, { useState, useEffect } from "react";
+import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { ModeToggle } from "@/components/modeswitch";
 
@@ -99,19 +103,308 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ImgProps } from "next/dist/shared/lib/get-img-props";
 
 const data: Payment[] = [
   {
     id: "m5gr84i9",
     amount: 64,
     name: "Gold Block",
-    description: "An Gold Block",
+    description: "",
   },
   {
     id: "3u1reuv4",
     amount: 64,
     name: "Diamond",
     description: "",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 1,
+    name: "Shulker Box",
+    description: "PVP Kit",
   },
 ];
 
@@ -148,7 +441,33 @@ const columns: ColumnDef<Payment>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize flex items-center">
+        <img
+          alt="Item"
+          className="mr-2 w-8 h-8 object-contain"
+          style={{
+            imageRendering: "pixelated",
+            width: "32px",
+            height: "32px",
+          }}
+          src={`https://assets.mcasset.cloud/1.21/assets/minecraft/textures/item/${(
+            row.getValue("name") as string
+          )
+            .toLowerCase()
+            .replace(/ /g, "_")}.png`}
+          onError={(e: any) => {
+            e.target.onerror = null; // Prevents looping
+            e.target.src = `https://assets.mcasset.cloud/1.21/assets/minecraft/textures/block/${(
+              row.getValue("name") as string
+            )
+              .toLowerCase()
+              .replace(/ /g, "_")}.png`;
+          }}
+        ></img>
+        <p style={{ marginLeft: "20px" }}>{row.getValue("name") as string}</p>
+      </div>
+    ),
   },
   {
     accessorKey: "description",
@@ -163,13 +482,11 @@ const columns: ColumnDef<Payment>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("description")}</div>
-    ),
+    cell: ({ row }) => <div className="">{row.getValue("description")}</div>,
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    accessorKey: "available",
+    header: () => <div className="text-right">Available</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"));
 
@@ -177,31 +494,21 @@ const columns: ColumnDef<Payment>[] = [
     },
   },
   {
-    id: "actions",
-    enableHiding: false,
+    accessorKey: "amount",
+    header: () => <div className="text-right">Amount</div>,
     cell: ({ row }) => {
-      const payment = row.original;
+      const amount = parseFloat(row.getValue("amount"));
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              SOON
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>SOON!</DropdownMenuItem>
-            <DropdownMenuItem>SOON!</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="text-right font-medium flex items-center justify-end space-x-2">
+          <Button variant={"outline"}>
+            <Plus className="cursor-pointer" />
+          </Button>
+          <span>{amount}</span>
+          <Button variant={"outline"}>
+            <Minus className="cursor-pointer" />
+          </Button>
+        </div>
       );
     },
   },
@@ -213,6 +520,7 @@ export default function Dashboard() {
   const [deliveryItems, setDeliveryItems] = useState([]);
   const [destination, setDestination] = useState({ x: 0, y: 0, z: 0 });
   const [botStatus, setBotStatus] = useState("Idle");
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchChestIndex();
@@ -244,12 +552,20 @@ export default function Dashboard() {
         items: deliveryItems,
         destination: destination,
       });
+      toast({
+        // variant: "destructive",
+        title: "Delivery completed successfully",
+        description: "The bot has successfully delivered the items.",
+      });
       setBotStatus("Delivery completed");
-      alert("Delivery completed successfully");
     } catch (error: any) {
-      console.error("Error during delivery:", error);
+      toast({
+        variant: "destructive",
+        title: "Delivery failed",
+        description: error.response?.data?.error || error.message,
+      });
       setBotStatus("Delivery failed");
-      alert("Delivery failed: " + error.response?.data?.error || error.message);
+      // alert("Delivery failed: " + error.response?.data?.error || error.message);
     }
   };
 
@@ -272,6 +588,11 @@ export default function Dashboard() {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    initialState: {
+      pagination: {
+        pageSize: 4,
+      },
+    },
     state: {
       sorting,
       columnFilters,
@@ -413,7 +734,7 @@ export default function Dashboard() {
           </TooltipProvider>
         </nav>
       </aside>
-      <div hidden className="flex flex-col">
+      <div className="flex flex-col">
         <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
           <h1 className="text-xl font-semibold">Buy And Deliver Items</h1>
           <Drawer>
@@ -771,12 +1092,12 @@ export default function Dashboard() {
                                 placeholder="Filter items..."
                                 value={
                                   (table
-                                    .getColumn("description")
+                                    .getColumn("name")
                                     ?.getFilterValue() as string) ?? ""
                                 }
                                 onChange={(event) =>
                                   table
-                                    .getColumn("description")
+                                    .getColumn("name")
                                     ?.setFilterValue(event.target.value)
                                 }
                                 className="max-w-sm"
@@ -898,11 +1219,47 @@ export default function Dashboard() {
 
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>Continue</AlertDialogAction>
+                        <AlertDialogAction>These Items!</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
 
+                  {/* <Textarea
+                    id="content"
+                    placeholder={JSON.stringify(chestIndex, null, 2)}
+                    className="min-h-[9.5rem]"
+                  /> */}
+                </div>
+              </fieldset>
+              <fieldset className="grid gap-6 rounded-lg border p-4">
+                <legend className="-ml-1 px-1 text-sm font-medium">
+                  Selected Items
+                </legend>
+                sw
+              </fieldset>
+              <fieldset className="grid gap-6 rounded-lg border p-4">
+                <div className="grid gap-3">
+                  <Label htmlFor="content">Terms and conditions</Label>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="terms" />
+                    <label
+                      htmlFor="terms"
+                      className="flex items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      <span>
+                        <a href="" style={{ textDecorationLine: "underline" }}>
+                          Accept terms and conditions
+                        </a>
+                      </span>
+                      <ExternalLink
+                        style={{
+                          marginTop: "-1px",
+                          textDecorationLine: "underline",
+                        }}
+                        className="ml-1 size-5"
+                      />
+                    </label>
+                  </div>
                   {/* <Textarea
                     id="content"
                     placeholder={JSON.stringify(chestIndex, null, 2)}
@@ -943,17 +1300,17 @@ export default function Dashboard() {
                 {/* <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <Paperclip className="size-4" />
-                        <span className="sr-only">Attach file</span>
-                      </Button>
+                      dw
                     </TooltipTrigger>
                     <TooltipContent side="top">Attach File</TooltipContent>
                   </Tooltip>
                 </TooltipProvider> */}
 
                 <Button
-                  onClick={handleDeliver}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    handleDeliver();
+                  }}
                   type="submit"
                   size="sm"
                   className="ml-auto gap-1.5"

@@ -14,7 +14,7 @@ const cors = require("cors");
 // Bot configuration
 const bot = mineflayer.createBot({
   host: "localhost",
-  port: 56156,
+  port: 50874,
   username: "DeliveryBot",
   version: "1.19",
 });

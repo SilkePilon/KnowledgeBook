@@ -124,11 +124,28 @@ async function updateSingleChestContents(chestBlock) {
   const chestPos = `${chestBlock.x},${chestBlock.y},${chestBlock.z}`;
 
   chestIndex[chestPos] = items.reduce((acc, item) => {
-    acc[item.name] = (acc[item.name] || 0) + item.count;
+    if (item.name.endsWith("shulker_box")) {
+      const shulkerItems = getShulkerContents(item);
+      acc[`${item.name}`] = shulkerItems;
+    } else {
+      acc[item.name] = (acc[item.name] || 0) + item.count;
+    }
     return acc;
   }, {});
 
   await chest.close();
+}
+
+function getShulkerContents(item) {
+  if (
+    item.nbt &&
+    item.nbt.value.BlockEntityTag &&
+    item.nbt.value.BlockEntityTag.value.Items
+  ) {
+    const items = item.nbt.value.BlockEntityTag.value.Items.value.value;
+    return items.map((i) => `${i.id.value}: ${i.Count.value}`);
+  }
+  return [];
 }
 
 async function findChestsInArea() {

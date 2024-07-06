@@ -122,7 +122,8 @@ const data: Payment[] = [
     id: "3u1reuv4",
     amount: 1,
     name: "Shulker Box",
-    description: "PVP Kit",
+    description:
+      "Some items may appear multiple times in the list. This is because they are stored in different locations or have different properties (NBT).Some items may appear multiple times in the list. This is because they are stored in different locations or have different properties (NBT).",
   },
   {
     id: "3u1reuv4",
@@ -483,7 +484,11 @@ const columns: ColumnDef<Payment>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="">{row.getValue("description")}</div>,
+    cell: ({ row }) => (
+      <div className="center" style={{ textAlign: "left" }}>
+        {row.getValue("description")}
+      </div>
+    ),
   },
   {
     accessorKey: "available",
@@ -1087,6 +1092,9 @@ export default function Dashboard() {
                           Please select the items you want to deliver.
                         </AlertDialogTitle>
                         <AlertDialogDescription>
+                          Some items may appear multiple times in the list. This
+                          is because they are stored in different locations or
+                          have different properties (NBT).
                           <div className="">
                             <div className="flex items-center py-4">
                               <Input

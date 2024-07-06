@@ -2,16 +2,39 @@
   "-64,104,-29": {
     "diamond": 206,
     "iron_ingot": 108,
-    "grass_block": 65
+    "grass_block": 65,
+    "red_shulker_box": [
+      "minecraft:redstone_block: 64"
+    ]
   },
   "-63,105,-33": {
     "dripstone_block": 64,
     "deepslate_iron_ore": 64
   },
   "-68,105,-33": {
+    "red_shulker_box": [
+      "minecraft:redstone_block: 1",
+      "minecraft:redstone_block: 1",
+      "minecraft:redstone_block: 1",
+      "minecraft:redstone_block: 1",
+      "minecraft:redstone_block: 58",
+      "minecraft:redstone_block: 1",
+      "minecraft:redstone_block: 1",
+      "minecraft:chest: 64"
+    ],
     "grass": 64
   },
   "-70,103,-28": {
+    "red_shulker_box": [
+      "minecraft:redstone_block: 1",
+      "minecraft:redstone_block: 1",
+      "minecraft:redstone_block: 1",
+      "minecraft:redstone_block: 1",
+      "minecraft:redstone_block: 58",
+      "minecraft:redstone_block: 1",
+      "minecraft:redstone_block: 1",
+      "minecraft:chest: 64"
+    ],
     "acacia_log": 64
   },
   "-64,109,-37": {

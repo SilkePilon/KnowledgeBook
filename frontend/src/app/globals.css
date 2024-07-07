@@ -2,6 +2,11 @@
   @tailwind components;
   @tailwind utilities;
 
+  @font-face {
+    font-family: 'minecraft';
+    src: url('/fonts/MinecraftRegular.otf');
+   }
+
   @layer base {
     :root {
       --background: 0 0% 100%;
@@ -69,6 +74,7 @@
   @layer base {
     * {
       @apply border-border;
+      font-family: 'minecraft';
     }
     body {
       @apply bg-background text-foreground;

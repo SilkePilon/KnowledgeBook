@@ -742,7 +742,7 @@ export default function Dashboard() {
       </aside>
       <div className="flex flex-col">
         <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
-          <h1 className="text-xl font-semibold">Buy And Deliver Items</h1>
+          <h1 className="text-xl font-semibold">Deliver Items</h1>
           <Drawer>
             <DrawerTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -1244,7 +1244,7 @@ export default function Dashboard() {
                 <legend className="-ml-1 px-1 text-sm font-medium">
                   Selected Items
                 </legend>
-                sw
+                None
               </fieldset>
               <fieldset className="grid gap-6 rounded-lg border p-4">
                 <div className="grid gap-3">
@@ -1324,7 +1324,7 @@ export default function Dashboard() {
                   size="sm"
                   className="ml-auto gap-1.5"
                 >
-                  Pay and Deliver
+                  Start Delivery
                   <CornerDownLeft className="size-3.5" />
                 </Button>
               </div>

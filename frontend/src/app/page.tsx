@@ -1187,7 +1187,7 @@ export default function Dashboard() {
                           <div className="">
                             <div className="flex items-center py-4">
                               <Input
-                                placeholder="Filter items..."
+                                placeholder="Search for items..."
                                 value={
                                   (table
                                     .getColumn("name")

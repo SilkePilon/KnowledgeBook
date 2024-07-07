@@ -557,7 +557,7 @@ const columns: ColumnDef<Payment>[] = [
                   };
 
                   // Add a delay before making the fetch request
-                  setTimeout(fetchData, 500); // 500 milliseconds delay
+                  setTimeout(fetchData, 1300); // 500 milliseconds delay
                 }}
               >
                 <Info className="h-4 w-4" />

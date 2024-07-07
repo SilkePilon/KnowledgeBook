@@ -544,6 +544,26 @@ export default function Dashboard() {
   const [destination, setDestination] = useState({ x: 0, y: 0, z: 0 });
   const [botStatus, setBotStatus] = useState("Idle");
   const { toast } = useToast();
+  const [iframeError, setIframeError] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Check if the iframe content has loaded after a short delay
+      const iframe = document.querySelector("iframe");
+      if (
+        iframe &&
+        (!iframe.contentWindow || iframe.contentWindow.length === 0)
+      ) {
+        setIframeError(true);
+      }
+    }, 1000); // Adjust timeout as needed
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleIframeError = () => {
+    setIframeError(true);
+  };
 
   useEffect(() => {
     fetchChestIndex();
@@ -1352,12 +1372,31 @@ export default function Dashboard() {
               Bot Status: {botStatus}
             </Badge>
             <div className="flex-1">
-              <iframe
-                height={"95%"}
-                width={"100%"}
-                style={{ borderRadius: "1rem" }}
-                src="http://localhost:3007/"
-              ></iframe>
+              {!iframeError ? (
+                <iframe
+                  height="95%"
+                  width="100%"
+                  style={{ borderRadius: "1rem" }}
+                  src="http://localhost:3007/"
+                  onError={handleIframeError}
+                />
+              ) : (
+                <div
+                  style={{
+                    height: "80%",
+                    width: "100%",
+                    borderRadius: "1rem",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    // backgroundColor: "#f0f0f0", // or any color that fits your design
+                  }}
+                >
+                  <Unplug size={48} /> {/* Adjust size as needed */}
+                  <p style={{ marginTop: "1rem" }}>Bot not active</p>
+                </div>
+              )}
             </div>
             <form
               className="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"

@@ -746,7 +746,12 @@ export default function Dashboard() {
       <aside className="inset-y fixed  left-0 z-20 flex h-full flex-col border-r">
         <div className="border-b p-2">
           <Button variant="outline" size="icon" aria-label="Home">
-            <Triangle className="size-5 fill-foreground" />
+            {/* <Triangle className="size-5 fill-foreground" /> */}
+            <img
+              style={{ imageRendering: "pixelated" }}
+              className="size-7 fill-foreground"
+              src="https://minecraft.wiki/images/Recovery_Compass_JE1_BE1.gif?c0c26"
+            ></img>
           </Button>
         </div>
         <nav className="grid gap-1 p-2">
@@ -759,7 +764,11 @@ export default function Dashboard() {
                   className="rounded-lg bg-muted"
                   aria-label="Playground"
                 >
-                  <SquareTerminal className="size-5" />
+                  <img
+                    style={{ imageRendering: "pixelated" }}
+                    className="size-7 fill-foreground"
+                    src="https://minecraft.wiki/images/Invicon_Diamond_Helmet.png?684da"
+                  ></img>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
@@ -776,7 +785,11 @@ export default function Dashboard() {
                   className="rounded-lg"
                   aria-label="Models"
                 >
-                  <Bot className="size-5" />
+                  <img
+                    style={{ imageRendering: "pixelated" }}
+                    className="size-7 fill-foreground"
+                    src="https://minecraft.wiki/images/Invicon_Diamond_Chestplate.png?3ab66"
+                  ></img>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
@@ -793,7 +806,11 @@ export default function Dashboard() {
                   className="rounded-lg"
                   aria-label="API"
                 >
-                  <Code2 className="size-5" />
+                  <img
+                    style={{ imageRendering: "pixelated" }}
+                    className="size-7 fill-foreground"
+                    src="https://minecraft.wiki/images/Invicon_Diamond_Leggings.png?b4750"
+                  ></img>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
@@ -810,7 +827,11 @@ export default function Dashboard() {
                   className="rounded-lg"
                   aria-label="Documentation"
                 >
-                  <Book className="size-5" />
+                  <img
+                    style={{ imageRendering: "pixelated" }}
+                    className="size-7 fill-foreground"
+                    src="https://minecraft.wiki/images/Invicon_Diamond_Boots.png?b9292"
+                  ></img>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
@@ -827,7 +848,11 @@ export default function Dashboard() {
                   className="rounded-lg"
                   aria-label="Settings"
                 >
-                  <Settings2 className="size-5" />
+                  <img
+                    style={{ imageRendering: "pixelated" }}
+                    className="size-7 fill-foreground"
+                    src="https://minecraft.wiki/images/Invicon_Redstone.png?26ec3"
+                  ></img>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
@@ -838,40 +863,7 @@ export default function Dashboard() {
         </nav>
         <nav className="mt-auto grid gap-1 p-2">
           <ModeToggle></ModeToggle>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="mt-auto rounded-lg"
-                  aria-label="Help"
-                >
-                  <LifeBuoy className="size-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                Help
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="mt-auto rounded-lg"
-                  aria-label="Account"
-                >
-                  <SquareUser className="size-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                Account
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <div style={{ width: "30%" }}></div>
         </nav>
       </aside>
       <div className="flex flex-col">

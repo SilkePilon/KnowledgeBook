@@ -1267,8 +1267,18 @@ export default function Dashboard() {
                                 Some items may appear multiple times in the
                                 list. This is because they are stored in
                                 different locations or have different properties
-                                (NBT). You can click the
-                                <Info className="h-4 w-4" />{" "}
+                                (NBT). You can click the{" "}
+                                <span
+                                  style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <Info className="h-3 w-3" />
+                                </span>{" "}
+                                to see more info about that block or item.
+                                Toggle the checkbox in front of an item to
+                                select it for delivery.
                                 <div className="">
                                   <div className="flex items-center py-4">
                                     <Input
@@ -1769,7 +1779,9 @@ export default function Dashboard() {
                           >
                             <Info className="h-3 w-3" />
                           </span>{" "}
-                          to see more info about that block or item.
+                          to see more info about that block or item. Toggle the
+                          checkbox in front of an item to select it for
+                          delivery.
                           <div className="">
                             <div className="flex items-center py-4">
                               <Input

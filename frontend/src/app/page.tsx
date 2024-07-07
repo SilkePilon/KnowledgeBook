@@ -478,9 +478,10 @@ const columns: ColumnDef<Payment>[] = [
         ></img>
         <p style={{ marginLeft: "20px" }} className="flex items-center gap-2">
           {row.getValue("name")}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger
+          <Popover>
+            <PopoverTrigger asChild>
+              <div
+                className="cursor-pointer"
                 onMouseEnter={() => {
                   const fetchData = async () => {
                     try {
@@ -557,18 +558,96 @@ const columns: ColumnDef<Payment>[] = [
                   };
 
                   // Add a delay before making the fetch request
-                  setTimeout(fetchData, 1300); // 500 milliseconds delay
+                  setTimeout(fetchData, 1300); // 1300 milliseconds delay
+                }}
+                onClick={() => {
+                  const fetchData = async () => {
+                    try {
+                      // First, try to fetch from items API
+                      let response = await fetch(
+                        "https://minecraft-api.vercel.app/api/items"
+                      );
+                      if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                      }
+                      let data = await response.json();
+
+                      // Convert the name to namespacedId format
+                      const namespacedId = (row.getValue("name") as string)
+                        .toLowerCase()
+                        .replace(/ /g, "_");
+
+                      let item = data.find(
+                        (i: any) => i.namespacedId === namespacedId
+                      );
+
+                      // If not found in items, try blocks API
+                      if (!item) {
+                        response = await fetch(
+                          "https://minecraft-api.vercel.app/api/blocks"
+                        );
+                        if (!response.ok) {
+                          throw new Error("Network response was not ok");
+                        }
+                        data = await response.json();
+                        item = data.find(
+                          (b: any) => b.namespacedId === namespacedId
+                        );
+                      }
+
+                      if (item) {
+                        const tooltipContent =
+                          document.querySelector(".tooltip-content");
+                        if (tooltipContent) {
+                          tooltipContent.innerHTML = `
+                    <p><strong>${item.name}</strong></p>
+                    <p>${item.description || "No description available."}</p>
+                    ${
+                      item.stackSize
+                        ? `<p>Stack Size: ${item.stackSize}</p>`
+                        : ""
+                    }
+                    ${
+                      item.renewable !== undefined
+                        ? `<p>Renewable: ${item.renewable ? "Yes" : "No"}</p>`
+                        : ""
+                    }
+                    ${
+                      item.blastResistance
+                        ? `<p>Blast Resistance: ${item.blastResistance}</p>`
+                        : ""
+                    }
+                    <img src="${item.image}" alt="${
+                            item.name
+                          }" style="width: 64px; height: 64px; image-rendering: pixelated;">
+                  `;
+                        }
+                      } else {
+                        throw new Error("Item not found");
+                      }
+                    } catch (error) {
+                      console.error("Error fetching data:", error);
+                      const tooltipContent =
+                        document.querySelector(".tooltip-content");
+                      if (tooltipContent) {
+                        tooltipContent.textContent = "Error loading item data.";
+                      }
+                    }
+                  };
+
+                  // Add a delay before making the fetch request
+                  setTimeout(fetchData, 1300); // 1300 milliseconds delay
                 }}
               >
                 <Info className="h-4 w-4" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="tooltip-content" style={{ maxWidth: "200px" }}>
-                  Loading...
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent side="right">
+              <p className="tooltip-content" style={{ maxWidth: "400px" }}>
+                Loading...
+              </p>
+            </PopoverContent>
+          </Popover>
         </p>
       </div>
     ),
@@ -1188,7 +1267,8 @@ export default function Dashboard() {
                                 Some items may appear multiple times in the
                                 list. This is because they are stored in
                                 different locations or have different properties
-                                (NBT).
+                                (NBT). You can click the
+                                <Info className="h-4 w-4" />{" "}
                                 <div className="">
                                   <div className="flex items-center py-4">
                                     <Input
@@ -1680,7 +1760,16 @@ export default function Dashboard() {
                         <AlertDialogDescription>
                           Some items may appear multiple times in the list. This
                           is because they are stored in different locations or
-                          have different properties (NBT).
+                          have different properties (NBT). You can click the{" "}
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Info className="h-3 w-3" />
+                          </span>{" "}
+                          to see more info about that block or item.
                           <div className="">
                             <div className="flex items-center py-4">
                               <Input

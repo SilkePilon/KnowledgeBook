@@ -21,7 +21,14 @@ import {
   ExternalLink,
   Plus,
   Minus,
+  Info,
 } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
@@ -487,13 +494,16 @@ const columns: ColumnDef<Payment>[] = [
     cell: ({ row }) => (
       <div
         style={{
-          display: "flex",
           textAnchor: "middle",
-          textAlign: "left",
-          marginLeft: "10px",
+          textAlign: "center",
         }}
       >
-        {row.getValue("description")}
+        {row.getValue("description") ? (
+          <Popover>
+            <PopoverTrigger>Open Details</PopoverTrigger>
+            <PopoverContent>{row.getValue("description")}</PopoverContent>
+          </Popover>
+        ) : null}
       </div>
     ),
   },
@@ -782,7 +792,7 @@ export default function Dashboard() {
                         <SelectItem value="genesis">
                           <div className="flex items-start gap-3 text-muted-foreground">
                             <Rabbit className="size-5" />
-                            <div className="grid gap-0.5">
+                            <div className="grid gap-0.5 min-w-0 flex-1">
                               <p>
                                 Neural{" "}
                                 <span className="font-medium text-foreground">
@@ -798,7 +808,7 @@ export default function Dashboard() {
                         <SelectItem value="explorer">
                           <div className="flex items-start gap-3 text-muted-foreground">
                             <Bird className="size-5" />
-                            <div className="grid gap-0.5">
+                            <div className="grid gap-0.5 min-w-0 flex-1">
                               <p>
                                 Neural{" "}
                                 <span className="font-medium text-foreground">
@@ -814,7 +824,7 @@ export default function Dashboard() {
                         <SelectItem value="quantum">
                           <div className="flex items-start gap-3 text-muted-foreground">
                             <Turtle className="size-5" />
-                            <div className="grid gap-0.5">
+                            <div className="grid gap-0.5 min-w-0 flex-1">
                               <p>
                                 Neural{" "}
                                 <span className="font-medium text-foreground">
@@ -900,22 +910,25 @@ export default function Dashboard() {
                     >
                       <SelectValue placeholder="Select a bot" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="w-[var(--radix-select-trigger-width)] min-w-[8rem]">
                       <SelectItem value="genesis">
                         <div className="flex items-start gap-3 text-muted-foreground">
                           {/* <Rabbit className="size-5" /> */}
                           <img
-                            className="size-7"
+                            className="size-7 flex-shrink-0"
                             src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/b/b3/Compass_JE3_BE3.gif"
                           ></img>
-                          <div className="grid gap-0.5">
+                          <div className="grid gap-0.5 min-w-0 flex-1">
                             <p>
                               Basic{" "}
                               <span className="font-medium text-foreground">
                                 Steve
                               </span>
                             </p>
-                            <p className="text-xs" data-description>
+                            <p
+                              className="text-xs break-words line-clamp-2"
+                              data-description
+                            >
                               Basic bot for general terrain and water delivery.
                             </p>
                           </div>
@@ -927,7 +940,7 @@ export default function Dashboard() {
                             className="size-6"
                             src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/3/33/Recovery_Compass_JE1_BE1.gif"
                           ></img>
-                          <div className="grid gap-0.5">
+                          <div className="grid gap-0.5 min-w-0 flex-1">
                             <p>
                               Pro{" "}
                               <span className="font-medium text-foreground">
@@ -946,14 +959,14 @@ export default function Dashboard() {
                             className="size-6"
                             src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/6/6f/Elytra_JE2_BE2.png"
                           ></img>
-                          <div className="grid gap-0.5">
+                          <div className="grid gap-0.5 min-w-0 flex-1">
                             <p>
                               Advanced{" "}
                               <span className="font-medium text-foreground">
                                 Beta
                               </span>
                             </p>
-                            <p className="text-xs" data-description>
+                            <p className="text-xs break-words" data-description>
                               The most powerful bot for complex situations.
                               {"\n"}
                               Has the ability to use elytra fly.
@@ -975,8 +988,27 @@ export default function Dashboard() {
                 </div>
                 <div style={{ width: "5px" }} />
                 <div className="grid gap-3">
-                  <Label htmlFor="role">
+                  <Label htmlFor="role" className="flex items-center gap-2">
                     Please enter the general coordinates for delivery
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger
+                          onClick={(event) => {
+                            event.preventDefault();
+                          }}
+                        >
+                          <Info className="h-4 w-4" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p style={{ maxWidth: "200px" }}>
+                            You can specify a general area for the bot to
+                            deliver the items to. Once the bot as arrived it
+                            will look for any nearby chest and deposit the items
+                            there.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </Label>
                   <div style={{ width: "1px" }} />
                   <Label htmlFor="x">X coordinate</Label>
@@ -1050,7 +1082,7 @@ export default function Dashboard() {
                             className="size-7"
                             src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/2/2f/Dirt.png"
                           ></img>
-                          <div className="grid gap-0.5">
+                          <div className="grid gap-0.5 min-w-0 flex-1">
                             <p>
                               ${" "}
                               <span className="font-medium text-foreground">
@@ -1069,7 +1101,7 @@ export default function Dashboard() {
                             className="size-6"
                             src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/5/54/Golden_Apple_JE2_BE2.png"
                           ></img>
-                          <div className="grid gap-0.5">
+                          <div className="grid gap-0.5 min-w-0 flex-1">
                             <p>
                               $${" "}
                               <span className="font-medium text-foreground">
@@ -1088,7 +1120,7 @@ export default function Dashboard() {
                             className="w-6 h-8"
                             src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/e5/Shulker_Box.gif"
                           ></img>
-                          <div className="grid gap-0.5">
+                          <div className="grid gap-0.5 min-w-0 flex-1">
                             <p>
                               $$${" "}
                               <span className="font-medium text-foreground">

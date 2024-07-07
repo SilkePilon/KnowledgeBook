@@ -26,7 +26,7 @@ import React, { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { ModeToggle } from "@/components/modeswitch";
-
+import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -485,7 +485,14 @@ const columns: ColumnDef<Payment>[] = [
       );
     },
     cell: ({ row }) => (
-      <div className="center" style={{ textAlign: "left" }}>
+      <div
+        style={{
+          display: "flex",
+          textAnchor: "middle",
+          textAlign: "left",
+          marginLeft: "10px",
+        }}
+      >
         {row.getValue("description")}
       </div>
     ),
@@ -881,7 +888,10 @@ export default function Dashboard() {
                 <legend className="-ml-1 px-1 text-sm font-medium">
                   Settings
                 </legend>
-                <div className="grid gap-3">
+                <div
+                  className="grid gap-3"
+                  style={{ position: "relative", overflow: "visible" }}
+                >
                   <Label htmlFor="model">Bot Type</Label>
                   <Select>
                     <SelectTrigger
@@ -953,8 +963,22 @@ export default function Dashboard() {
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                  <Separator
+                    style={{
+                      position: "absolute",
+                      left: "-1rem",
+                      right: "-1rem",
+                      bottom: "-1.5rem",
+                      width: "auto",
+                    }}
+                  />
                 </div>
+                <div style={{ width: "5px" }} />
                 <div className="grid gap-3">
+                  <Label htmlFor="role">
+                    Please enter the general coordinates for delivery
+                  </Label>
+                  <div style={{ width: "1px" }} />
                   <Label htmlFor="x">X coordinate</Label>
                   <Input
                     id="x"
@@ -1006,7 +1030,10 @@ export default function Dashboard() {
                 <legend className="-ml-1 px-1 text-sm font-medium">
                   Buy Items
                 </legend>
-                <div className="grid gap-3">
+                <div
+                  className="grid gap-3"
+                  style={{ position: "relative", overflow: "visible" }}
+                >
                   <Label htmlFor="role">Item Type</Label>
                   <Select>
                     <SelectTrigger
@@ -1076,12 +1103,22 @@ export default function Dashboard() {
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                  <Separator
+                    style={{
+                      position: "absolute",
+                      left: "-1rem",
+                      right: "-1rem",
+                      bottom: "-1.5rem",
+                      width: "auto",
+                    }}
+                  />
                 </div>
+                <div style={{ width: "5px" }} />
                 <div className="grid gap-3">
                   {/* <Label htmlFor="content">Available</Label> */}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button>See Available</Button>
+                      <Button>Please Select Items</Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent
                       style={{ minWidth: "50vw", maxWidth: "60vw" }}

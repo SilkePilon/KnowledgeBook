@@ -137,14 +137,14 @@ const data: Payment[] = [
   {
     id: "3u1reuv4",
     amount: 1,
-    name: "Shulker Box",
-    description: "PVP Kit",
+    name: "Golden Apple",
+    description: "",
   },
   {
     id: "3u1reuv4",
     amount: 1,
-    name: "Shulker Box",
-    description: "PVP Kit",
+    name: "elytra",
+    description: "Just Fly",
   },
   {
     id: "3u1reuv4",

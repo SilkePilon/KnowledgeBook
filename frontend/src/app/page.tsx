@@ -94,6 +94,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import {
   Table,
   TableBody,
@@ -482,84 +483,6 @@ const columns: ColumnDef<Payment>[] = [
             <PopoverTrigger asChild>
               <div
                 className="cursor-pointer"
-                onMouseEnter={() => {
-                  const fetchData = async () => {
-                    try {
-                      // First, try to fetch from items API
-                      let response = await fetch(
-                        "https://minecraft-api.vercel.app/api/items"
-                      );
-                      if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                      }
-                      let data = await response.json();
-
-                      // Convert the name to namespacedId format
-                      const namespacedId = (row.getValue("name") as string)
-                        .toLowerCase()
-                        .replace(/ /g, "_");
-
-                      let item = data.find(
-                        (i: any) => i.namespacedId === namespacedId
-                      );
-
-                      // If not found in items, try blocks API
-                      if (!item) {
-                        response = await fetch(
-                          "https://minecraft-api.vercel.app/api/blocks"
-                        );
-                        if (!response.ok) {
-                          throw new Error("Network response was not ok");
-                        }
-                        data = await response.json();
-                        item = data.find(
-                          (b: any) => b.namespacedId === namespacedId
-                        );
-                      }
-
-                      if (item) {
-                        const tooltipContent =
-                          document.querySelector(".tooltip-content");
-                        if (tooltipContent) {
-                          tooltipContent.innerHTML = `
-                    <p><strong>${item.name}</strong></p>
-                    <p>${item.description || "No description available."}</p>
-                    ${
-                      item.stackSize
-                        ? `<p>Stack Size: ${item.stackSize}</p>`
-                        : ""
-                    }
-                    ${
-                      item.renewable !== undefined
-                        ? `<p>Renewable: ${item.renewable ? "Yes" : "No"}</p>`
-                        : ""
-                    }
-                    ${
-                      item.blastResistance
-                        ? `<p>Blast Resistance: ${item.blastResistance}</p>`
-                        : ""
-                    }
-                    <img src="${item.image}" alt="${
-                            item.name
-                          }" style="width: 32px; height: 32px;">
-                  `;
-                        }
-                      } else {
-                        throw new Error("Item not found");
-                      }
-                    } catch (error) {
-                      console.error("Error fetching data:", error);
-                      const tooltipContent =
-                        document.querySelector(".tooltip-content");
-                      if (tooltipContent) {
-                        tooltipContent.textContent = "Error loading item data.";
-                      }
-                    }
-                  };
-
-                  // Add a delay before making the fetch request
-                  setTimeout(fetchData, 1300); // 1300 milliseconds delay
-                }}
                 onClick={() => {
                   const fetchData = async () => {
                     try {

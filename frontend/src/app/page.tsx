@@ -754,7 +754,7 @@ export default function Dashboard() {
             ></img>
           </Button>
         </div>
-        <nav className="grid gap-1 p-2">
+        <nav className="grid gap-2.5 p-2">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -767,12 +767,12 @@ export default function Dashboard() {
                   <img
                     style={{ imageRendering: "pixelated" }}
                     className="size-7 fill-foreground"
-                    src="https://minecraft.wiki/images/Invicon_Diamond_Helmet.png?684da"
+                    src="https://minecraft.wiki/images/Invicon_Carrot_on_a_Stick.png?1b7af"
                   ></img>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
-                Playdwaground
+                Deliver items
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -788,12 +788,12 @@ export default function Dashboard() {
                   <img
                     style={{ imageRendering: "pixelated" }}
                     className="size-7 fill-foreground"
-                    src="https://minecraft.wiki/images/Invicon_Diamond_Chestplate.png?3ab66"
+                    src="https://minecraft.wiki/images/Invicon_Spyglass.png?3cfb2"
                   ></img>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
-                Models
+                Search
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -809,12 +809,12 @@ export default function Dashboard() {
                   <img
                     style={{ imageRendering: "pixelated" }}
                     className="size-7 fill-foreground"
-                    src="https://minecraft.wiki/images/Invicon_Diamond_Leggings.png?b4750"
+                    src="https://minecraft.wiki/images/Invicon_Book_and_Quill.png?a13b5"
                   ></img>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
-                API
+                Admin portal
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -830,7 +830,7 @@ export default function Dashboard() {
                   <img
                     style={{ imageRendering: "pixelated" }}
                     className="size-7 fill-foreground"
-                    src="https://minecraft.wiki/images/Invicon_Diamond_Boots.png?b9292"
+                    src="https://minecraft.wiki/images/Invicon_Book.png?243d1"
                   ></img>
                 </Button>
               </TooltipTrigger>

@@ -33,6 +33,8 @@ import React, { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { ModeToggle } from "@/components/modeswitch";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -787,116 +789,518 @@ export default function Dashboard() {
                 <span className="sr-only">Settings</span>
               </Button>
             </DrawerTrigger>
-            <DrawerContent className="max-h-[80vh]">
-              <DrawerHeader>
-                <DrawerTitle>Configuration</DrawerTitle>
-                <DrawerDescription>
-                  Configure the settings for the bot and items.
-                </DrawerDescription>
-              </DrawerHeader>
-              <form className="grid w-full items-start gap-6 overflow-auto p-4 pt-0">
-                <fieldset className="grid gap-6 rounded-lg border p-4">
-                  <legend className="-ml-1 px-1 text-sm font-medium">
-                    Settings
-                  </legend>
-                  <div className="grid gap-3">
-                    <Label htmlFor="model">Bot Type</Label>
-                    <Select>
-                      <SelectTrigger
-                        id="model"
-                        className="items-start [&_[data-description]]:hidden"
+            <DrawerContent
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh",
+              }}
+              className="max-h-[80vh]"
+            >
+              <ScrollArea className="">
+                <DrawerHeader>
+                  <DrawerTitle>Configuration</DrawerTitle>
+                  <DrawerDescription>
+                    Configure the settings for the bot and items.
+                  </DrawerDescription>
+                </DrawerHeader>
+                <form
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100vh",
+                  }}
+                  className="grid gap-30"
+                >
+                  <center>
+                    <fieldset className="grid gap-6 rounded-lg border p-4">
+                      <legend className="-ml-1 px-1 text-sm font-medium">
+                        Settings
+                      </legend>
+                      <div
+                        className="grid gap-3"
+                        style={{ position: "relative", overflow: "visible" }}
                       >
-                        <SelectValue placeholder="Select a bot" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="genesis">
-                          <div className="flex items-start gap-3 text-muted-foreground">
-                            <Rabbit className="size-5" />
-                            <div className="grid gap-0.5 min-w-0 flex-1">
-                              <p>
-                                Neural{" "}
-                                <span className="font-medium text-foreground">
-                                  Genesis
-                                </span>
-                              </p>
-                              <p className="text-xs" data-description>
-                                Our fastest model for general use cases.
-                              </p>
-                            </div>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="explorer">
-                          <div className="flex items-start gap-3 text-muted-foreground">
-                            <Bird className="size-5" />
-                            <div className="grid gap-0.5 min-w-0 flex-1">
-                              <p>
-                                Neural{" "}
-                                <span className="font-medium text-foreground">
-                                  Explorer
-                                </span>
-                              </p>
-                              <p className="text-xs" data-description>
-                                Performance and speed for efficiency.
-                              </p>
-                            </div>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="quantum">
-                          <div className="flex items-start gap-3 text-muted-foreground">
-                            <Turtle className="size-5" />
-                            <div className="grid gap-0.5 min-w-0 flex-1">
-                              <p>
-                                Neural{" "}
-                                <span className="font-medium text-foreground">
-                                  Quantum
-                                </span>
-                              </p>
-                              <p className="text-xs" data-description>
-                                The most powerful model for complex
-                                computations.
-                              </p>
-                            </div>
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="temperature">Temperature</Label>
-                    <Input id="temperature" type="number" placeholder="0.4" />
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="top-p">Top P</Label>
-                    <Input id="top-p" type="number" placeholder="0.7" />
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="top-k">Top K</Label>
-                    <Input id="top-k" type="number" placeholder="0.0" />
-                  </div>
-                </fieldset>
-                <fieldset className="grid gap-6 rounded-lg border p-4">
-                  <legend className="-ml-1 px-1 text-sm font-medium">
-                    Messages
-                  </legend>
-                  <div className="grid gap-3">
-                    <Label htmlFor="role">Role</Label>
-                    <Select defaultValue="system">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="system">System</SelectItem>
-                        <SelectItem value="user">User</SelectItem>
-                        <SelectItem value="assistant">Assistant</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="content">Content</Label>
-                    <Textarea id="content" placeholder="You are a..." />
-                  </div>
-                </fieldset>
-              </form>
+                        <Label htmlFor="model">Bot Type</Label>
+                        <Select>
+                          <SelectTrigger
+                            id="model"
+                            className="items-start [&_[data-description]]:hidden"
+                          >
+                            <SelectValue placeholder="Select a bot" />
+                          </SelectTrigger>
+                          <SelectContent className="w-[var(--radix-select-trigger-width)] min-w-[8rem]">
+                            <SelectItem value="genesis">
+                              <div className="flex items-start gap-3 text-muted-foreground">
+                                {/* <Rabbit className="size-5" /> */}
+                                <img
+                                  className="size-7 flex-shrink-0"
+                                  src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/b/b3/Compass_JE3_BE3.gif"
+                                ></img>
+                                <div className="grid gap-0.5 min-w-0 flex-1">
+                                  <p>
+                                    Basic{" "}
+                                    <span className="font-medium text-foreground">
+                                      Steve
+                                    </span>
+                                  </p>
+                                  <p
+                                    className="text-xs break-words line-clamp-2"
+                                    data-description
+                                  >
+                                    Basic bot for general terrain and water
+                                    delivery.
+                                  </p>
+                                </div>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="explorer">
+                              <div className="flex items-start gap-3 text-muted-foreground">
+                                <img
+                                  className="size-6"
+                                  src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/3/33/Recovery_Compass_JE1_BE1.gif"
+                                ></img>
+                                <div className="grid gap-0.5 min-w-0 flex-1">
+                                  <p>
+                                    Pro{" "}
+                                    <span className="font-medium text-foreground">
+                                      Explorer
+                                    </span>
+                                  </p>
+                                  <p className="text-xs" data-description>
+                                    Performance and speed for efficiency.
+                                  </p>
+                                </div>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="quantum">
+                              <div className="flex items-start gap-3 text-muted-foreground">
+                                <img
+                                  className="size-6"
+                                  src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/6/6f/Elytra_JE2_BE2.png"
+                                ></img>
+                                <div className="grid gap-0.5 min-w-0 flex-1">
+                                  <p>
+                                    Advanced{" "}
+                                    <span className="font-medium text-foreground">
+                                      Beta
+                                    </span>
+                                  </p>
+                                  <p
+                                    className="text-xs break-words"
+                                    data-description
+                                  >
+                                    The most powerful bot for complex
+                                    situations.
+                                    {"\n"}
+                                    Has the ability to use elytra fly.
+                                  </p>
+                                </div>
+                              </div>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Separator
+                          style={{
+                            position: "absolute",
+                            left: "-1rem",
+                            right: "-1rem",
+                            bottom: "-1.5rem",
+                            width: "auto",
+                          }}
+                        />
+                      </div>
+                      <div style={{ width: "5px" }} />
+                      <div className="grid gap-3">
+                        <Label
+                          htmlFor="role"
+                          className="flex items-center gap-2"
+                        >
+                          Please enter the general coordinates for delivery
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                }}
+                              >
+                                <Info className="h-4 w-4" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p style={{ maxWidth: "200px" }}>
+                                  You can specify a general area for the bot to
+                                  deliver the items to. Once the bot as arrived
+                                  it will look for any nearby chest and deposit
+                                  the items there.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </Label>
+                        <div style={{ width: "1px" }} />
+                        <Label htmlFor="x">X coordinate</Label>
+                        <Input
+                          id="x"
+                          type="number"
+                          placeholder="45"
+                          value={destination.x}
+                          onChange={(e) =>
+                            setDestination({
+                              ...destination,
+                              x: parseInt(e.target.value),
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-3">
+                          <Label htmlFor="y">Y coordinate</Label>
+                          <Input
+                            id="y"
+                            type="number"
+                            placeholder="123"
+                            value={destination.y}
+                            onChange={(e) =>
+                              setDestination({
+                                ...destination,
+                                y: parseInt(e.target.value),
+                              })
+                            }
+                          />
+                        </div>
+                        <div className="grid gap-3">
+                          <Label htmlFor="z">Z coordinate</Label>
+                          <Input
+                            id="z"
+                            type="number"
+                            placeholder="64"
+                            value={destination.z}
+                            onChange={(e) =>
+                              setDestination({
+                                ...destination,
+                                z: parseInt(e.target.value),
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                    </fieldset>
+                    <div style={{ width: "40px" }} />
+                    <fieldset className="grid gap-6 rounded-lg border p-4">
+                      <legend className="-ml-1 px-1 text-sm font-medium">
+                        Buy Items
+                      </legend>
+                      <div
+                        className="grid gap-3"
+                        style={{ position: "relative", overflow: "visible" }}
+                      >
+                        <Label htmlFor="role">Item Type</Label>
+                        <Select>
+                          <SelectTrigger
+                            id="model1"
+                            className="items-start [&_[data-description]]:hidden"
+                          >
+                            <SelectValue placeholder="Select a type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="genesis">
+                              <div className="flex items-start gap-3 text-muted-foreground">
+                                {/* <Rabbit className="size-5" /> */}
+                                <img
+                                  className="size-7"
+                                  src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/2/2f/Dirt.png"
+                                ></img>
+                                <div className="grid gap-0.5 min-w-0 flex-1">
+                                  <p>
+                                    ${" "}
+                                    <span className="font-medium text-foreground">
+                                      Blocks
+                                    </span>
+                                  </p>
+                                  <p className="text-xs" data-description>
+                                    Blocks such as dirt, stone, etc.
+                                  </p>
+                                </div>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="explorer">
+                              <div className="flex items-start gap-3 text-muted-foreground">
+                                <img
+                                  className="size-6"
+                                  src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/5/54/Golden_Apple_JE2_BE2.png"
+                                ></img>
+                                <div className="grid gap-0.5 min-w-0 flex-1">
+                                  <p>
+                                    $${" "}
+                                    <span className="font-medium text-foreground">
+                                      Items
+                                    </span>
+                                  </p>
+                                  <p className="text-xs" data-description>
+                                    Items such as golden apples, diamonds, etc.
+                                  </p>
+                                </div>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="quantum">
+                              <div className="flex items-start gap-3 text-muted-foreground">
+                                <img
+                                  className="w-6 h-8"
+                                  src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/e5/Shulker_Box.gif"
+                                ></img>
+                                <div className="grid gap-0.5 min-w-0 flex-1">
+                                  <p>
+                                    $$${" "}
+                                    <span className="font-medium text-foreground">
+                                      Shulkers
+                                    </span>
+                                  </p>
+                                  <p className="text-xs" data-description>
+                                    Shulkers contain many different kits and
+                                    tools.
+                                  </p>
+                                </div>
+                              </div>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Separator
+                          style={{
+                            position: "absolute",
+                            left: "-1rem",
+                            right: "-1rem",
+                            bottom: "-1.5rem",
+                            width: "auto",
+                          }}
+                        />
+                      </div>
+                      <div style={{ width: "5px" }} />
+                      <div className="grid gap-3">
+                        {/* <Label htmlFor="content">Available</Label> */}
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button>Please Select Items</Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent
+                            style={{ minWidth: "50vw", maxWidth: "60vw" }}
+                            // className="w-[8000px] sm:w-[60vw]"
+                          >
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Please select the items you want to deliver.
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Some items may appear multiple times in the
+                                list. This is because they are stored in
+                                different locations or have different properties
+                                (NBT).
+                                <div className="">
+                                  <div className="flex items-center py-4">
+                                    <Input
+                                      placeholder="Search for items..."
+                                      value={
+                                        (table
+                                          .getColumn("name")
+                                          ?.getFilterValue() as string) ?? ""
+                                      }
+                                      onChange={(event) =>
+                                        table
+                                          .getColumn("name")
+                                          ?.setFilterValue(event.target.value)
+                                      }
+                                      className="max-w-sm"
+                                    />
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button
+                                          variant="outline"
+                                          className="ml-auto"
+                                        >
+                                          Columns{" "}
+                                          <ChevronDown className="ml-2 h-4 w-4" />
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end">
+                                        {table
+                                          .getAllColumns()
+                                          .filter((column) =>
+                                            column.getCanHide()
+                                          )
+                                          .map((column) => {
+                                            return (
+                                              <DropdownMenuCheckboxItem
+                                                key={column.id}
+                                                className="capitalize"
+                                                checked={column.getIsVisible()}
+                                                onCheckedChange={(value) =>
+                                                  column.toggleVisibility(
+                                                    !!value
+                                                  )
+                                                }
+                                              >
+                                                {column.id}
+                                              </DropdownMenuCheckboxItem>
+                                            );
+                                          })}
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </div>
+                                  <div className="rounded-md border">
+                                    <Table>
+                                      <TableHeader>
+                                        {table
+                                          .getHeaderGroups()
+                                          .map((headerGroup) => (
+                                            <TableRow key={headerGroup.id}>
+                                              {headerGroup.headers.map(
+                                                (header) => {
+                                                  return (
+                                                    <TableHead key={header.id}>
+                                                      {header.isPlaceholder
+                                                        ? null
+                                                        : flexRender(
+                                                            header.column
+                                                              .columnDef.header,
+                                                            header.getContext()
+                                                          )}
+                                                    </TableHead>
+                                                  );
+                                                }
+                                              )}
+                                            </TableRow>
+                                          ))}
+                                      </TableHeader>
+                                      <TableBody>
+                                        {table.getRowModel().rows?.length ? (
+                                          table
+                                            .getRowModel()
+                                            .rows.map((row) => (
+                                              <TableRow
+                                                key={row.id}
+                                                data-state={
+                                                  row.getIsSelected() &&
+                                                  "selected"
+                                                }
+                                              >
+                                                {row
+                                                  .getVisibleCells()
+                                                  .map((cell) => (
+                                                    <TableCell key={cell.id}>
+                                                      {flexRender(
+                                                        cell.column.columnDef
+                                                          .cell,
+                                                        cell.getContext()
+                                                      )}
+                                                    </TableCell>
+                                                  ))}
+                                              </TableRow>
+                                            ))
+                                        ) : (
+                                          <TableRow>
+                                            <TableCell
+                                              colSpan={columns.length}
+                                              className="h-24 text-center"
+                                            >
+                                              No results.
+                                            </TableCell>
+                                          </TableRow>
+                                        )}
+                                      </TableBody>
+                                    </Table>
+                                  </div>
+                                  <div className="flex items-center justify-end space-x-2 py-4">
+                                    <div className="flex-1 text-sm text-muted-foreground">
+                                      {
+                                        table.getFilteredSelectedRowModel().rows
+                                          .length
+                                      }{" "}
+                                      of{" "}
+                                      {table.getFilteredRowModel().rows.length}{" "}
+                                      row(s) selected.
+                                    </div>
+                                    <div className="space-x-2">
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => table.previousPage()}
+                                        disabled={!table.getCanPreviousPage()}
+                                      >
+                                        Previous
+                                      </Button>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => table.nextPage()}
+                                        disabled={!table.getCanNextPage()}
+                                      >
+                                        Next
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction>
+                                These Items!
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+
+                        {/* <Textarea
+                      id="content"
+                      placeholder={JSON.stringify(chestIndex, null, 2)}
+                      className="min-h-[9.5rem]"
+                    /> */}
+                      </div>
+                    </fieldset>
+                    <fieldset className="grid gap-6 rounded-lg border p-4">
+                      <legend className="-ml-1 px-1 text-sm font-medium">
+                        Selected Items
+                      </legend>
+                      None
+                    </fieldset>
+                    <fieldset className="grid gap-6 rounded-lg border p-4">
+                      <div className="grid gap-3">
+                        <Label htmlFor="content">Terms and conditions</Label>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="terms" />
+                          <label
+                            htmlFor="terms"
+                            className="flex items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            <span>
+                              <a
+                                href=""
+                                style={{ textDecorationLine: "underline" }}
+                              >
+                                Accept terms and conditions
+                              </a>
+                            </span>
+                            <ExternalLink
+                              style={{
+                                marginTop: "-1px",
+                                textDecorationLine: "underline",
+                              }}
+                              className="ml-1 size-5"
+                            />
+                          </label>
+                        </div>
+                        {/* <Textarea
+                      id="content"
+                      placeholder={JSON.stringify(chestIndex, null, 2)}
+                      className="min-h-[9.5rem]"
+                    /> */}
+                      </div>
+                    </fieldset>
+                  </center>
+                </form>
+              </ScrollArea>
             </DrawerContent>
           </Drawer>
           <Button

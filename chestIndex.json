@@ -1,50 +1,68 @@
 {
-  "-64,104,-29": {
-    "diamond": 206,
-    "iron_ingot": 108,
-    "grass_block": 65,
-    "red_shulker_box": [
-      "minecraft:redstone_block: 64"
-    ]
+  "-37,123,-50": {},
+  "-34,123,-53": {
+    "iron_ingot": 6
   },
-  "-63,105,-33": {
-    "dripstone_block": 64,
-    "deepslate_iron_ore": 64
+  "-37,123,-51": {},
+  "-37,123,-49": {},
+  "-37,124,-50": {},
+  "-35,123,-53": {},
+  "-34,124,-53": {},
+  "-33,123,-53": {
+    "iron_ingot": 6
   },
-  "-68,105,-33": {
-    "red_shulker_box": [
-      "minecraft:redstone_block: 1",
-      "minecraft:redstone_block: 1",
-      "minecraft:redstone_block: 1",
-      "minecraft:redstone_block: 1",
-      "minecraft:redstone_block: 58",
-      "minecraft:redstone_block: 1",
-      "minecraft:redstone_block: 1",
-      "minecraft:chest: 64"
-    ],
-    "grass": 64
+  "-37,124,-51": {},
+  "-37,124,-49": {},
+  "-35,124,-53": {},
+  "-33,124,-53": {},
+  "-37,123,-52": {},
+  "-36,123,-53": {},
+  "-37,123,-48": {},
+  "-32,123,-53": {},
+  "-37,124,-52": {},
+  "-36,124,-53": {},
+  "-37,124,-48": {},
+  "-32,124,-53": {},
+  "-34,123,-46": {},
+  "-30,123,-50": {
+    "diamond": 6
   },
-  "-70,103,-28": {
-    "red_shulker_box": [
-      "minecraft:redstone_block: 1",
-      "minecraft:redstone_block: 1",
-      "minecraft:redstone_block: 1",
-      "minecraft:redstone_block: 1",
-      "minecraft:redstone_block: 58",
-      "minecraft:redstone_block: 1",
-      "minecraft:redstone_block: 1",
-      "minecraft:chest: 64"
-    ],
-    "acacia_log": 64
+  "-35,123,-46": {},
+  "-34,124,-46": {
+    "iron_ingot": 42,
+    "diamond": 40
   },
-  "-64,109,-37": {
-    "coarse_dirt": 64,
-    "gold_ore": 64
+  "-33,123,-46": {},
+  "-30,123,-51": {},
+  "-30,123,-49": {
+    "diamond": 6
   },
-  "-67,109,-37": {
-    "bedrock": 64
+  "-30,124,-50": {},
+  "-37,123,-47": {},
+  "-35,124,-46": {},
+  "-33,124,-46": {
+    "iron_ingot": 42,
+    "diamond": 40
   },
-  "-67,110,-37": {
-    "oak_planks": 64
+  "-31,123,-53": {},
+  "-30,124,-51": {},
+  "-30,124,-49": {},
+  "-37,124,-47": {},
+  "-31,124,-53": {},
+  "-36,123,-46": {},
+  "-30,123,-52": {},
+  "-32,123,-46": {},
+  "-30,123,-48": {},
+  "-36,124,-46": {},
+  "-30,124,-52": {},
+  "-32,124,-46": {},
+  "-30,124,-48": {
+    "diamond": 50
+  },
+  "-31,123,-46": {},
+  "-30,123,-47": {},
+  "-31,124,-46": {},
+  "-30,124,-47": {
+    "diamond": 50
   }
 }

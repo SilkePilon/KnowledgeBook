@@ -7,20 +7,26 @@ const {
 const { mineflayer: mineflayerViewer } = require("prismarine-viewer");
 const express = require("express");
 const bodyParser = require("body-parser");
+const toolPlugin = require("mineflayer-tool").plugin;
+
 const fs = require("fs").promises;
 const Vec3 = require("vec3").Vec3;
 const cors = require("cors");
+const { elytrafly } = require("mineflayer-elytrafly");
+const e = require("express");
 
 // Bot configuration
 const bot = mineflayer.createBot({
   host: "localhost",
-  port: 50874,
+  port: 49841,
   username: "DeliveryBot",
   version: "1.19",
+  checkTimeoutInterval: 50000,
 });
 const mcData = require("minecraft-data")(bot.version);
 bot.loadPlugin(pathfinder);
-
+bot.loadPlugin(elytrafly);
+bot.loadPlugin(toolPlugin);
 // Express API setup
 const app = express();
 app.use(bodyParser.json());
@@ -28,16 +34,19 @@ app.use(cors()); // Add this line to enable CORS for all routes
 const PORT = 3001;
 
 // Bot state
-let storageArea = null;
+let storageArea = { x: "-34", y: "122", z: "-50" };
 let isDelivering = false;
 let chestIndex = {};
-const CHEST_CHECK_INTERVAL = 60000 * 1; // Check chests every 5 minutes
+const CHEST_CHECK_INTERVAL = 60000 * 10; // Check chests every 5 minutes
 const SEARCH_RADIUS = 20; // Search radius for chests
 
 bot.once("spawn", () => {
   mineflayerViewer(bot, { port: 3007, firstPerson: true });
   const defaultMove = new Movements(bot);
-  bot.pathfinder.setMovements(defaultMove);
+
+  defaultMove.digCost = 10;
+  defaultMove.placeCost = 10;
+  bot.pathfinder.setMovements(defaultMove); // Update the movement instance pathfinder uses
 
   console.log("Bot spawned and ready!");
   loadChestIndex();
@@ -84,16 +93,20 @@ async function findWaterOrLavaAndRespawn() {
     console.log(
       `Water or lava found at ${water.position}. Moving to location.`
     );
-    await bot.pathfinder.goto(
-      new GoalBlock(water.position.x, water.position.y, water.position.z)
-    );
+    try {
+      await bot.pathfinder.goto(
+        new GoalBlock(water.position.x, water.position.y, water.position.z)
+      );
+    } catch (error) {
+      console.error("Notice respawn");
+    }
 
     console.log("Jumping into water/lava to respawn...");
     bot.setControlState("sneak", true);
 
     // Wait for the bot to respawn
-    await new Promise((resolve) => bot.once("spawn", resolve));
-
+    await new Promise((resolve) => bot.once("death", resolve));
+    bot.pathfinder.stop();
     console.log("Respawned at spawn point.");
     bot.setControlState("sneak", false);
   } catch (error) {
@@ -103,7 +116,7 @@ async function findWaterOrLavaAndRespawn() {
 
 async function updateChestContents() {
   try {
-    await goToLocation(storageArea);
+    await goToLocation(storageArea, false);
     const chests = await findChestsInArea();
     for (const chest of chests) {
       console.log(chest);
@@ -117,7 +130,7 @@ async function updateChestContents() {
 }
 
 async function updateSingleChestContents(chestBlock) {
-  await goToLocation(chestBlock);
+  await goToLocation(chestBlock, false);
   const chest = await bot.openContainer(bot.blockAt(chestBlock));
   console.log("Updating chest contents:", chestBlock);
   const items = chest.containerItems();
@@ -158,6 +171,39 @@ async function findChestsInArea() {
   });
 }
 
+async function storeItemsInClosestEnderChest() {
+  try {
+    const enderChestBlock = bot.findBlock({
+      matching: bot.registry.blocksByName["ender_chest"].id,
+      maxDistance: 20,
+    });
+
+    if (!enderChestBlock) {
+      throw new Error("No ender chest found nearby.");
+    }
+
+    await goToLocation(enderChestBlock.position, false);
+    try {
+      await bot.unequip("torso");
+    } catch (error) {}
+
+    const enderChest = await bot.openContainer(enderChestBlock);
+    console.log("Storing items in ender chest...");
+    for (const item of bot.inventory.slots) {
+      if (item != null) {
+        console.log(item);
+        await enderChest.deposit(item.type, null, item.count);
+        await bot.waitForTicks(20);
+      }
+    }
+
+    await enderChest.close();
+  } catch (error) {
+    console.error("Error storing items in ender chest:", error.message);
+    throw error;
+  }
+}
+
 // API endpoints
 app.post("/set-storage-area", (req, res) => {
   const { x, y, z } = req.body;
@@ -167,6 +213,26 @@ app.post("/set-storage-area", (req, res) => {
 
 app.get("/chest-index", (req, res) => {
   res.json(chestIndex);
+});
+
+app.post("/retrieve-and-toss-items", async (req, res) => {
+  try {
+    await retrieveAndTossItemsFromEnderChest();
+    res.json({ message: "Items retrieved and tossed successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/store-items-in-ender-chest", async (req, res) => {
+  try {
+    await storeItemsInClosestEnderChest();
+    res.json({
+      message: "Items stored in the closest ender chest successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.post("/deliver", (req, res) => {
@@ -191,6 +257,195 @@ app.post("/deliver", (req, res) => {
     });
 });
 
+async function retrieveAndTossItemsFromEnderChest() {
+  try {
+    const enderChestBlock = bot.findBlock({
+      matching: bot.registry.blocksByName["ender_chest"].id,
+      maxDistance: 20,
+    });
+
+    if (!enderChestBlock) {
+      throw new Error("No ender chest found nearby.");
+    }
+
+    await goToLocation(enderChestBlock.position, false);
+    const enderChest = await bot.openContainer(enderChestBlock);
+    console.log("Retrieving items from ender chest...");
+
+    for (const item of enderChest.slots) {
+      if (item != null) {
+        if (item.count > 1) {
+          await bot.tossStack(item);
+          await bot.waitForTicks(20);
+        } else {
+          await bot.toss(item.type);
+          await bot.waitForTicks(20);
+        }
+      }
+    }
+    await enderChest.close();
+    // for (const item in bot.inventory.items()) {
+    //   console.log(`Tossing item: ${item.name} (${item.count})`);
+    //   if (item.count > 1) {
+    //     // enderChest.withdraw(item.type, null, item.count);
+    //     await bot.tossStack(item);
+    //   } else {
+    //     // enderChest.withdraw(item.type, null, item.count);
+    //     await bot.toss(item.type);
+    //   }
+    // }
+  } catch (error) {
+    console.error(
+      "Error retrieving and tossing items from ender chest:",
+      error.message
+    );
+    throw error;
+  }
+}
+
+async function retrieveItemsFromEnderChest() {
+  try {
+    const enderChestBlock = bot.findBlock({
+      matching: bot.registry.blocksByName["ender_chest"].id,
+      maxDistance: 20,
+    });
+
+    if (!enderChestBlock) {
+      console.log("No ender chest found nearby.");
+      return;
+    }
+
+    await goToLocation(enderChestBlock.position, false);
+    const enderChest = await bot.openContainer(enderChestBlock);
+    console.log("Retrieving items from ender chest...");
+
+    for (const item of enderChest.containerItems()) {
+      console.log(item);
+      if (
+        item.name.endsWith("helmet") ||
+        item.name.endsWith("chestplate") ||
+        item.name.endsWith("leggings") ||
+        item.name.endsWith("boots")
+      ) {
+        await bot.equip(item, "torso");
+      } else if (
+        item.name.endsWith("sword") ||
+        item.name.endsWith("pickaxe") ||
+        item.name.endsWith("axe") ||
+        item.name.endsWith("shovel") ||
+        item.name.endsWith("hoe")
+      ) {
+        await bot.equip(item, "hand");
+      } else {
+        // Withdraw the item from ender chest and put in inventory
+        await withdrawAndPutInInventory(item, enderChest);
+      }
+    }
+
+    await enderChest.close();
+  } catch (error) {
+    console.error("Error retrieving items from ender chest:", error.message);
+  }
+}
+
+async function withdrawAndPutInInventory(item, container) {
+  try {
+    const itemID = bot.registry.itemsByName[item.name].id;
+    const count = item.count || 1; // Ensure count is at least 1
+
+    // Withdraw the item from the container
+    await container.withdraw(itemID, null, count);
+
+    // Find an empty slot in inventory
+    const emptySlot = bot.inventory.firstEmptySlot();
+
+    if (emptySlot === null) {
+      console.log(`No empty slot found for ${item.name}.`);
+      return;
+    }
+
+    // Put the item in the empty slot
+    await bot.putInventoryItem(emptySlot, itemID, count);
+  } catch (error) {
+    console.error(
+      `Error withdrawing ${item.name} from ender chest:`,
+      error.message
+    );
+  }
+}
+async function storeItemsInEnderChest() {
+  try {
+    const enderChestItem = bot.inventory.findInventoryItem("ender_chest");
+
+    if (!enderChestItem) {
+      console.log("No ender chest in inventory.");
+      const enderChestBlock = bot.findBlock({
+        matching: bot.registry.blocksByName["ender_chest"].id,
+        maxDistance: 20,
+      });
+      const enderChest = await bot.openContainer(enderChestBlock);
+      console.log("Storing items in ender chest...");
+
+      for (const item of bot.inventory.slots) {
+        if (item != null) {
+          console.log(item);
+          await enderChest.deposit(item.type, null, item.count);
+          await bot.waitForTicks(20);
+        }
+      }
+      await sleep(100);
+      await enderChest.close();
+      return;
+    }
+
+    const openLocation = await findOpenSpaceNearby();
+
+    if (!openLocation) {
+      console.log("No open space to place ender chest.");
+      return;
+    }
+
+    await bot.equip(enderChestItem, "hand");
+    try {
+      await bot.placeBlock(bot.blockAt(openLocation), new Vec3(0, 1, 0));
+    } catch (error) {
+      console.log("Error placing ender chest:", error.message);
+    }
+    const enderChestBlock = bot.blockAt(openLocation);
+    try {
+      await bot.unequip("torso");
+    } catch (error) {}
+    const enderChest = await bot.openContainer(enderChestBlock);
+    console.log("Storing items in ender chest...");
+
+    for (const item of bot.inventory.slots) {
+      if (item != null) {
+        console.log(item);
+        await enderChest.deposit(item.type, null, item.count);
+        await bot.waitForTicks(20);
+      }
+    }
+    await sleep(100);
+    await enderChest.close();
+    try {
+      await bot.dig(enderChestBlock);
+    } catch (error) {
+      console.error("Error digging ender chest:", error.message);
+    }
+  } catch (error) {
+    console.error("Error storing items in ender chest:", error.message);
+  }
+}
+
+async function findOpenSpaceNearby() {
+  block = bot.findBlock({
+    matching: (block) =>
+      bot.blockAt(block.position.offset(0, 1, 0)).name == "air",
+    maxDistance: 30,
+  });
+  return block.position;
+}
+
 async function deliverItems(items, destination) {
   try {
     for (const item of items) {
@@ -205,10 +460,13 @@ async function deliverItems(items, destination) {
       await goToLocation(vec3chestPos);
       await collectItemFromChest(chestPos, item);
     }
+    await retrieveItemsFromEnderChest();
     await goToLocation(destination);
     await depositItemsInChest(items);
     bot.chat("Delivery completed!");
+    await storeItemsInEnderChest();
     await findWaterOrLavaAndRespawn();
+    await updateChestContents();
   } catch (error) {
     bot.chat(`Error during delivery: ${error.message}`);
     throw error;
@@ -240,9 +498,123 @@ async function collectItemFromChest(chestPos, item) {
   }
 }
 
-async function goToLocation(location) {
-  return new Promise((resolve, reject) => {
-    bot.pathfinder.setGoal(new GoalNear(location.x, location.y, location.z, 3));
+async function goToLocation(location, useElytra = true) {
+  const distanceToLocation = bot.entity.position.distanceTo(
+    new Vec3(location.x, location.y, location.z)
+  );
+
+  if (distanceToLocation <= 50) {
+    console.log("Close enough, using pathfinding");
+    return usePathfinding(location);
+  }
+
+  if (!bot.supportFeature("hasElytraFlying")) {
+    console.log("Elytra flying is not supported in this version of Minecraft");
+    return usePathfinding(location);
+  }
+
+  const elytraItem = bot.inventory.slots.find(
+    (item) => item?.name === "elytra"
+  );
+  if (!elytraItem || !useElytra) {
+    console.log("No elytra available for long-distance travel");
+    return usePathfinding(location);
+  }
+
+  await bot.equip(elytraItem, "torso");
+  const fireworkItem = bot.inventory.slots.find(
+    (item) => item?.name === "firework_rocket"
+  );
+  if (!fireworkItem) {
+    console.log("No fireworks");
+    return;
+  }
+  await bot.equip(fireworkItem, "hand");
+  await sleep(1000);
+  bot.elytrafly.start();
+
+  console.log("Ascending to Y=150");
+  while (bot.entity.position.y < 150) {
+    bot.look(0, Math.PI / 2, true); // Look straight up
+    bot.elytrafly.setControlState("up", true);
+    bot.activateItem();
+    await sleep(500);
+  }
+  bot.elytrafly.setControlState("up", false);
+  console.log("Reached Y=150, starting horizontal flight");
+
+  const maxFlightTime = 300000; // 5 minutes max flight time
+  const flightStartTime = Date.now();
+
+  while (true) {
+    const currentPos = bot.entity.position.clone();
+    const distanceToTarget = currentPos.xzDistanceTo(location);
+    console.log(
+      `Current distance to target: ${distanceToTarget.toFixed(2)} blocks`
+    );
+
+    if (distanceToTarget <= 40) {
+      console.log("Within 40 blocks of target, starting descent");
+      break;
+    }
+
+    if (Date.now() - flightStartTime > maxFlightTime) {
+      console.log("Max flight time reached. Forcing landing.");
+      break;
+    }
+
+    await bot.lookAt(new Vec3(location.x, currentPos.y, location.z));
+    bot.elytrafly.setControlState("forward", true);
+
+    if (bot.entity.velocity.xzDistanceTo(new Vec3(0, 0, 0)) < 0.8) {
+      bot.activateItem();
+      await sleep(1000);
+    }
+
+    await sleep(100);
+  }
+
+  console.log("Starting landing procedure");
+  bot.elytrafly.setControlState("forward", false);
+  let descending = true;
+
+  while (!bot.entity.onGround) {
+    await bot.lookAt(new Vec3(location.x, bot.entity.position.y, location.z));
+
+    if (descending) {
+      bot.elytrafly.setControlState("down", true);
+    } else {
+      bot.elytrafly.setControlState("down", false);
+    }
+
+    bot.elytrafly.setControlState("forward", true);
+    await sleep(500);
+    bot.elytrafly.setControlState("forward", false);
+    bot.elytrafly.setControlState("back", true);
+    await sleep(500);
+    bot.elytrafly.setControlState("back", false);
+
+    if (bot.entity.position.y > location.y + 10) {
+      descending = true;
+    } else {
+      descending = false;
+      if (bot.entity.velocity.y < -0.5) {
+        bot.elytrafly.setControlState("up", true);
+        await sleep(100);
+        bot.elytrafly.setControlState("up", false);
+      }
+    }
+
+    await sleep(100);
+  }
+  bot.elytrafly.stop();
+  bot.elytrafly.forceStop();
+  console.log("Bot has landed");
+
+  await sleep(1000);
+
+  new Promise((resolve, reject) => {
+    bot.pathfinder.setGoal(new GoalNear(location.x, location.y, location.z, 2));
     bot.once("goal_reached", resolve);
     bot.once("path_update", (results) => {
       if (results.status === "noPath") {
@@ -250,6 +622,33 @@ async function goToLocation(location) {
       }
     });
   });
+  return;
+}
+
+function usePathfinding(location) {
+  return new Promise((resolve, reject) => {
+    bot.pathfinder.setGoal(new GoalNear(location.x, location.y, location.z, 1));
+    bot.once("goal_reached", resolve);
+    bot.once("path_update", (results) => {
+      if (results.status === "noPath") {
+        reject(new Error("No path to the destination"));
+      }
+    });
+  });
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function isNearGround() {
+  const blocks = await bot.findBlocks({
+    matching: (block) => block.type !== 0, // not air
+    maxDistance: 5,
+    count: 1,
+    point: bot.entity.position.offset(0, -1, 0),
+  });
+  return blocks.length > 0;
 }
 
 async function depositItemsInChest(items) {
@@ -268,6 +667,7 @@ async function findAndOpenNearbyChest() {
     matching: bot.registry.blocksByName["chest"].id,
     maxDistance: 100,
   });
+  await goToLocation(chestBlock.position, false);
   if (!chestBlock) {
     throw new Error("No chest found nearby");
   }

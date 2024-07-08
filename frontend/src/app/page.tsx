@@ -644,18 +644,16 @@ export default function Dashboard() {
   const [iframeError, setIframeError] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    async function fetchData() {
       // Check if the iframe content has loaded after a short delay
-      const iframe = document.querySelector("iframe");
-      if (
-        iframe &&
-        (!iframe.contentWindow || iframe.contentWindow.length === 0)
-      ) {
+      try {
+        const response = await axios.get("http://localhost:3001/chest-index");
+      } catch (error) {
         setIframeError(true);
       }
-    }, 1000); // Adjust timeout as needed
+    }
 
-    return () => clearTimeout(timer);
+    fetchData();
   }, []);
 
   const handleIframeError = () => {

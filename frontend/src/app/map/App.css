@@ -1,0 +1,42 @@
+.App {
+    text-align: center;
+  }
+  
+  .map-container {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    margin: 0 auto;
+  }
+  
+  .map-image {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+  }
+  
+  .entity {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .entity.player {
+    background-color: red;
+  }
+  
+  .entity.mob {
+    background-color: blue;
+  }
+  
+  .tools {
+    margin-bottom: 10px;
+  }
+  
+  .tools button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    font-size: 16px;
+  }

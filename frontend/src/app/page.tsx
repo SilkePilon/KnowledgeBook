@@ -28,7 +28,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
+import { CreateBotDialog, StopBotDialog } from "@/components/login";
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
@@ -642,19 +642,9 @@ export default function Dashboard() {
   const [botStatus, setBotStatus] = useState("Idle");
   const { toast } = useToast();
   const [iframeError, setIframeError] = useState(false);
-
-  useEffect(() => {
-    async function fetchData() {
-      // Check if the iframe content has loaded after a short delay
-      try {
-        const response = await axios.get("http://localhost:3001/chest-index");
-      } catch (error) {
-        setIframeError(true);
-      }
-    }
-
-    fetchData();
-  }, []);
+  const [botState, setBotState] = useState({ created: false, spawned: false });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleIframeError = () => {
     setIframeError(true);
@@ -739,6 +729,51 @@ export default function Dashboard() {
     },
   });
 
+  useEffect(() => {
+    const checkBotState = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/bot-state");
+        if (!response.ok) {
+          throw new Error("Failed to fetch bot state");
+        }
+        const data = await response.json();
+        setBotState(data);
+        if (!data.created && !data.spawned) {
+          setIframeError(true);
+          console.log(data);
+        } else {
+          setIframeError(false);
+        }
+        setLoading(false);
+      } catch (err: any) {
+        setError(err.message);
+        setLoading(false);
+        setIframeError(true);
+      }
+    };
+
+    // Check immediately when the component mounts
+    checkBotState();
+
+    // Then check every 5 seconds
+    const interval = setInterval(checkBotState, 5000);
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, []);
+
+  // if (loading) {
+  //   return <p>Loading bot state...</p>;
+  // }
+
+  // if (error) {
+  //   return <p>Error: {error}</p>;
+  // }
+
+  // if (!botState.created) {
+  //   return <p>No bot has been created yet. Use the form to create a bot.</p>;
+  // }
+
   return (
     <div className="grid h-screen w-full pl-[56px]">
       <aside className="inset-y fixed  left-0 z-20 flex h-full flex-col border-r">
@@ -761,6 +796,9 @@ export default function Dashboard() {
                   size="icon"
                   className="rounded-lg bg-muted"
                   aria-label="Playground"
+                  onClick={() => {
+                    window.location.href = "/";
+                  }}
                 >
                   <img
                     style={{ imageRendering: "pixelated" }}
@@ -782,16 +820,19 @@ export default function Dashboard() {
                   size="icon"
                   className="rounded-lg"
                   aria-label="Models"
+                  onClick={() => {
+                    window.location.href = "/map";
+                  }}
                 >
                   <img
                     style={{ imageRendering: "pixelated" }}
                     className="size-7 fill-foreground"
-                    src="https://minecraft.wiki/images/Invicon_Spyglass.png?3cfb2"
+                    src="https://minecraft.wiki/images/Invicon_Map.png?24187"
                   ></img>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
-                Search
+                Map
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -1399,14 +1440,18 @@ export default function Dashboard() {
               </ScrollArea>
             </DrawerContent>
           </Drawer>
-          <Button
-            variant="outline"
-            size="sm"
-            className="ml-auto gap-1.5 text-sm"
-          >
-            <Unplug className="size-4" />
-            Connect
-          </Button>
+          {botState.created ? (
+            <StopBotDialog></StopBotDialog>
+          ) : (
+            <>
+              <CreateBotDialog></CreateBotDialog>
+            </>
+          )}
+          {/* {botState.spawned ? (
+            <p>Bot has spawned and is ready.</p>
+          ) : (
+            <p>Bot is created but hasn&apos;t spawned yet.</p>
+          )} */}
         </header>
         <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-3">
           <div
@@ -1890,6 +1935,7 @@ export default function Dashboard() {
                   style={{ borderRadius: "1rem" }}
                   src="http://localhost:3007/"
                   onError={handleIframeError}
+                  key={"iframekey"}
                 />
               ) : (
                 <div

@@ -1,57 +1,217 @@
+"use strict";
 const mineflayer = require("mineflayer");
-const {
-  pathfinder,
-  Movements,
-  goals: { GoalNear, GoalBlock },
-} = require("mineflayer-pathfinder");
-const { mineflayer: mineflayerViewer } = require("prismarine-viewer");
+// const {
+//   pathfinder,
+//   Movements,
+//   goals: { GoalNear, GoalBlock },
+// } = require("mineflayer-pathfinder");
+const { mineflayer: mineflayerViewer, viewer } = require("prismarine-viewer");
 const express = require("express");
+const { Server } = require("socket.io");
 const bodyParser = require("body-parser");
 const toolPlugin = require("mineflayer-tool").plugin;
-
+const https = require("https");
+const http = require("http");
+const { Image } = require("canvas");
 const fs = require("fs").promises;
 const Vec3 = require("vec3").Vec3;
 const cors = require("cors");
 const { elytrafly } = require("mineflayer-elytrafly");
 const e = require("express");
-
-// Bot configuration
-const bot = mineflayer.createBot({
-  host: "localhost",
-  port: 49841,
-  username: "DeliveryBot",
-  version: "1.19",
-  checkTimeoutInterval: 50000,
-});
-const mcData = require("minecraft-data")(bot.version);
-bot.loadPlugin(pathfinder);
-bot.loadPlugin(elytrafly);
-bot.loadPlugin(toolPlugin);
+const { createCanvas, loadImage } = require("canvas");
+const WebSocket = require("ws");
+const { fetch } = require("node-fetch");
+const sharp = require("sharp");
+const { createPlugin, goals } = require("@nxg-org/mineflayer-pathfinder");
+const { GoalNear, GoalLookAt, GoalBlock } = goals;
+const {
+  default: loader,
+  EntityState,
+} = require("@nxg-org/mineflayer-physics-util");
+const pathfinder = createPlugin();
 // Express API setup
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["*"],
+  },
+});
 app.use(bodyParser.json());
 app.use(cors()); // Add this line to enable CORS for all routes
 const PORT = 3001;
 
+const versions = require("minecraft-data").supportedVersions.pc;
 // Bot state
+let botState = {
+  created: false,
+  spawned: false,
+  name: "",
+  data: {},
+  versions: versions,
+};
 let storageArea = { x: "-34", y: "122", z: "-50" };
 let isDelivering = false;
 let chestIndex = {};
+let bot;
+let botviewer;
 const CHEST_CHECK_INTERVAL = 60000 * 10; // Check chests every 5 minutes
 const SEARCH_RADIUS = 20; // Search radius for chests
+const mapData = {};
+const entityPositions = {};
+const textureCache = {};
+const TEXTURE_BASE_URL = "http://localhost:3000/block/";
 
-bot.once("spawn", () => {
-  mineflayerViewer(bot, { port: 3007, firstPerson: true });
-  const defaultMove = new Movements(bot);
+const FALLBACK_TEXTURE = "obsidian.png";
 
-  defaultMove.digCost = 10;
-  defaultMove.placeCost = 10;
-  bot.pathfinder.setMovements(defaultMove); // Update the movement instance pathfinder uses
+// Function to process and cache textures
+async function processTexture(buffer, blockName) {
+  const image = await loadImage(buffer);
+  textureCache[blockName] = image;
+  return image;
+}
 
-  console.log("Bot spawned and ready!");
-  loadChestIndex();
-  startChestMonitoring();
-});
+// Function to load textures
+function getTexture(blockName) {
+  if (textureCache[blockName]) {
+    return textureCache[blockName];
+  }
+
+  const texturePath = getTexturePathForBlock(blockName);
+  const url = TEXTURE_BASE_URL + texturePath;
+
+  // const image = loadImage(`frontend/public/block/${texturePath}`);
+  const img = new Image();
+  img.src = `frontend/public/block/${texturePath}`;
+  textureCache[blockName] = img;
+  return img;
+}
+
+function getObsidianTexture() {
+  return new Promise((resolve, reject) => {
+    if (textureCache[FALLBACK_TEXTURE]) {
+      resolve(textureCache[FALLBACK_TEXTURE]);
+      return;
+    }
+
+    const url = TEXTURE_BASE_URL + FALLBACK_TEXTURE;
+
+    http
+      .get(url, (response) => {
+        if (response.statusCode !== 200) {
+          reject(
+            new Error(
+              `Failed to fetch fallback texture: ${response.statusCode} ${url}`
+            )
+          );
+          return;
+        }
+
+        const chunks = [];
+        response.on("data", (chunk) => chunks.push(chunk));
+        response.on("end", () => {
+          const buffer = Buffer.concat(chunks);
+          processTexture(buffer, FALLBACK_TEXTURE).then(resolve).catch(reject);
+        });
+      })
+      .on("error", (err) => {
+        reject(err);
+      });
+  });
+}
+
+// async function processTexture(buffer, blockName) {
+//   const image = await loadImage(buffer);
+//   textureCache[blockName] = image;
+//   return image;
+// }
+
+function processTexture(buffer, textureName) {
+  sharp(buffer)
+    .resize(16, 16, { fit: "cover" })
+    .raw()
+    .toBuffer((err, resizedBuffer, info) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      const texture = {
+        data: new Uint8Array(resizedBuffer),
+        width: info.width,
+        height: info.height,
+      };
+
+      textureCache[textureName] = texture;
+      return loadImage(texture);
+    });
+}
+
+// Helper function to get texture path for a block
+function getTexturePathForBlock(blockName) {
+  // Add more mappings as needed
+  const textureMap = {
+    grass_block: "grass_block_side.png",
+    stone: "stone.png",
+    dirt: "dirt.png",
+    water: "water_still.png",
+    // Add more block types here
+  };
+
+  return textureMap[blockName] || `${blockName}.png`;
+}
+
+// Function to update map data
+async function updateMapData(x, z) {
+  const maxY = bot.game.height - 1; // Get the maximum height of the world
+  let y;
+
+  // Start from the top and move down until we find a non-air block
+  for (y = maxY; y >= 0; y--) {
+    const block = bot.blockAt(new Vec3(x, y, z));
+    if (
+      block &&
+      block.type !== 0 &&
+      block.name !== "grass" &&
+      block.name !== "tall_grass" &&
+      block.name != "chest" &&
+      block.name !== "ender_chest" &&
+      block.name !== "water" &&
+      block.name != "stairs"
+    ) {
+      console.log("Found block:", block.name, x, y, z);
+      // 0 is the ID for air
+      break;
+    }
+  }
+
+  if (y >= 0) {
+    const block = bot.blockAt(new Vec3(x, y, z));
+    mapData[`${x},${z}`] = block.name;
+  } else {
+    // If no non-air block was found, we can consider it as void or some default
+    mapData[`${x},${z}`] = "void";
+  }
+}
+
+// Function to scan area around bot
+async function scanArea(radius) {
+  const botPos = bot.entity.position;
+  for (
+    let x = Math.floor(botPos.x) - radius;
+    x <= Math.floor(botPos.x) + radius;
+    x++
+  ) {
+    for (
+      let z = Math.floor(botPos.z) - radius;
+      z <= Math.floor(botPos.z) + radius;
+      z++
+    ) {
+      await updateMapData(x, z);
+    }
+  }
+}
 
 async function loadChestIndex() {
   try {
@@ -80,7 +240,7 @@ async function findWaterOrLavaAndRespawn() {
     console.log("Searching for water to respawn...");
     const water = bot.findBlock({
       matching: (block) => block.name === "water" || block.name === "lava",
-      maxDistance: 1000,
+      maxDistance: 100,
     });
 
     if (!water) {
@@ -204,15 +364,214 @@ async function storeItemsInClosestEnderChest() {
   }
 }
 
+async function generateMapImage() {
+  const width = 64;
+  const height = 64;
+  const blockSize = 16; // Size of each block in pixels
+  const canvas = createCanvas(width, height);
+  const ctx = canvas.getContext("2d");
+
+  // Render map data
+  for (const [key, blockName] of Object.entries(mapData)) {
+    const [x, z] = key.split(",").map(Number);
+    const texture = await getTexture(blockName);
+
+    if (texture) {
+      console.log(texture);
+      ctx.drawImage(texture, x, z, blockSize, blockSize);
+      console.log("Rendered block:", blockName, x, z);
+    }
+  }
+
+  // Render entities
+  Object.values(entityPositions).forEach((entity) => {
+    ctx.fillStyle = entity.type === "player" ? "red" : "blue";
+    ctx.beginPath();
+    ctx.arc(entity.x * blockSize, entity.z * blockSize, 8, 0, 2 * Math.PI); // Scale and size adjustments for visibility
+    ctx.fill();
+  });
+
+  console.log("Map image generated");
+  return canvas.toBuffer();
+}
+
 // API endpoints
+
+// API endpoint to get bot state
+app.get("/bot-state", (req, res) => {
+  botState.versions = versions;
+  res.json(botState);
+});
+
+// API endpoint to stop the bot.
+app.post("/stop-bot", async (req, res) => {
+  if (bot) {
+    try {
+      await bot.quit();
+    } catch (error) {
+      console.error("Error stopping bot:", error.message);
+    }
+    botState = {
+      created: false,
+      spawned: false,
+    };
+    try {
+      await bot.viewer.close();
+    } catch (error) {
+      console.error("Error stopping bot:", error.message);
+    }
+    try {
+      bot = null;
+    } catch (error) {
+      console.error("Error stopping bot:", error.message);
+    }
+
+    res.json({ message: "Bot stopped successfully" });
+  } else {
+    res.status(400).json({ error: "Bot not found" });
+  }
+});
+
+function waitForEvent(emitter, event) {
+  return new Promise((resolve) => {
+    emitter.once(event, resolve);
+  });
+}
+
+app.post("/create-bot", async (req, res) => {
+  const { username, server, port, version } = req.body;
+  console.log("Creating bot...");
+  let auth = "microsoft";
+  if (server === "localhost") {
+    auth = "offline";
+  } else {
+    auth = "microsoft";
+  }
+  console.log("Auth:", auth);
+  try {
+    bot = mineflayer.createBot({
+      auth: auth,
+      host: server,
+      profilesFolder: "./profiles",
+      username,
+      port: port || 25565,
+      // check if version is below 1.20.5 number as you can compair strings if so use it otherwise use the version auto.
+      version: version < "1.20.5" ? version : "auto",
+      onMsaCode: (code) => {
+        console.log("MSA code:", code);
+        io.emit("msaCode", code["user_code"]);
+      },
+    });
+    console.log("Bot created successfully");
+
+    await waitForEvent(bot, "login");
+
+    bot.once("spawn", () => {
+      botState.spawned = true;
+      io.emit("botSpawned");
+      mineflayerViewer(bot, {
+        port: 3007,
+        firstPerson: true,
+      });
+      bot.loadPlugin(pathfinder);
+      bot.loadPlugin(loader);
+
+      bot.loadPlugin(elytrafly);
+      bot.loadPlugin(toolPlugin);
+
+      bot.physics.autojumpCooldown = 0;
+      // const defaultMove = new Movements(bot);
+
+      // defaultMove.digCost = 10;
+      // defaultMove.placeCost = 10;
+      // bot.pathfinder.setMovements(defaultMove); // Update the movement instance pathfinder uses
+
+      console.log("Bot spawned and ready!");
+      // loadChestIndex();
+      // startChestMonitoring();
+      // Scan area periodically
+      console.log("Scanning area...");
+      (async () => {
+        await scanArea(4); // Adjust radius as needed
+      })();
+      // setInterval(async () => {
+      //   await scanArea(4); // Adjust radius as needed
+      // }, 10000); // Every 10 seconds
+    });
+    console.log("Bot spawned and ready!");
+
+    bot.on("death", async () => {
+      await bot.waitForChunksToLoad();
+      await bot.waitForTicks(20);
+      startChestMonitoring();
+    });
+
+    // Error handling
+    bot.on("error", console.error);
+
+    // Track entity positions
+    bot.on("entityMoved", (entity) => {
+      if (entity.type === "player" || entity.type === "mob") {
+        entityPositions[entity.id] = {
+          x: Math.floor(entity.position.x),
+          z: Math.floor(entity.position.z),
+          type: entity.type,
+          name: entity.name,
+        };
+      }
+    });
+    botState.created = true;
+    botState.name = bot.username;
+    botState.data = bot.entity;
+    res.json({ message: "Bot creation initiated" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log("Client connected");
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
 app.post("/set-storage-area", (req, res) => {
   const { x, y, z } = req.body;
   storageArea = { x, y, z };
   res.json({ message: "Storage area set successfully" });
 });
 
+// API endpoint to get map image
+app.get("/map-image", async (req, res) => {
+  // const mapImage = await generateMapImage();
+  // res.writeHead(200, {
+  //   "Content-Type": "image/png",
+  //   "Content-Length": mapImage.length,
+  // });
+  // res.end(mapImage);
+  // NEEDS TO BE FIXED
+  res.json(mapData);
+});
+
+// WebSocket server for real-time updates
+const wss = new WebSocket.Server({ port: 8080 });
+
+wss.on("connection", (ws) => {
+  ws.on("message", (message) => {
+    if (message === "getMap") {
+      ws.send(JSON.stringify({ mapData, entityPositions }));
+    }
+  });
+});
+
 app.get("/chest-index", (req, res) => {
   res.json(chestIndex);
+});
+
+app.get("/index", async (req, res) => {
+  await updateChestContents();
 });
 
 app.post("/retrieve-and-toss-items", async (req, res) => {
@@ -438,12 +797,19 @@ async function storeItemsInEnderChest() {
 }
 
 async function findOpenSpaceNearby() {
-  block = bot.findBlock({
-    matching: (block) =>
-      bot.blockAt(block.position.offset(0, 1, 0)).name == "air",
+  block_ = bot.findBlock({
+    matching: (block) => block.name != "air",
+    // useExtraInfo: true,
+    useExtraInfo: (block) => {
+      const hasAirAbove =
+        bot.blockAt(block.position.offset(0, 1, 0)).name === "air";
+      const botNotStandingOnBlock =
+        block.position.xzDistanceTo(bot.entity.position) > 2;
+      return hasAirAbove & botNotStandingOnBlock;
+    },
     maxDistance: 30,
   });
-  return block.position;
+  return block_.position;
 }
 
 async function deliverItems(items, destination) {
@@ -612,29 +978,18 @@ async function goToLocation(location, useElytra = true) {
   console.log("Bot has landed");
 
   await sleep(1000);
-
-  new Promise((resolve, reject) => {
-    bot.pathfinder.setGoal(new GoalNear(location.x, location.y, location.z, 2));
-    bot.once("goal_reached", resolve);
-    bot.once("path_update", (results) => {
-      if (results.status === "noPath") {
-        reject(new Error("No path to the destination"));
-      }
-    });
-  });
+  await bot.pathfinder.cancel();
+  bot.clearControlStates();
+  bot.pathfinder.goto(new GoalNear(location.x, location.y, location.z, 2));
+  await sleep(1000);
   return;
 }
 
-function usePathfinding(location) {
-  return new Promise((resolve, reject) => {
-    bot.pathfinder.setGoal(new GoalNear(location.x, location.y, location.z, 1));
-    bot.once("goal_reached", resolve);
-    bot.once("path_update", (results) => {
-      if (results.status === "noPath") {
-        reject(new Error("No path to the destination"));
-      }
-    });
-  });
+async function usePathfinding(location) {
+  await bot.pathfinder.goto(
+    new GoalNear(location.x, location.y, location.z, 1)
+  );
+  await sleep(1000);
 }
 
 function sleep(ms) {
@@ -675,9 +1030,6 @@ async function findAndOpenNearbyChest() {
 }
 
 // Start the API server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`API server running on port ${PORT}`);
 });
-
-// Error handling
-bot.on("error", console.error);

@@ -113,7 +113,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ImgProps } from "next/dist/shared/lib/get-img-props";
 
 const data: Payment[] = [
   {

@@ -641,6 +641,8 @@ export default function Dashboard() {
   const [mapData, setMapData] = useState({});
   const [entityPositions, setEntityPositions] = useState({});
   const wsRef = useRef(null);
+  const [cape, setCape] = useState("");
+  const [skinViewKey, setSkinViewKey] = useState(0);
   const [botState, setBotState] = useState({
     created: false,
     spawned: false,
@@ -661,6 +663,39 @@ export default function Dashboard() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchUUIDAndCape = async (username: string) => {
+      console.log("Fetching UUID and cape for", username);
+      try {
+        // First, check localStorage
+        const storedCape = localStorage.getItem("capeUrl");
+        if (storedCape) {
+          setCape(storedCape);
+          setSkinViewKey((prevKey) => prevKey + 1);
+        }
+
+        const response = await fetch(
+          `https://api.capes.dev/load/${username}/minecraft`
+        );
+        const data = await response.json();
+        const capeUrl = data.imageUrl;
+        console.log("Cape:", capeUrl);
+        setCape(capeUrl);
+        if (capeUrl) {
+          localStorage.setItem("capeUrl", capeUrl);
+        }
+        // Increment the key to force a re-render of ReactSkinview3d
+        setSkinViewKey((prevKey) => prevKey + 1);
+      } catch (error) {
+        console.error("Error fetching UUID or cape:", error);
+      }
+    };
+
+    if (botState.username) {
+      fetchUUIDAndCape(botState.username);
+    }
+  }, [botState.username]);
 
   useEffect(() => {
     const socket = new WebSocket("ws://localhost:8080");
@@ -1097,6 +1132,7 @@ export default function Dashboard() {
                           height={300}
                           width={150}
                           onReady={({ viewer }) => {
+                            viewer.zoom = 4.5;
                             // Add an animation
                             viewer.animation = new WalkingAnimation();
                             // Enabled auto rotate
@@ -1524,13 +1560,18 @@ export default function Dashboard() {
                       skinUrl={`https://mineskin.eu/skin/${
                         botState.username || "CustomCapes"
                       }`}
+                      key={skinViewKey} // This will force a re-render when it changes
                       height={300}
                       width={150}
                       onReady={({ viewer }) => {
                         // Add an animation
                         viewer.animation = new WalkingAnimation();
-                        // Enabled auto rotate
+
+                        // Enable auto rotate
                         viewer.autoRotate = true;
+                        if (cape) {
+                          viewer.loadCape(cape);
+                        }
                       }}
                     />
                   </center>
@@ -1538,81 +1579,24 @@ export default function Dashboard() {
               </fieldset>
               <fieldset className="grid gap-6 rounded-lg border p-4">
                 <legend className="-ml-1 px-1 text-sm font-medium">
-                  Select Items
+                  {botState.username || "Not Connected"}&apos;s Status
                 </legend>
                 <div
                   className="grid gap-3"
                   style={{ position: "relative", overflow: "visible" }}
                 >
-                  <Label htmlFor="role">Item Type</Label>
-                  <Select>
-                    <SelectTrigger
-                      id="model1"
-                      className="items-start [&_[data-description]]:hidden"
-                    >
-                      <SelectValue placeholder="Select a type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="genesis">
-                        <div className="flex items-start gap-3 text-muted-foreground">
-                          {/* <Rabbit className="size-5" /> */}
-                          <img
-                            className="size-7"
-                            src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/2/2f/Dirt.png"
-                          ></img>
-                          <div className="grid gap-0.5 min-w-0 flex-1">
-                            <p>
-                              ${" "}
-                              <span className="font-medium text-foreground">
-                                Blocks
-                              </span>
-                            </p>
-                            <p className="text-xs" data-description>
-                              Blocks such as dirt, stone, etc.
-                            </p>
-                          </div>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="explorer">
-                        <div className="flex items-start gap-3 text-muted-foreground">
-                          <img
-                            className="size-6"
-                            src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/5/54/Golden_Apple_JE2_BE2.png"
-                          ></img>
-                          <div className="grid gap-0.5 min-w-0 flex-1">
-                            <p>
-                              $${" "}
-                              <span className="font-medium text-foreground">
-                                Items
-                              </span>
-                            </p>
-                            <p className="text-xs" data-description>
-                              Items such as golden apples, diamonds, etc.
-                            </p>
-                          </div>
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="quantum">
-                        <div className="flex items-start gap-3 text-muted-foreground">
-                          <img
-                            className="w-6 h-8"
-                            src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/e5/Shulker_Box.gif"
-                          ></img>
-                          <div className="grid gap-0.5 min-w-0 flex-1">
-                            <p>
-                              $$${" "}
-                              <span className="font-medium text-foreground">
-                                Shulkers
-                              </span>
-                            </p>
-                            <p className="text-xs" data-description>
-                              Shulkers contain many different kits and tools.
-                            </p>
-                          </div>
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="role">Health</Label>
+                  <img
+                    style={{ imageRendering: "pixelated" }}
+                    width={"200vw"}
+                    src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/5/59/Healthbar.png"
+                  ></img>
+                  <Label htmlFor="role">Health</Label>
+                  <img
+                    style={{ imageRendering: "pixelated" }}
+                    src="https://art.pixilart.com/33d72d0b74d9c81.png"
+                    width={"200vw"}
+                  ></img>
                   <Separator
                     style={{
                       position: "absolute",
@@ -1623,173 +1607,15 @@ export default function Dashboard() {
                     }}
                   />
                 </div>
+
                 <div style={{ width: "5px" }} />
                 <div className="grid gap-3">
-                  {/* <Label htmlFor="content">Available</Label> */}
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button>Click here to select items</Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent
-                      style={{ minWidth: "50vw", maxWidth: "60vw" }}
-                      // className="w-[8000px] sm:w-[60vw]"
-                    >
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Please select the items you want to deliver.
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Some items may appear multiple times in the list. This
-                          is because they are stored in different locations or
-                          have different properties (NBT). You can click the{" "}
-                          <span
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Info className="h-3 w-3" />
-                          </span>{" "}
-                          to see more info about that block or item. Toggle the
-                          checkbox in front of an item to select it for
-                          delivery.
-                          <div className="">
-                            <div className="flex items-center py-4">
-                              <Input
-                                placeholder="Search for items..."
-                                value={
-                                  (table
-                                    .getColumn("name")
-                                    ?.getFilterValue() as string) ?? ""
-                                }
-                                onChange={(event) =>
-                                  table
-                                    .getColumn("name")
-                                    ?.setFilterValue(event.target.value)
-                                }
-                                className="max-w-sm"
-                              />
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="outline" className="ml-auto">
-                                    Columns{" "}
-                                    <ChevronDown className="ml-2 h-4 w-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  {table
-                                    .getAllColumns()
-                                    .filter((column) => column.getCanHide())
-                                    .map((column) => {
-                                      return (
-                                        <DropdownMenuCheckboxItem
-                                          key={column.id}
-                                          className="capitalize"
-                                          checked={column.getIsVisible()}
-                                          onCheckedChange={(value) =>
-                                            column.toggleVisibility(!!value)
-                                          }
-                                        >
-                                          {column.id}
-                                        </DropdownMenuCheckboxItem>
-                                      );
-                                    })}
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
-                            <div className="rounded-md border">
-                              <Table>
-                                <TableHeader>
-                                  {table
-                                    .getHeaderGroups()
-                                    .map((headerGroup) => (
-                                      <TableRow key={headerGroup.id}>
-                                        {headerGroup.headers.map((header) => {
-                                          return (
-                                            <TableHead key={header.id}>
-                                              {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef
-                                                      .header,
-                                                    header.getContext()
-                                                  )}
-                                            </TableHead>
-                                          );
-                                        })}
-                                      </TableRow>
-                                    ))}
-                                </TableHeader>
-                                <TableBody>
-                                  {table.getRowModel().rows?.length ? (
-                                    table.getRowModel().rows.map((row) => (
-                                      <TableRow
-                                        key={row.id}
-                                        data-state={
-                                          row.getIsSelected() && "selected"
-                                        }
-                                      >
-                                        {row.getVisibleCells().map((cell) => (
-                                          <TableCell key={cell.id}>
-                                            {flexRender(
-                                              cell.column.columnDef.cell,
-                                              cell.getContext()
-                                            )}
-                                          </TableCell>
-                                        ))}
-                                      </TableRow>
-                                    ))
-                                  ) : (
-                                    <TableRow>
-                                      <TableCell
-                                        colSpan={columns.length}
-                                        className="h-24 text-center"
-                                      >
-                                        No results.
-                                      </TableCell>
-                                    </TableRow>
-                                  )}
-                                </TableBody>
-                              </Table>
-                            </div>
-                            <div className="flex items-center justify-end space-x-2 py-4">
-                              <div className="flex-1 text-sm text-muted-foreground">
-                                {
-                                  table.getFilteredSelectedRowModel().rows
-                                    .length
-                                }{" "}
-                                of {table.getFilteredRowModel().rows.length}{" "}
-                                row(s) selected.
-                              </div>
-                              <div className="space-x-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => table.previousPage()}
-                                  disabled={!table.getCanPreviousPage()}
-                                >
-                                  Previous
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => table.nextPage()}
-                                  disabled={!table.getCanNextPage()}
-                                >
-                                  Next
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>These Items!</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <Label htmlFor="content">Inventory</Label>
+                  <img
+                    style={{ imageRendering: "pixelated" }}
+                    src="https://wallpapers.com/images/hd/minecraft-inventory-fmyuojmmrku9we1g.jpg"
+                    width={"200vw"}
+                  ></img>
 
                   {/* <Textarea
                     id="content"
@@ -1838,12 +1664,12 @@ export default function Dashboard() {
           </div>
           <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
             <Badge variant="secondary" className="absolute right-6 top-6">
-              Bot Status: {botStatus}
+              Live
             </Badge>
             <div className="flex-1">
               {!iframeError ? (
                 <div className="App">
-                  <h1>Minecraft Map Viewer</h1>
+                  <h1>Minecraft Map Viewer (example)</h1>
                   <TransformWrapper
                     initialScale={1}
                     initialPositionX={0}
@@ -1861,9 +1687,13 @@ export default function Dashboard() {
                         <TransformComponent>
                           <div className="map-container">
                             <img
-                              src={mapUrl}
+                              src={
+                                "https://cdn.modrinth.com/data/PFb7ZqK6/images/70e23cdfe0906777ecfd2a9296b146d03f91bc67.png"
+                              }
                               alt="Minecraft Map"
                               className="map-image"
+                              width={"100%"}
+                              height={"100%"}
                             />
                             {Object.values(entityPositions).map(
                               (entity: any, index) => (

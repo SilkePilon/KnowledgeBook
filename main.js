@@ -441,6 +441,7 @@ function waitForEvent(emitter, event) {
 app.post("/create-bot", async (req, res) => {
   const { username, server, port, version } = req.body;
   console.log("Creating bot...");
+  console.log("Username:", username);
   let auth = "microsoft";
   if (server === "localhost") {
     auth = "offline";
@@ -453,7 +454,7 @@ app.post("/create-bot", async (req, res) => {
       auth: auth,
       host: server,
       profilesFolder: "./profiles",
-      username,
+      username: username,
       port: port || 25565,
       // check if version is below 1.20.5 number as you can compair strings if so use it otherwise use the version auto.
       version: version < "1.20.5" ? version : "auto",
@@ -521,7 +522,7 @@ app.post("/create-bot", async (req, res) => {
       }
     });
     botState.created = true;
-    botState.username = bot.username;
+    botState.username = username;
     botState.data = bot.entity;
     res.json({ message: "Bot creation initiated" });
   } catch (error) {

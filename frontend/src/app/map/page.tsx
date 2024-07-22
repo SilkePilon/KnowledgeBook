@@ -1847,7 +1847,7 @@ export default function Dashboard() {
                               className="map-image"
                             />
                             {Object.values(entityPositions).map(
-                              (entity, index) => (
+                              (entity: any, index) => (
                                 <div
                                   key={index}
                                   className={`entity ${entity.type}`}

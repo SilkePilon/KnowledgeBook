@@ -47,7 +47,7 @@ const versions = require("minecraft-data").supportedVersions.pc;
 let botState = {
   created: false,
   spawned: false,
-  name: "",
+  username: "",
   data: {},
   versions: versions,
 };
@@ -521,7 +521,7 @@ app.post("/create-bot", async (req, res) => {
       }
     });
     botState.created = true;
-    botState.name = bot.username;
+    botState.username = bot.username;
     botState.data = bot.entity;
     res.json({ message: "Bot creation initiated" });
   } catch (error) {

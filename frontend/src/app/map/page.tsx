@@ -641,7 +641,13 @@ export default function Dashboard() {
   const [mapData, setMapData] = useState({});
   const [entityPositions, setEntityPositions] = useState({});
   const wsRef = useRef(null);
-  const [botState, setBotState] = useState({ created: false, spawned: false });
+  const [botState, setBotState] = useState({
+    created: false,
+    spawned: false,
+    username: "",
+    data: {},
+    versions: [],
+  });
   const [error, setError] = useState(null);
   useEffect(() => {
     async function fetchData() {
@@ -830,7 +836,7 @@ export default function Dashboard() {
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
-                Map
+                Deliver Items
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -851,7 +857,7 @@ export default function Dashboard() {
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
-                Map
+                Map & Stats
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -988,7 +994,7 @@ export default function Dashboard() {
                                   <p>
                                     Basic{" "}
                                     <span className="font-medium text-foreground">
-                                      Steve
+                                      Stevedw
                                     </span>
                                   </p>
                                   <p
@@ -1485,8 +1491,10 @@ export default function Dashboard() {
                   className="grid gap-3"
                   style={{ position: "relative", overflow: "visible" }}
                 >
-                  <Label htmlFor="model">Name</Label>
-                  <h1 className="text-2xl font-semibold">Steve</h1>
+                  <Label htmlFor="model">Username</Label>
+                  <h1 className="text-2xl font-semibold">
+                    {botState.username || "Not Connected"}
+                  </h1>
                   <Separator
                     style={{
                       position: "absolute",
@@ -1499,11 +1507,23 @@ export default function Dashboard() {
                 </div>
                 <div style={{ width: "5px" }} />
                 <div className="grid gap-3">
-                  {/* <div style={{ width: "1px" }} /> */}
+                  {botState.username === "" ||
+                  botState.username === undefined ? (
+                    <p className="text-sm text-muted-foreground text-center">
+                      CustomCapes (placeholder)
+                    </p>
+                  ) : (
+                    <p className="text-sm text-muted-foreground text-center">
+                      {botState.username}
+                    </p>
+                  )}
+
                   <center>
                     <ReactSkinview3d
                       className="viewer"
-                      skinUrl="https://mineskin.eu/skin/CustomCapes"
+                      skinUrl={`https://mineskin.eu/skin/${
+                        botState.username || "CustomCapes"
+                      }`}
                       height={300}
                       width={150}
                       onReady={({ viewer }) => {

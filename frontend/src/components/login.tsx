@@ -11,6 +11,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Separator } from "@/components/ui/separator";
+
 // import { bouncy } from "ldrs";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { useToast } from "@/components/ui/use-toast";
@@ -239,62 +241,67 @@ export function CreateBotDialog() {
                 </div>
               </div>
               {msaCode && (
-                <div className="flex flex-col items-center">
-                  <h3 className="text-lg font-semibold mb-2">MSA</h3>
-                  <p className="text-sm text-muted-foreground text-center">
-                    It appears to be your first time signing in to this account.
-                    To sign in, use a web browser to open the page{" "}
+                <>
+                  {/* <div className="my-1" /> */}
+                  <Separator />
+                  <div className="flex flex-col items-center">
+                    <h3 className="text-lg font-semibold mb-2">MSA</h3>
+                    <p className="text-sm text-muted-foreground text-center">
+                      It appears to be your first time signing in to this
+                      account. To sign in, use a web browser to open the page{" "}
+                      <a
+                        href="https://www.microsoft.com/link"
+                        target="_blank"
+                        className="underline"
+                      >
+                        https://www.microsoft.com/link
+                      </a>{" "}
+                      and use the code below.
+                    </p>
+                    <div className="my-4" />
+                    <div className="flex justify-center w-full">
+                      <InputOTP
+                        pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                        onClick={(e) => {
+                          e.preventDefault();
+                        }}
+                        maxLength={8}
+                        value={msaCode}
+                      >
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          <InputOTPSlot index={3} />
+                        </InputOTPGroup>
+                        <InputOTPSeparator />
+                        <InputOTPGroup>
+                          <InputOTPSlot index={4} />
+                          <InputOTPSlot index={5} />
+                          <InputOTPSlot index={6} />
+                          <InputOTPSlot index={7} />
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </div>
+                    <div className="my-4" />
                     <a
-                      href="https://www.microsoft.com/link"
-                      target="_blank"
-                      className="underline"
-                    >
-                      https://www.microsoft.com/link
-                    </a>{" "}
-                    and use the code below.
-                  </p>
-                  <div className="my-4" />
-                  <div className="flex justify-center w-full">
-                    <InputOTP
-                      pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
-                      onClick={(e) => {
-                        e.preventDefault();
+                      onClick={() => {
+                        navigator.clipboard.writeText(msaCode);
+                        toast({
+                          title: "Code Copied",
+                          description: "MSA code copied to clipboard",
+                        });
                       }}
-                      maxLength={8}
-                      value={msaCode}
+                      className="text-sm text-muted-foreground flex items-center gap-1 cursor-pointer"
                     >
-                      <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                      </InputOTPGroup>
-                      <InputOTPSeparator />
-                      <InputOTPGroup>
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
-                        <InputOTPSlot index={6} />
-                        <InputOTPSlot index={7} />
-                      </InputOTPGroup>
-                    </InputOTP>
+                      <Copy />
+                      Copy code to clipboard
+                    </a>
                   </div>
-                  <div className="my-4" />
-                  <a
-                    onClick={() => {
-                      navigator.clipboard.writeText(msaCode);
-                      toast({
-                        title: "Code Copied",
-                        description: "MSA code copied to clipboard",
-                      });
-                    }}
-                    className="text-sm text-muted-foreground flex items-center gap-1 cursor-pointer"
-                  >
-                    <Copy />
-                    Copy code to clipboard
-                  </a>
-                </div>
+                </>
               )}
             </div>
+            <div className="my-4" />
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               {msaCode ? (

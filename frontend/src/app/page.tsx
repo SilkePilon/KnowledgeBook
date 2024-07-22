@@ -831,7 +831,7 @@ export default function Dashboard() {
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
-                Map
+                Map & Stats
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

@@ -1445,7 +1445,6 @@ export default function Dashboard() {
             // <p>Bot has been created.</p>
             <>
               <CreateBotDialog></CreateBotDialog>
-              <p>x</p>
             </>
           )}
           {/* {botState.spawned ? (

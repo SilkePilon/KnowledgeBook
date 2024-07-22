@@ -1442,8 +1442,10 @@ export default function Dashboard() {
           {botState.created ? (
             <StopBotDialog></StopBotDialog>
           ) : (
+            // <p>Bot has been created.</p>
             <>
               <CreateBotDialog></CreateBotDialog>
+              <p>x</p>
             </>
           )}
           {/* {botState.spawned ? (

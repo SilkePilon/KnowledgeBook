@@ -1,3 +1,4 @@
+"use client";
 import * as React from "react";
 import io from "socket.io-client";
 import {
@@ -10,7 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { bouncy } from "ldrs";
+// import { bouncy } from "ldrs";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { useToast } from "@/components/ui/use-toast";
 import { Unplug, Copy } from "lucide-react";
@@ -46,7 +47,7 @@ export function CreateBotDialog() {
   const [versions, setVersions] = React.useState<string[]>([]);
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 
-  bouncy.register();
+  //   bouncy.register();
 
   React.useEffect(() => {
     const fetchData = async () => {

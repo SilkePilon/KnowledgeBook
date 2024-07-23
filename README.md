@@ -2,7 +2,7 @@
 
 <h1 align="center">
   <br>
-  <a href="/"><img src="assets/logo.png" alt="..." width="700"></a>
+  <a href="/"><img style= src="assets/logo.png" alt="..." width="900"></a>
   <br>
 </h1>
 

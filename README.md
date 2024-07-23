@@ -2,7 +2,7 @@
 
 <h1 align="center">
   <br>
-  <a href="/"><img src="assets/9990F441-DB4B-4BE1-AAE6-2E8A3EBC5D12.png" alt="Beehive" width="560"></a>
+  <a href="/"><img src="assets/logo.png" alt="..." width="560"></a>
   <br>
 </h1>
 

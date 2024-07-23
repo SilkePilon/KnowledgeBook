@@ -1931,6 +1931,7 @@ export default function Dashboard() {
               {!iframeError ? (
                 <iframe
                   height="95%"
+                  loading="lazy"
                   width="100%"
                   style={{ borderRadius: "1rem" }}
                   src="http://localhost:3007/"

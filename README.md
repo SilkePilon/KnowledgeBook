@@ -59,6 +59,8 @@ Check our [Wiki](link-to-wiki) for detailed guides on:
 
 ## How To Install 📥
 
+# OLD INSTALL INSTRUCTIONS!!!
+
 ### Docker 🐳 (Not recommended at the moment)
 
 Using Docker at the moment is not recommended as it may be slower updated than the python version below.

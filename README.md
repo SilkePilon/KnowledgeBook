@@ -23,7 +23,20 @@
 
 ## About 📬
 
-Project Beehive is an open source Minecraft bot with a goal to provide players access to helpful gameplay features at no cost. Developed with a clean user interface, Project Beehive offers various plugins and options similar to paid alternatives out there. The project is completely free, open source, and welcoming to contributions from the Minecraft community. Check the wiki for information on plugins, setup guides, contributing, and more. We aim to provide Minecraft players with an easy-to-use bot to enhance their gameplay experience without needing to pay. Feel free to open issues for bugs, suggestions, or questions!
+Project Skyview (idk if this is a good name?) is an open-source Minecraft bot management platform that provides players with a user-friendly web interface to create and control helpful bots. Our goal is to enhance the Minecraft multiplayer experience with powerful automation tools, all at no cost to the player.
+
+
+## Getting Started
+
+Check our [Wiki](link-to-wiki) for detailed guides on:
+- Setting up Project Skyview
+- Creating and managing bots
+- Using the item delivery system
+- Accessing the 2D map view
+- And more!
+
+
+
 
 ## Features 🕹
 
@@ -107,5 +120,14 @@ Please note that Python and pip must be installed and running on your machine to
 ## images:
 
 ![alt text](https://i.imgur.com/RRHOgzp.png)
+
+
+## Contributing
+
+We welcome contributions from the Minecraft community! Whether you're a developer, designer, or just have great ideas, there's a place for you in Project Skyview. See our [CONTRIBUTING.md](link-to-contributing) for more information.
+
+## Support
+
+If you encounter any issues or have questions, please open an issue on this GitHub repository. We're here to help!
 
 </file-attachment-contents>

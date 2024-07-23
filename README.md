@@ -25,46 +25,24 @@
 
 Project Beehive is an open source Minecraft bot with a goal to provide players access to helpful gameplay features at no cost. Developed with a clean user interface, Project Beehive offers various plugins and options similar to paid alternatives out there. The project is completely free, open source, and welcoming to contributions from the Minecraft community. Check the wiki for information on plugins, setup guides, contributing, and more. We aim to provide Minecraft players with an easy-to-use bot to enhance their gameplay experience without needing to pay. Feel free to open issues for bugs, suggestions, or questions!
 
-## Freature and Plugins 🕹
+## Features 🕹
 
-| Plugin                | Description                               | Available   |
+| Feature name          | Description                               | Available   |
 | --------------------- | ----------------------------------------- | ----------- |
 | Defender              | Follows and attacks nearby players        | No          |
 | Shield Aura           | Follows and protects owner                | No          |
-| Schematic Builder     | Builds structures from schematics         | Yes         |
+| Schematic Builder     | Builds structures from schematics         | Planned     |
 | Raid Alerts           | Sends alerts on explosions and mob spawns | No          |
 | Area Miner            | Mines designated areas                    | No          |
-| Hypixel Auto Crafting | Automates Hypixel crafting tasks          | No          |
-| Chat Spy              | Views the bot's chat                      | Yes         |
+| Chat Spy              | Views the bot's chat                      | Planned     |
 | Sugar Cane Farmer     | Harvests and stores sugar cane            | Coming soon |
-| Ore Miner             | Mines ores using X-ray                    | Coming soon |
 | Cactus Farm Builder   | Builds cactus farms                       | Yes         |
-| Auto AFK              | Automates farming tasks                   | Coming soon |
 | Container Viewer      | Checks bots' inventories                  | Coming soon |
-| Chat to Discord       | Forwards chat to Discord                  | Yes         |
-| Knockback             | Simulates knockback physics               | Yes         |
-| Chatbot               | Responds to chat commands                 | Yes         |
-| Captcha Breaker       | Solves in-game captchas                   | No          |
-| Sand Printer          | Places sand blocks                        | No          |
-| Wander                | Moves bots randomly                       | Yes         |
-| Farm Builder          | Builds sugar cane farms                   | No          |
-| Auto Fisher           | Gets max fishing level                    | No          |
-| Ban Checker           | Checks if accounts are banned             | No          |
-| Auto Eater            | Eats when hungry or damaged               | Yes         |
-| Crop Farmer           | Farms crops                               | Coming soon |
-| Inventory Manager     | Manages bot inventories                   | No          |
-| Mob Aura              | Attacks nearby mobs                       | No          |
-| Netherwart Farmer     | Farms nether wart                         | No          |
-| Tree Farmer           | Farms trees                               | No          |
-| GUI Captcha Breaker   | Solves GUI captchas                       | No          |
-| No Fall               | Prevents fall damage                      | Yes         |
-| Killaura              | Attacks nearby players                    | Coming soon |
-| Tunneler              | Digs tunnels and mines ore                | No          |
-| Anti-Captcha          | Solves chat captchas                      | No          |
-| Auto Armor            | Equips best armor automatically           | Coming soon |
-| Chat to Discord       | Forwards chat to Discord                  | Yes         |
-| Anti-Cheat Compliance | Bypasses anti-cheat plugins               | No          |
-| Container Navigator   | Navigates container GUIs                  | No          |
+| Chat to Discord       | Forwards chat to Discord                  | Planned     |
+| Wander                | Moves bots randomly                       | Planned     |
+| Auto Eater            | Eats when hungry or damaged               | Planned     |
+| Crop Farmer           | Farms crops                               | Planned     |
+| Inventory Manager     | Manages bot inventories                   | Planned     |
 
 ## How To Install 📥
 

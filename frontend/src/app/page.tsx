@@ -514,12 +514,19 @@ export default function Dashboard() {
                         ) as HTMLInputElement;
                         if (chatInput) {
                           console.log(chatInput.value);
-
-                          toast({
-                            title: "Message sent",
-                            description: `Your chat message "${chatInput.value}" has been sent.`,
-                          });
-                          chatInput.value = "";
+                          if (chatInput.value === "") {
+                            toast({
+                              title: "Message not sent",
+                              variant: "destructive",
+                              description: `Your chat message was empty. Please enter a message to send.`,
+                            });
+                          } else {
+                            toast({
+                              title: "Message sent",
+                              description: `Your chat message "${chatInput.value}" has been sent.`,
+                            });
+                            chatInput.value = "";
+                          }
                         }
                       }}
                     >

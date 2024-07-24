@@ -1496,7 +1496,8 @@ export default function Dashboard() {
                   style={{ position: "relative", overflow: "visible" }}
                 >
                   <Label htmlFor="model">
-                    {botState.username || "Not Connected`s Chat"}
+                    {botState.username || "Not Connected"}
+                    {"`s Chat"}
                   </Label>
                   <Textarea />
 

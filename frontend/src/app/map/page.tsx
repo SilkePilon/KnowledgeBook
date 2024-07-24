@@ -855,7 +855,7 @@ export default function Dashboard() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
                   className="rounded-lg"
                   aria-label="Playground"
@@ -866,12 +866,12 @@ export default function Dashboard() {
                   <img
                     style={{ imageRendering: "pixelated" }}
                     className="size-7 fill-foreground"
-                    src="https://minecraft.wiki/images/Invicon_Carrot_on_a_Stick.png?1b7af"
+                    src="https://minecraft.wiki/images/Feather_JE3_BE2.png"
                   ></img>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" sideOffset={5}>
-                Deliver Items
+                Chat & Live view
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -879,10 +879,37 @@ export default function Dashboard() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="ghost"
+                  variant="outline"
+                  size="icon"
+                  className="rounded-lg"
+                  aria-label="Playground"
+                  onClick={() => {
+                    window.location.href = "/deliver";
+                  }}
+                >
+                  <img
+                    style={{ imageRendering: "pixelated" }}
+                    className="size-7 fill-foreground"
+                    src="https://minecraft.wiki/images/Invicon_Carrot_on_a_Stick.png?1b7af"
+                  ></img>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={5}>
+                Deliver items
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
                   size="icon"
                   className="rounded-lg bg-muted"
                   aria-label="Models"
+                  onClick={() => {
+                    window.location.href = "/map";
+                  }}
                 >
                   <img
                     style={{ imageRendering: "pixelated" }}
@@ -900,7 +927,7 @@ export default function Dashboard() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
                   className="rounded-lg"
                   aria-label="API"
@@ -921,7 +948,7 @@ export default function Dashboard() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
                   className="rounded-lg"
                   aria-label="Documentation"
@@ -942,7 +969,7 @@ export default function Dashboard() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
                   className="rounded-lg"
                   aria-label="Settings"

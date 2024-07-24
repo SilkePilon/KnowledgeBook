@@ -47,6 +47,11 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import { Label } from "@/components/ui/label";
 import {
   AlertDialog,
@@ -219,6 +224,12 @@ export default function Dashboard() {
       .map((msg) => {
         const time = formatTime(msg.timestamp);
         const sender = msg.sender === "Unknown" ? "" : `${msg.sender}: `;
+        if (sender === botState.username + ": ") {
+          return `[YOU] [${time}] <b>${sender}</b>${msg.message}`;
+        }
+        if (msg.message.includes(botState.username)) {
+          return `[YOU] [${time}] ${sender}${msg.message}`;
+        }
         return `[${time}] ${sender}${msg.message}`;
       })
       .join("\n");
@@ -326,27 +337,29 @@ export default function Dashboard() {
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const autoScaleTextarea = useCallback(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      const newHeight = Math.min(
-        textareaRef.current.scrollHeight,
-        window.innerHeight * 0.9
-      );
-      textareaRef.current.style.height = `${newHeight}px`;
-    }
-  }, []);
+  const [height, setHeight] = useState(100);
+  const resizeRef = useRef(null);
 
-  useEffect(() => {
-    autoScaleTextarea();
-  }, [autoScaleTextarea]);
+  const handleResize = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      const startY = e.clientY;
+      const startHeight = height;
 
-  useEffect(() => {
-    window.addEventListener("resize", autoScaleTextarea);
-    return () => {
-      window.removeEventListener("resize", autoScaleTextarea);
-    };
-  }, [autoScaleTextarea]);
+      const doDrag = (e: any) => {
+        setHeight(Math.max(50, startHeight + e.clientY - startY));
+      };
+
+      const stopDrag = () => {
+        document.removeEventListener("mousemove", doDrag);
+        document.removeEventListener("mouseup", stopDrag);
+      };
+
+      document.addEventListener("mousemove", doDrag);
+      document.addEventListener("mouseup", stopDrag);
+    },
+    [height]
+  );
 
   return (
     <div className="grid h-screen w-full pl-[56px]">
@@ -533,10 +546,30 @@ export default function Dashboard() {
                   className="grid gap-3"
                   style={{ position: "relative", overflow: "visible" }}
                 >
-                  <Label htmlFor="model">
+                  <Label htmlFor="role" className="flex items-center gap-2">
                     {botState.username || "Not Connected"}
                     {"`s Chat"}
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger
+                          onClick={(event) => {
+                            event.preventDefault();
+                          }}
+                          asChild
+                        >
+                          <Info className="h-4 w-4" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p style={{ maxWidth: "200px" }}>
+                            The chat messages are in reverse order, newer
+                            messages are at the top. Use the scrollwheel or 2
+                            fingers to scroll through the chat messages.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </Label>
+
                   <Textarea
                     ref={textareaRef}
                     value={formatChatMessages()}
@@ -550,9 +583,10 @@ export default function Dashboard() {
                       // resize: "none",
                       borderRadius: "0.5rem",
                       padding: "0.5rem",
+                      height: `${height}px`,
+                      resize: "none",
                     }}
                   />
-
                   <Separator
                     style={{
                       position: "absolute",
@@ -589,7 +623,7 @@ export default function Dashboard() {
                   </Label> */}
                   {/* <div style={{ width: "1px" }} /> */}
                   <Label htmlFor="x">Send chat message</Label>
-                  <div className="flex w-full max-w-sm items-center space-x-2">
+                  <div className="flex w-full items-center space-x-2">
                     <Input
                       id="chatMessage"
                       type="text"
@@ -602,6 +636,7 @@ export default function Dashboard() {
                           sendMessage();
                         }
                       }}
+                      width={"100%"}
                     />
                     <Button
                       onClick={(e) => {
@@ -654,7 +689,7 @@ export default function Dashboard() {
             <div className="flex-1">
               {!iframeError ? (
                 <iframe
-                  height="95%"
+                  height="100%"
                   loading="lazy"
                   width="100%"
                   style={{ borderRadius: "1rem" }}

@@ -113,6 +113,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
+import io, { Socket } from "socket.io-client";
 
 export default function Dashboard() {
   const [storageArea, setStorageArea] = useState({ x: 0, y: 0, z: 0 });
@@ -122,6 +123,11 @@ export default function Dashboard() {
   const [botStatus, setBotStatus] = useState("Idle");
   const { toast } = useToast();
   const [iframeError, setIframeError] = useState(false);
+  const [chatMessages, setChatMessages] = useState<
+    { timestamp: string; sender: string; message: string }[]
+  >([]);
+  const [inputMessage, setInputMessage] = useState("");
+  const socketRef = useRef<Socket | null>(null);
   const [botState, setBotState] = useState({
     created: false,
     spawned: false,
@@ -134,6 +140,88 @@ export default function Dashboard() {
 
   const handleIframeError = () => {
     setIframeError(true);
+  };
+
+  useEffect(() => {
+    // Fetch initial chat messages
+    fetch("http://localhost:3001/chat-messages")
+      .then((response) => response.json())
+      .then((data) => setChatMessages(data))
+      .catch((error) => console.error("Error fetching chat messages:", error));
+
+    // Set up WebSocket connection
+    socketRef.current = io("http://localhost:3001");
+    socketRef.current.on("chatMessage", (message: any) => {
+      setChatMessages((prevMessages) =>
+        [message, ...prevMessages].slice(0, 100)
+      );
+    });
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  const sendMessage = () => {
+    if (inputMessage.trim() === "") {
+      toast({
+        title: "Message not sent",
+        variant: "destructive",
+        description: `Your chat message was empty. Please enter a message to send.`,
+      });
+      return;
+    }
+
+    fetch("http://localhost:3001/send-chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: inputMessage }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          toast({
+            title: "Message sent",
+            description: `Your chat message "${inputMessage}" has been sent.`,
+          });
+          setInputMessage("");
+        } else {
+          throw new Error(data.error || "Failed to send message");
+        }
+      })
+      .catch((error) => {
+        toast({
+          title: "Error",
+          variant: "destructive",
+          description: `Failed to send message: ${error.message}`,
+        });
+      });
+  };
+
+  const formatTime = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  };
+
+  const formatChatMessages = () => {
+    if (chatMessages.length === 0) {
+      return "No chat messages to show.\n\nHow about you gives us a star on GitHub?\ngithub.com/SilkePilon/OpenDeliveryBot";
+    }
+    return chatMessages
+      .map((msg) => {
+        const time = formatTime(msg.timestamp);
+        const sender = msg.sender === "Unknown" ? "" : `${msg.sender}: `;
+        return `[${time}] ${sender}${msg.message}`;
+      })
+      .join("\n");
   };
 
   useEffect(() => {
@@ -449,18 +537,19 @@ export default function Dashboard() {
                     {botState.username || "Not Connected"}
                     {"`s Chat"}
                   </Label>
-                  <textarea
+                  <Textarea
                     ref={textareaRef}
-                    value={
-                      "<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!\n<CustomCapes> Hello World!"
-                    }
+                    value={formatChatMessages()}
                     readOnly
+                    className="text-sm text-muted-foreground"
                     style={{
                       width: "100%",
-                      maxHeight: "90vh",
+                      minHeight: "60vh",
+                      maxHeight: "70vh",
                       overflowY: "auto",
-                      resize: "none",
+                      // resize: "none",
                       borderRadius: "0.5rem",
+                      padding: "0.5rem",
                     }}
                   />
 
@@ -505,29 +594,19 @@ export default function Dashboard() {
                       id="chatMessage"
                       type="text"
                       placeholder="Message..."
+                      value={inputMessage}
+                      onChange={(e) => setInputMessage(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          sendMessage();
+                        }
+                      }}
                     />
                     <Button
                       onClick={(e) => {
                         e.preventDefault();
-                        const chatInput = document.getElementById(
-                          "chatMessage"
-                        ) as HTMLInputElement;
-                        if (chatInput) {
-                          console.log(chatInput.value);
-                          if (chatInput.value === "") {
-                            toast({
-                              title: "Message not sent",
-                              variant: "destructive",
-                              description: `Your chat message was empty. Please enter a message to send.`,
-                            });
-                          } else {
-                            toast({
-                              title: "Message sent",
-                              description: `Your chat message "${chatInput.value}" has been sent.`,
-                            });
-                            chatInput.value = "";
-                          }
-                        }
+                        sendMessage();
                       }}
                     >
                       Send

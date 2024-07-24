@@ -21,6 +21,7 @@ const e = require("express");
 const { createCanvas, loadImage } = require("canvas");
 const WebSocket = require("ws");
 const { fetch } = require("node-fetch");
+const { EventEmitter } = require("events");
 const sharp = require("sharp");
 const { createPlugin, goals } = require("@nxg-org/mineflayer-pathfinder");
 const { GoalNear, GoalLookAt, GoalBlock } = goals;
@@ -62,8 +63,32 @@ const mapData = {};
 const entityPositions = {};
 const textureCache = {};
 const TEXTURE_BASE_URL = "http://localhost:3000/block/";
+const chatMessages = [];
+const MAX_CHAT_MESSAGES = 100;
+const chatEmitter = new EventEmitter();
 
 const FALLBACK_TEXTURE = "obsidian.png";
+
+// Add this function after bot creation
+function setupChatListener() {
+  if (!bot) return;
+
+  bot.on("messagestr", (message, messagePosition, jsonMsg, sender) => {
+    const chatMessage = {
+      message,
+      messagePosition,
+      sender: sender ? sender.username : "Unknown",
+      timestamp: new Date().toISOString(),
+    };
+
+    chatMessages.unshift(chatMessage);
+    if (chatMessages.length > MAX_CHAT_MESSAGES) {
+      chatMessages.pop();
+    }
+
+    chatEmitter.emit("newMessage", chatMessage);
+  });
+}
 
 // Function to process and cache textures
 async function processTexture(buffer, blockName) {
@@ -479,6 +504,7 @@ app.post("/create-bot", async (req, res) => {
 
       bot.loadPlugin(elytrafly);
       bot.loadPlugin(toolPlugin);
+      setupChatListener();
 
       bot.physics.autojumpCooldown = 0;
       // const defaultMove = new Movements(bot);
@@ -530,11 +556,37 @@ app.post("/create-bot", async (req, res) => {
   }
 });
 
+// API endpoint to send chat messages
+app.post("/send-chat", (req, res) => {
+  const { message } = req.body;
+
+  if (!bot) {
+    return res.status(400).json({ error: "Bot is not connected" });
+  }
+
+  if (!message) {
+    return res.status(400).json({ error: "Message is required" });
+  }
+
+  try {
+    bot.chat(message);
+    res.json({ success: true, message: "Chat message sent" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Failed to send chat message", details: error.message });
+  }
+});
+
 io.on("connection", (socket) => {
   console.log("Client connected");
 
   socket.on("disconnect", () => {
     console.log("Client disconnected");
+  });
+
+  chatEmitter.on("newMessage", (message) => {
+    socket.emit("chatMessage", message);
   });
 });
 

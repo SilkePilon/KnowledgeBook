@@ -420,6 +420,12 @@ export default function Dashboard() {
       hasInput: false,
       description: "Craft planks",
     },
+    {
+      id: "wait_for_chat_message",
+      label: "Wait For Chat Message",
+      hasInput: true,
+      description: "Wait for a chat message containing a specific keyword",
+    },
     // Add more node types as needed
   ];
 
@@ -860,13 +866,36 @@ export default function Dashboard() {
                   className="grid gap-3"
                   style={{ position: "relative", overflow: "visible" }}
                 >
+                  <Label htmlFor="role">How it works</Label>
+                  <p className="text-sm text-muted-foreground">
+                    <strong>1. Create Your Flow:</strong> Select and arrange
+                    nodes to define the actions you want the bot to perform.
+                    Each node represents a different action or decision point.
+                    <br></br>
+                    <strong>2. Customize Your Commands:</strong> Connect nodes
+                    to create complex sequences or simple tasks, tailored to
+                    your needs.<br></br>
+                    <strong>3. Run Your Flow:</strong> Once you&apos;re
+                    satisfied with your setup, just press the &quot;Run
+                    Flow&quot; button to see your bot bring your design to life!
+                  </p>
+                  <Separator
+                    style={{
+                      position: "absolute",
+                      left: "-1rem",
+                      right: "-1rem",
+                      bottom: "65px",
+                      width: "auto",
+                    }}
+                  />
+                  <div style={{ height: "25px" }}></div>
                   <Select
                     onValueChange={(value) =>
                       setSelectedNode(nodeTypes.find((nt) => nt.id === value))
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a node type" />
+                      <SelectValue placeholder="Select a node" />
                     </SelectTrigger>
                     <SelectContent>
                       {nodeTypes.map((nodeType) => (
@@ -912,7 +941,7 @@ export default function Dashboard() {
                     </TooltipProvider>
                   </Label> */}
                   {/* <div style={{ width: "1px" }} /> */}
-                  <Label htmlFor="x">Flow Controls</Label>
+                  {/* <Label htmlFor="x">Flow Controls</Label> */}
                   <div className="flex w-full items-center space-x-2">
                     <Button
                       onClick={(e) => {
@@ -921,6 +950,7 @@ export default function Dashboard() {
                         addNode();
                       }}
                       disabled={!selectedNode}
+                      style={{ width: "100%" }}
                     >
                       Add Selected Node
                     </Button>
@@ -929,11 +959,15 @@ export default function Dashboard() {
                         e.preventDefault();
                         runFlow();
                       }}
+                      style={{ width: "100%" }}
                       disabled={
                         nodes.length === 0 || botState.created === false
                       }
+                      // variant={botState.created ? "default" : "secondary"}
                     >
-                      Run Flow
+                      {botState.created
+                        ? "Run Flow"
+                        : "Run Flow (Bot not created)"}
                     </Button>
                   </div>
                 </div>

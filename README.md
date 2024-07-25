@@ -148,7 +148,7 @@ In the `flow_functions` directory, open the `functions.json` file and add an ent
 - `YOUR_NODE_NAME` - The name of your node (in lowercase with underscores)
 - `DISPLAY NAME` - The name displayed in the UI
 - `YOUR NODE DESCRIPTION` - A description of what your node does
-- `YOUR NAME` - Your name or username
+- `YOUR NAME` - Your GitHub username
 
 ### 5. Submit a Pull Request
 

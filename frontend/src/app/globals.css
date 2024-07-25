@@ -104,3 +104,8 @@
   .scale-out-center {
     animation: scale-out-center 0.3s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
   }
+
+  .react-flow .react-flow__edge path,
+  .react-flow__connectionline path {
+    stroke-width: 4;
+  }

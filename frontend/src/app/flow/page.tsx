@@ -164,7 +164,12 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => (
     <Handle
       type="target"
       position={Position.Left}
-      style={{ background: "#555" }}
+      style={{
+        background: "#555",
+        width: "1rem",
+        height: "1rem",
+        borderRadius: "6px",
+      }}
     />
     <CardHeader className="p-4">
       <CardTitle className="flex items-center justify-between text-sm font-medium">
@@ -196,10 +201,25 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => (
         />
       )}
     </CardContent>
+    <CardFooter className="text-xs text-muted-foreground">
+      by&nbsp;
+      <a
+        target="_blank"
+        href={`https://github.com/${data.author}`}
+        className="underline"
+      >
+        {data.author}
+      </a>
+    </CardFooter>
     <Handle
       type="source"
       position={Position.Right}
-      style={{ background: "#555" }}
+      style={{
+        background: "#555",
+        width: "1rem",
+        height: "1rem",
+        borderRadius: "6px",
+      }}
     />
   </Card>
 );

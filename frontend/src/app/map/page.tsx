@@ -884,6 +884,30 @@ export default function Dashboard() {
                   className="rounded-lg"
                   aria-label="Playground"
                   onClick={() => {
+                    window.location.href = "/flow";
+                  }}
+                >
+                  <img
+                    style={{ imageRendering: "pixelated", marginTop: "0.1rem" }}
+                    className="size-7 fill-foreground"
+                    src="https://minecraft.wiki/images/Sticky_Piston_%28U%29_JE3.png"
+                  ></img>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={5}>
+                Flow
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-lg"
+                  aria-label="Playground"
+                  onClick={() => {
                     window.location.href = "/deliver";
                   }}
                 >

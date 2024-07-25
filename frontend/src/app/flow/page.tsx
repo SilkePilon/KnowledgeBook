@@ -17,6 +17,7 @@ import {
   Triangle,
   Turtle,
   Power,
+  X,
   Unplug,
   ExternalLink,
   Plus,
@@ -34,7 +35,8 @@ import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { ModeToggle } from "@/components/modeswitch";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
+import { useTheme } from "next-themes";
+import { Handle, Position } from "@xyflow/react";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -79,6 +81,23 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useReactFlow } from "@xyflow/react";
+import {
+  applyNodeChanges,
+  applyEdgeChanges,
+  OnNodesChange,
+  OnEdgesChange,
+  OnConnect,
+  NodeProps,
+} from "@xyflow/react";
+import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -109,6 +128,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  ReactFlow,
+  MiniMap,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  Node,
+} from "@xyflow/react";
+
+import "@xyflow/react/dist/style.css";
+
+import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
@@ -119,6 +151,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import io, { Socket } from "socket.io-client";
+import e from "cors";
+
+type Edge = {
+  id: string;
+  source: string;
+  target: string;
+};
 
 export default function Dashboard() {
   const [storageArea, setStorageArea] = useState({ x: 0, y: 0, z: 0 });
@@ -128,6 +167,7 @@ export default function Dashboard() {
   const [botStatus, setBotStatus] = useState("Idle");
   const { toast } = useToast();
   const [iframeError, setIframeError] = useState(false);
+  const { theme, setTheme } = useTheme();
   const [chatMessages, setChatMessages] = useState<
     { timestamp: string; sender: string; message: string }[]
   >([]);
@@ -361,6 +401,254 @@ export default function Dashboard() {
     [height]
   );
 
+  const nodeTypes = [
+    {
+      id: "mine_oak_log",
+      label: "Mine Oak Log",
+      hasInput: true,
+      description: "Mine X amount of oak logs",
+    },
+    {
+      id: "smelt_iron_ore",
+      label: "Smelt Iron Ore",
+      hasInput: true,
+      description: "Smelt X amount of iron ore",
+    },
+    {
+      id: "craft_planks",
+      label: "Craft Planks",
+      hasInput: false,
+      description: "Craft planks",
+    },
+    // Add more node types as needed
+  ];
+
+  const CustomNode = ({ data, id }: { data: any; id: string }) => (
+    <Card className="custom-node">
+      <Handle
+        type="target"
+        position={Position.Left}
+        style={{ background: "#555" }}
+      />
+      <CardHeader className="p-4">
+        <CardTitle className="flex items-center justify-between text-sm font-medium">
+          <span>{data.label}</span>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => data.onDelete(id)}
+            className="h-6 w-6 p-0"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        </CardTitle>
+        <CardDescription className="text-xs">
+          {data.description}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-4 pt-0">
+        {data.hasInput && (
+          <input
+            type="number"
+            value={data.inputValue}
+            onChange={(e) => data.onChange(e.target.value)}
+            placeholder="Amount"
+            className="w-full p-1 text-sm border rounded"
+          />
+        )}
+      </CardContent>
+      <Handle
+        type="source"
+        position={Position.Right}
+        style={{ background: "#555" }}
+      />
+    </Card>
+  );
+
+  interface CustomNodeData extends Record<string, unknown> {
+    label: string;
+    hasInput: boolean;
+    description: string;
+    inputValue: string;
+    onChange: (value: string) => void;
+    onDelete: (nodeId: string) => void;
+  }
+
+  interface CustomNode extends Node<CustomNodeData> {}
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
+  const [selectedNode, setSelectedNode] = useState(null) as any;
+
+  const reactFlowInstance = useReactFlow();
+
+  const onConnect = useCallback(
+    (params: any) => {
+      setEdges((eds: any[]) => addEdge(params, eds));
+    },
+    [setEdges]
+  );
+
+  const addNode = () => {
+    if (selectedNode) {
+      const newNodeId = `node-${nodes.length + 1}`;
+      const newNode = {
+        id: newNodeId,
+        type: "custom",
+        position: { x: nodes.length * 300, y: 0 },
+        data: {
+          label: selectedNode.label,
+          hasInput: selectedNode.hasInput,
+          description: selectedNode.description,
+          inputValue: "",
+          onChange: (value: any) => {
+            setNodes((nds: any) =>
+              nds.map((node: any) =>
+                node.id === newNodeId
+                  ? { ...node, data: { ...node.data, inputValue: value } }
+                  : node
+              )
+            );
+          },
+          onDelete: deleteNode,
+        },
+      };
+      // @ts-ignore
+      setNodes([...nodes, newNode]);
+
+      // Connect to previous node if it exists
+      if (nodes.length > 0) {
+        const previousNodeId = `node-${nodes.length}`;
+        setEdges((eds) => [
+          ...eds,
+          {
+            id: `edge-${nodes.length}`,
+            source: previousNodeId,
+            target: newNodeId,
+          },
+        ]);
+      }
+
+      setTimeout(() => {
+        reactFlowInstance.fitView({ padding: 0.2, duration: 800 });
+      }, 0);
+
+      toast({
+        title: "Node added",
+        description: `A new node of type "${selectedNode.label}" has been added.`,
+      });
+    } else {
+      toast({
+        title: "Node type not selected",
+        variant: "destructive",
+        description: "Please select a node type before adding a node.",
+      });
+    }
+  };
+
+  const deleteNode = useCallback(
+    (nodeId: any) => {
+      setNodes((nds) => nds.filter((node: any) => node.id !== nodeId));
+      setEdges((eds: any) => {
+        const incomingEdge = eds.find((edge: any) => edge.target === nodeId);
+        const outgoingEdge = eds.find((edge: any) => edge.source === nodeId);
+
+        if (incomingEdge && outgoingEdge) {
+          // Connect the nodes on both sides of the deleted node
+          toast({
+            title: "Node deleted",
+            variant: "destructive",
+            description: `The node with ID ${nodeId} has been deleted.`,
+          });
+          return [
+            ...eds.filter(
+              (edge: any) => edge.source !== nodeId && edge.target !== nodeId
+            ),
+            {
+              id: `edge-${incomingEdge.source}-${outgoingEdge.target}`,
+              source: incomingEdge.source,
+              target: outgoingEdge.target,
+            },
+          ];
+        } else {
+          // If it's an end node, just remove connected edges
+          toast({
+            title: "Node deleted",
+            variant: "destructive",
+            description: `The node with ID ${nodeId} has been deleted.`,
+          });
+          return eds.filter(
+            (edge: any) => edge.source !== nodeId && edge.target !== nodeId
+          );
+        }
+      });
+
+      // Reposition remaining nodes
+      setNodes((nds: any) => {
+        const sortedNodes = nds.sort(
+          (a: any, b: any) => a.position.x - b.position.x
+        );
+        return sortedNodes.map((node: any, index: any) => ({
+          ...node,
+          position: { x: index * 300, y: 0 },
+        }));
+      });
+
+      setTimeout(() => {
+        reactFlowInstance.fitView({ padding: 0.2, duration: 800 });
+      }, 0);
+    },
+    [setNodes, setEdges, reactFlowInstance]
+  );
+
+  const runFlow = async () => {
+    const sortedNodes = nodes.sort(
+      (a: any, b: any) => a.position.x - b.position.x
+    ) as any[];
+    if (sortedNodes.length === 0) {
+      toast({
+        title: "No nodes to run",
+        variant: "destructive",
+        description: "Please add some nodes before running the flow.",
+      });
+      return;
+    }
+    for (let node of sortedNodes) {
+      console.log(
+        `Executing ${node.data.label} with input ${node.data.inputValue}`
+      );
+      toast({
+        title: "Executing node",
+        description: `Executing ${node.data.label} with input ${node.data.inputValue}`,
+      });
+
+      // Here you would add the actual logic to perform each action
+      switch (node.data.label) {
+        case "Mine Oak Log":
+          toast({
+            title: "Mining oak logs",
+            description: `Mining ${node.data.inputValue} oak logs`,
+          });
+          break;
+        case "Smelt Iron Ore":
+          toast({
+            title: "Smelting iron ore",
+            description: `Smelting ${node.data.inputValue} iron ore`,
+          });
+          break;
+        // Add more cases for other node types
+        default:
+          console.log(`Unknown action: ${node.data.label}`);
+      }
+
+      // Add a delay to simulate processing time
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    console.log("Flow execution completed");
+    toast({
+      title: "Flow execution completed",
+      description: "All nodes in the flow have been executed.",
+    });
+  };
   return (
     <div className="grid h-screen w-full pl-[56px]">
       <aside className="inset-y fixed  left-0 z-20 flex h-full flex-col border-r">
@@ -381,7 +669,7 @@ export default function Dashboard() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="rounded-lg bg-muted"
+                  className="rounded-lg"
                   aria-label="Playground"
                   onClick={() => {
                     window.location.href = "/";
@@ -405,7 +693,7 @@ export default function Dashboard() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="rounded-lg"
+                  className="rounded-lg bg-muted"
                   aria-label="Playground"
                   onClick={() => {
                     window.location.href = "/flow";
@@ -542,7 +830,7 @@ export default function Dashboard() {
       </aside>
       <div className="flex flex-col">
         <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
-          <h1 className="text-xl font-semibold">Chat & Live view</h1>
+          <h1 className="text-xl font-semibold">Flow</h1>
 
           {botState.created ? (
             <StopBotDialog></StopBotDialog>
@@ -565,52 +853,30 @@ export default function Dashboard() {
           >
             <form className="grid w-full items-start gap-6">
               <fieldset className="grid gap-6 rounded-lg border p-4">
-                <legend className="-ml-1 px-1 text-sm font-medium">Chat</legend>
+                <legend className="-ml-1 px-1 text-sm font-medium">
+                  Nodes
+                </legend>
                 <div
                   className="grid gap-3"
                   style={{ position: "relative", overflow: "visible" }}
                 >
-                  <Label htmlFor="role" className="flex items-center gap-2">
-                    {botState.username || "Not Connected"}
-                    {"`s Chat"}
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger
-                          onClick={(event) => {
-                            event.preventDefault();
-                          }}
-                          asChild
-                        >
-                          <Info className="h-4 w-4" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p style={{ maxWidth: "200px" }}>
-                            The chat messages are in reverse order, newer
-                            messages are at the top. Use the scrollwheel or 2
-                            fingers to scroll through the chat messages.
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </Label>
+                  <Select
+                    onValueChange={(value) =>
+                      setSelectedNode(nodeTypes.find((nt) => nt.id === value))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a node type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {nodeTypes.map((nodeType) => (
+                        <SelectItem key={nodeType.id} value={nodeType.id}>
+                          {nodeType.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
 
-                  <Textarea
-                    ref={textareaRef}
-                    value={formatChatMessages()}
-                    readOnly
-                    className="text-sm text-muted-foreground"
-                    style={{
-                      width: "100%",
-                      minHeight: "60vh",
-                      maxHeight: "70vh",
-                      overflowY: "auto",
-                      // resize: "none",
-                      borderRadius: "0.5rem",
-                      padding: "0.5rem",
-                      height: `${height}px`,
-                      resize: "none",
-                    }}
-                  />
                   <Separator
                     style={{
                       position: "absolute",
@@ -646,29 +912,26 @@ export default function Dashboard() {
                     </TooltipProvider>
                   </Label> */}
                   {/* <div style={{ width: "1px" }} /> */}
-                  <Label htmlFor="x">Send chat message</Label>
+                  <Label htmlFor="x">Flow Controls</Label>
                   <div className="flex w-full items-center space-x-2">
-                    <Input
-                      id="chatMessage"
-                      type="text"
-                      placeholder="Message..."
-                      value={inputMessage}
-                      onChange={(e) => setInputMessage(e.target.value)}
-                      onKeyPress={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          sendMessage();
-                        }
-                      }}
-                      width={"100%"}
-                    />
                     <Button
                       onClick={(e) => {
                         e.preventDefault();
-                        sendMessage();
+                        addNode();
                       }}
                     >
-                      Send
+                      Add Selected Node
+                    </Button>
+                    <Button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        runFlow();
+                      }}
+                      disabled={
+                        nodes.length === 0 || botState.created === false
+                      }
+                    >
+                      Run Flow
                     </Button>
                   </div>
                 </div>
@@ -676,7 +939,7 @@ export default function Dashboard() {
 
               <fieldset className="grid gap-6 rounded-lg border p-4">
                 <div className="grid gap-3">
-                  <Label htmlFor="content">Settings</Label>
+                  <Label htmlFor="content">Flow Settings</Label>
                   <div className="flex items-center space-x-2">
                     <Checkbox id="terms" />
                     <label
@@ -707,37 +970,30 @@ export default function Dashboard() {
             </form>
           </div>
           <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
-            <Badge variant="secondary" className="absolute right-6 top-6">
-              Bot Status: {botStatus}
-            </Badge>
             <div className="flex-1">
-              {!iframeError ? (
-                <iframe
-                  height="100%"
-                  loading="lazy"
-                  width="100%"
-                  style={{ borderRadius: "1rem" }}
-                  src="http://localhost:3007/"
-                  onError={handleIframeError}
-                  key={"iframekey"}
-                />
-              ) : (
-                <div
+              <div style={{ height: "87vh" }}>
+                <ReactFlow
+                  nodes={nodes}
+                  edges={edges}
+                  colorMode={theme === "dark" ? "dark" : "light"}
+                  onNodesChange={onNodesChange}
+                  // onEdgesChange={onEdgesChange}
+                  onConnect={onConnect}
+                  nodeTypes={{ custom: CustomNode }}
+                  fitView
                   style={{
-                    height: "80%",
-                    width: "100%",
-                    borderRadius: "1rem",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    // backgroundColor: "#f0f0f0", // or any color that fits your design
+                    background: "rgba(52, 52, 52, 0.2)",
+                    borderRadius: "0.9rem",
                   }}
+                  zoomOnScroll={true}
+                  zoomOnPinch={true}
+                  zoomOnDoubleClick={true}
+                  maxZoom={2}
                 >
-                  <Unplug size={48} /> {/* Adjust size as needed */}
-                  <p style={{ marginTop: "1rem" }}>Bot not active</p>
-                </div>
-              )}
+                  <Controls />
+                  {/* <Background /> */}
+                </ReactFlow>
+              </div>
             </div>
           </div>
         </main>

@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
+import { ReactFlowProvider } from "@xyflow/react";
 
 export const metadata: Metadata = {
   title: "Open Delivery Bot",
@@ -24,7 +25,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <ReactFlowProvider>{children}</ReactFlowProvider>
           <Toaster />
         </ThemeProvider>
       </body>

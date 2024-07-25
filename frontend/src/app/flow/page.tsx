@@ -161,7 +161,10 @@ type Edge = {
 };
 
 const CustomNode = ({ data, id }: { data: any; id: string }) => (
-  <Card className="custom-node">
+  <Card
+    className="custom-node"
+    style={{ maxWidth: "300px", overflowWrap: "break-word" }}
+  >
     <Handle
       type="target"
       position={Position.Left}
@@ -481,28 +484,12 @@ export default function Dashboard() {
 
   const nodeTypes = [
     {
-      id: "mine_oak_log",
-      label: "Mine Oak Log",
+      id: "mine_wood_logs",
+      label: "Mine Wood Logs",
       hasInput: true,
-      description: "Mine X amount of oak logs",
+      description: "Mine X amount of wood logs (any type)",
       inputLabel: "Amount",
       inputType: "number",
-      author: "SilkePilon",
-    },
-    {
-      id: "smelt_iron_ore",
-      label: "Smelt Iron Ore",
-      hasInput: true,
-      description: "Smelt X amount of iron ore",
-      inputLabel: "Amount",
-      inputType: "number",
-      author: "SilkePilon",
-    },
-    {
-      id: "craft_planks",
-      label: "Craft Planks",
-      hasInput: false,
-      description: "Craft planks",
       author: "SilkePilon",
     },
     {
@@ -511,6 +498,26 @@ export default function Dashboard() {
       hasInput: true,
       description: "Wait for a chat message containing a specific keyword",
       inputLabel: "Keyword",
+      inputType: "text",
+      author: "SilkePilon",
+    },
+    {
+      id: "elytra_fly_to",
+      label: "Elytra Fly To Location",
+      hasInput: true,
+      description:
+        "Use an elytra to fly to a specific location (x, y, z) Bot must have an elytra in its inventory",
+      inputLabel: "Format: x y z",
+      inputType: "text",
+      author: "SilkePilon",
+    },
+    {
+      id: "walk_to",
+      label: "Walk To Location",
+      hasInput: true,
+      description:
+        "Use pathfinding (A*) to go to a specific location (x, y, z)",
+      inputLabel: "Format: x y z",
       inputType: "text",
       author: "SilkePilon",
     },
@@ -540,7 +547,7 @@ export default function Dashboard() {
       const newNode = {
         id: newNodeId,
         type: "custom",
-        position: { x: nodes.length * 300, y: 0 },
+        position: { x: nodes.length * 400, y: 0 },
         data: {
           label: selectedNode.label,
           hasInput: selectedNode.hasInput,

@@ -60,6 +60,10 @@ Check our [Wiki](link-to-wiki) for detailed guides on:
 
 ## Adding Custom Nodes to the Project
 
+<h1>
+  <a href="/"><img src="assets/custom_node.png" alt="..." width="300"></a>
+</h1>
+
 Welcome to the project! This guide will walk you through the steps to add custom nodes. Follow these instructions to contribute your custom functionality.
 
 ### 1. Clone the Repository

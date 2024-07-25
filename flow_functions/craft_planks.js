@@ -3,7 +3,7 @@
 import { bot } from "../main.js";
 import { mcData } from "../main.js";
 
-function main() {
+function main(data) {
   // check if bot has enough resources
   if (bot.inventory.count(mcData.itemsByName.oak_log.id) >= 1) {
     // craft planks

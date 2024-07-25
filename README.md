@@ -94,7 +94,7 @@ Open your newly created file and implement your node using the following structu
 import { bot } from "../main.js";
 import { mcData } from "../main.js";
 
-function main() {
+function main(data) {
   try {
     // Check if bot has enough resources
     if (bot.inventory.count(mcData.itemsByName.oak_log.id) >= 1) {
@@ -118,6 +118,7 @@ export { main };
 **Key Points:**
 
 - The file must use `"use strict";` at the top.
+- Any arguments from the frondend like amounts will be passed as first argument to the `main` function. In this example we get the amount from the frontend. This can be accessed with data.amount but this may be different in your node.
 - Import `bot` and `mcData` from `../main.js`.
 - The `main` function should be defined and exported. This function is executed when the node runs.
 - Use `try` and `catch` statements for error handling. If an error occurs, log it and rethrow it to ensure it can be caught elsewhere.

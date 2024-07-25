@@ -580,6 +580,7 @@ export default function Dashboard() {
             id: `edge-${nodes.length}`,
             source: previousNodeId,
             target: newNodeId,
+            animated: true,
           },
         ]);
       }

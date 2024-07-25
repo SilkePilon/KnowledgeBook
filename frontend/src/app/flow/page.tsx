@@ -152,6 +152,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import io, { Socket } from "socket.io-client";
 import e from "cors";
+import { set } from "react-hook-form";
 
 type Edge = {
   id: string;
@@ -519,6 +520,10 @@ export default function Dashboard() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [selectedNode, setSelectedNode] = useState(null) as any;
+  const [isOpen, setIsOpen] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
+  const openDialog = () => setIsOpen(true);
+  const closeDialog = () => setIsOpen(false);
 
   const reactFlowInstance = useReactFlow();
 
@@ -645,6 +650,7 @@ export default function Dashboard() {
   );
 
   const runFlow = async () => {
+    setIsRunning(true);
     const sortedNodes = nodes.sort(
       (a: any, b: any) => a.position.x - b.position.x
     ) as any[];
@@ -692,6 +698,8 @@ export default function Dashboard() {
       title: "Flow execution completed",
       description: "All nodes in the flow have been executed.",
     });
+    setIsRunning(false);
+    openDialog();
   };
   return (
     <div className="grid h-screen w-full pl-[56px]">
@@ -1008,7 +1016,7 @@ export default function Dashboard() {
                         console.log(selectedNode);
                         addNode();
                       }}
-                      disabled={!selectedNode}
+                      disabled={!selectedNode || isRunning}
                       style={{ width: "100%" }}
                     >
                       Add Selected Node
@@ -1020,13 +1028,17 @@ export default function Dashboard() {
                       }}
                       style={{ width: "100%" }}
                       disabled={
-                        nodes.length === 0 || botState.created === false
+                        nodes.length === 0 ||
+                        botState.created === false ||
+                        isRunning
                       }
                       // variant={botState.created ? "default" : "secondary"}
                     >
-                      {botState.created
-                        ? "Run Flow"
-                        : "Run Flow (Bot not created)"}
+                      {!botState.created
+                        ? "Run Flow (Bot not connected)"
+                        : isRunning
+                        ? "Executing flow..."
+                        : "Run Flow"}
                     </Button>
                   </div>
                 </div>
@@ -1088,6 +1100,27 @@ export default function Dashboard() {
                   <Controls />
                   {/* <Background /> */}
                 </ReactFlow>
+                <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+                  <AlertDialogTrigger hidden>Open</AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        All nodes have been executed!
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="bold">
+                        <strong>
+                          {nodes.length} node(s) have been executed
+                          successfully.
+                        </strong>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogAction onClick={closeDialog}>
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
           </div>

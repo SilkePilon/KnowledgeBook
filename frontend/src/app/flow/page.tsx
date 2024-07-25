@@ -506,7 +506,7 @@ export default function Dashboard() {
       label: "Elytra Fly To Location",
       hasInput: true,
       description:
-        "Use an elytra to fly to a specific location (x, y, z) Bot must have an elytra in its inventory",
+        "Use an elytra to fly to a specific location (x, y, z). Bot must have an elytra in its inventory. ~ will make the bot use its current x z or y as the value.",
       inputLabel: "Format: x y z",
       inputType: "text",
       author: "SilkePilon",
@@ -516,7 +516,7 @@ export default function Dashboard() {
       label: "Walk To Location",
       hasInput: true,
       description:
-        "Use pathfinding (A*) to go to a specific location (x, y, z)",
+        "Use pathfinding (A*) to go to a specific location (x, y, z). ~ will make the bot use its current x z or y as the value",
       inputLabel: "Format: x y z",
       inputType: "text",
       author: "SilkePilon",
@@ -645,7 +645,7 @@ export default function Dashboard() {
         );
         return sortedNodes.map((node: any, index: any) => ({
           ...node,
-          position: { x: index * 300, y: 0 },
+          position: { x: index * 400, y: 0 },
         }));
       });
 

@@ -159,6 +159,51 @@ type Edge = {
   target: string;
 };
 
+const CustomNode = ({ data, id }: { data: any; id: string }) => (
+  <Card className="custom-node">
+    <Handle
+      type="target"
+      position={Position.Left}
+      style={{ background: "#555" }}
+    />
+    <CardHeader className="p-4">
+      <CardTitle className="flex items-center justify-between text-sm font-medium">
+        <span>{data.label}</span>
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => data.onDelete(id)}
+          className="h-6 w-6 p-0"
+        >
+          <X className="h-3 w-3" />
+        </Button>
+      </CardTitle>
+      <CardDescription className="text-xs">{data.description}</CardDescription>
+    </CardHeader>
+    <CardContent className="p-4 pt-0">
+      {data.hasInput && (
+        <input
+          type={data.inputType}
+          value={data.inputValue}
+          onChange={(e) => {
+            data.onChange(e.target.value);
+          }}
+          onBlur={(e) => {
+            data.onChange(e.target.value);
+          }}
+          placeholder={data.inputLabel}
+          className="w-full p-1 text-sm border rounded"
+        />
+      )}
+    </CardContent>
+    <Handle
+      type="source"
+      position={Position.Right}
+      style={{ background: "#555" }}
+    />
+  </Card>
+);
+
 export default function Dashboard() {
   const [storageArea, setStorageArea] = useState({ x: 0, y: 0, z: 0 });
   const [chestIndex, setChestIndex] = useState({});
@@ -407,12 +452,16 @@ export default function Dashboard() {
       label: "Mine Oak Log",
       hasInput: true,
       description: "Mine X amount of oak logs",
+      inputLabel: "Amount",
+      inputType: "number",
     },
     {
       id: "smelt_iron_ore",
       label: "Smelt Iron Ore",
       hasInput: true,
       description: "Smelt X amount of iron ore",
+      inputLabel: "Amount",
+      inputType: "number",
     },
     {
       id: "craft_planks",
@@ -425,62 +474,12 @@ export default function Dashboard() {
       label: "Wait For Chat Message",
       hasInput: true,
       description: "Wait for a chat message containing a specific keyword",
+      inputLabel: "Keyword",
+      inputType: "text",
     },
     // Add more node types as needed
   ];
 
-  const CustomNode = ({ data, id }: { data: any; id: string }) => (
-    <Card className="custom-node">
-      <Handle
-        type="target"
-        position={Position.Left}
-        style={{ background: "#555" }}
-      />
-      <CardHeader className="p-4">
-        <CardTitle className="flex items-center justify-between text-sm font-medium">
-          <span>{data.label}</span>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => data.onDelete(id)}
-            className="h-6 w-6 p-0"
-          >
-            <X className="h-3 w-3" />
-          </Button>
-        </CardTitle>
-        <CardDescription className="text-xs">
-          {data.description}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-4 pt-0">
-        {data.hasInput && (
-          <input
-            type="number"
-            value={data.inputValue}
-            onChange={(e) => data.onChange(e.target.value)}
-            placeholder="Amount"
-            className="w-full p-1 text-sm border rounded"
-          />
-        )}
-      </CardContent>
-      <Handle
-        type="source"
-        position={Position.Right}
-        style={{ background: "#555" }}
-      />
-    </Card>
-  );
-
-  interface CustomNodeData extends Record<string, unknown> {
-    label: string;
-    hasInput: boolean;
-    description: string;
-    inputValue: string;
-    onChange: (value: string) => void;
-    onDelete: (nodeId: string) => void;
-  }
-
-  interface CustomNode extends Node<CustomNodeData> {}
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [selectedNode, setSelectedNode] = useState(null) as any;
@@ -505,6 +504,8 @@ export default function Dashboard() {
           label: selectedNode.label,
           hasInput: selectedNode.hasInput,
           description: selectedNode.description,
+          inputLabel: selectedNode.inputLabel,
+          inputType: selectedNode.inputType,
           inputValue: "",
           onChange: (value: any) => {
             setNodes((nds: any) =>
@@ -1024,7 +1025,7 @@ export default function Dashboard() {
                   zoomOnScroll={true}
                   zoomOnPinch={true}
                   zoomOnDoubleClick={true}
-                  maxZoom={2}
+                  maxZoom={1}
                 >
                   <Controls />
                   {/* <Background /> */}

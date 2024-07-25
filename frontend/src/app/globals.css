@@ -109,3 +109,11 @@
   .react-flow__connectionline path {
     stroke-width: 4;
   }
+
+  .SliderThumb {
+    display: block;
+    width: 20px;
+    height: 20px;
+    background-color: black;
+    border-radius: 10%;
+  }

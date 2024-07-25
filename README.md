@@ -40,6 +40,12 @@ Check our [Wiki](link-to-wiki) for detailed guides on:
 - Building an custom bot using nodes
 - And more!
 
+## Roadmap
+
+- Add an highlight to the currently running node.
+- Add an way in export and import flows.
+- Auto save flows to browser.
+
 ## Features 🕹
 
 | Feature name        | Description                               | Available   |

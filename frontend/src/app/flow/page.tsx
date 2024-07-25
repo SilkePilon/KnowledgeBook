@@ -54,6 +54,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import {
   AlertDialog,
@@ -529,6 +530,8 @@ export default function Dashboard() {
   const [selectedNode, setSelectedNode] = useState(null) as any;
   const [isOpen, setIsOpen] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
+  const [yLever, setYLever] = useState(0);
+  const [yLevelIncrement, setYLevelIncrement] = useState(0);
   const openDialog = () => setIsOpen(true);
   const closeDialog = () => setIsOpen(false);
 
@@ -542,12 +545,13 @@ export default function Dashboard() {
   );
 
   const addNode = () => {
+    setYLever(yLever + yLevelIncrement);
     if (selectedNode) {
       const newNodeId = `node-${nodes.length + 1}`;
       const newNode = {
         id: newNodeId,
         type: "custom",
-        position: { x: nodes.length * 400, y: 0 },
+        position: { x: nodes.length * 400, y: yLever },
         data: {
           label: selectedNode.label,
           hasInput: selectedNode.hasInput,
@@ -1056,7 +1060,22 @@ export default function Dashboard() {
                 <div className="grid gap-3">
                   <Label htmlFor="content">Flow Settings</Label>
                   <div className="flex items-center space-x-2">
-                    <Checkbox id="terms" />
+                    <Label htmlFor="yLever">
+                      Y Level Increment ({yLevelIncrement})
+                    </Label>
+                    <Slider
+                      defaultValue={[0]}
+                      max={150}
+                      step={10}
+                      onValueCommit={(e) => {
+                        setYLevelIncrement(e[0]);
+                      }}
+                      onValueChange={(e) => {
+                        setYLevelIncrement(e[0]);
+                      }}
+                    />
+
+                    {/* <Checkbox id="terms" />
                     <label
                       htmlFor="terms"
                       className="flex items-center text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -1073,7 +1092,7 @@ export default function Dashboard() {
                         }}
                         className="ml-1 size-5"
                       />
-                    </label>
+                    </label> */}
                   </div>
                   {/* <Textarea
                     id="content"

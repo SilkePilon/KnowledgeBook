@@ -25,108 +25,153 @@
 
 Project Skyview (idk if this is a good name?) is an open-source Minecraft bot management platform that provides players with a user-friendly web interface to create and control helpful bots. Our goal is to enhance the Minecraft multiplayer experience with powerful automation tools, all at no cost to the player.
 
-
 ## Getting Started
 
 Check our [Wiki](link-to-wiki) for detailed guides on:
+
 - Setting up Project Skyview
 - Creating and managing bots
 - Using the item delivery system
 - Accessing the 2D map view
 - And more!
 
-
-
-
 ## Features 🕹
 
-| Feature name          | Description                               | Available   |
-| --------------------- | ----------------------------------------- | ----------- |
-| Defender              | Follows and attacks nearby players        | No          |
-| Shield Aura           | Follows and protects owner                | No          |
-| Schematic Builder     | Builds structures from schematics         | Planned     |
-| Raid Alerts           | Sends alerts on explosions and mob spawns | No          |
-| Area Miner            | Mines designated areas                    | No          |
-| Chat Spy              | Views the bot's chat                      | Planned     |
-| Sugar Cane Farmer     | Harvests and stores sugar cane            | Coming soon |
-| Cactus Farm Builder   | Builds cactus farms                       | Yes         |
-| Container Viewer      | Checks bots' inventories                  | Coming soon |
-| Chat to Discord       | Forwards chat to Discord                  | Planned     |
-| Wander                | Moves bots randomly                       | Planned     |
-| Auto Eater            | Eats when hungry or damaged               | Planned     |
-| Crop Farmer           | Farms crops                               | Planned     |
-| Inventory Manager     | Manages bot inventories                   | Planned     |
+| Feature name        | Description                               | Available   |
+| ------------------- | ----------------------------------------- | ----------- |
+| Defender            | Follows and attacks nearby players        | No          |
+| Shield Aura         | Follows and protects owner                | No          |
+| Schematic Builder   | Builds structures from schematics         | Planned     |
+| Raid Alerts         | Sends alerts on explosions and mob spawns | No          |
+| Area Miner          | Mines designated areas                    | No          |
+| Chat Spy            | Views the bot's chat                      | Planned     |
+| Sugar Cane Farmer   | Harvests and stores sugar cane            | Coming soon |
+| Cactus Farm Builder | Builds cactus farms                       | Yes         |
+| Container Viewer    | Checks bots' inventories                  | Coming soon |
+| Chat to Discord     | Forwards chat to Discord                  | Planned     |
+| Wander              | Moves bots randomly                       | Planned     |
+| Auto Eater          | Eats when hungry or damaged               | Planned     |
+| Crop Farmer         | Farms crops                               | Planned     |
+| Inventory Manager   | Manages bot inventories                   | Planned     |
 
 ## How To Install 📥
 
-# OLD INSTALL INSTRUCTIONS!!!
+# SOON!
 
-### Docker 🐳 (Not recommended at the moment)
+## Adding Custom Nodes to the Project
 
-Using Docker at the moment is not recommended as it may be slower updated than the python version below.
+Welcome to the project! This guide will walk you through the steps to add custom nodes. Follow these instructions to contribute your custom functionality.
 
-If you have Docker installed, you can easily get Project Beehive up and running. Follow the steps below:
+### 1. Clone the Repository
 
-1. Open your terminal.
-2. Pull the Docker image from the Docker Hub using the following command:
-
-```bash
-docker pull ghcr.io/the-lodestone-project/beehive:latest
-```
-
-After pulling the image, run the Docker container with the following command:
+First, make a local copy of the repository:
 
 ```bash
-docker run -p 8000:8000 ghcr.io/the-lodestone-project/beehive:latest
+git clone https://github.com/yourusername/your-repo.git
 ```
 
-This command will start Project Beehive and map it to port 8000 on your local machine.
+Open the cloned repository in your preferred IDE.
 
-Open your web browser and navigate to http://localhost:8000 to access the bot.
-Please note that Docker must be installed and running on your machine to execute these steps. If you don't have Docker installed, you can download it from [here](https://docs.docker.com/get-docker/).
+### 2. Create a New Node File
 
-### Python 🐍
+Navigate to the `flow_functions` folder in the project directory. Create a new file for your node with the following naming conventions:
 
-If you dont have Docker installed, you can easily get Project Beehive up and running using python. Follow the steps below:
+- **Name Format:** `your_node_name.js`
+- **Rules:**
+  - Use lowercase letters
+  - Use underscores (`_`) to separate words
+  - Do not include numbers in the file name
 
-1. Open your terminal.
-2. Clone the latest version of this repository using the following command:
+For example, if you want to create a node for crafting planks, you might name the file `craft_planks.js`.
+
+### 3. Implement the Node
+
+Open your newly created file and implement your node using the following structure:
+
+```javascript
+"use strict";
+
+import { bot } from "../main.js";
+import { mcData } from "../main.js";
+
+function main() {
+  try {
+    // Check if bot has enough resources
+    if (bot.inventory.count(mcData.itemsByName.oak_log.id) >= 1) {
+      // Craft planks
+      bot.craft(mcData.findItemOrBlockByName("oak_planks").id, 4, 1, (err) => {
+        if (err) {
+          console.error(err);
+          throw err;
+        }
+      });
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+    throw error;
+  }
+}
+
+export { main };
+```
+
+**Key Points:**
+
+- The file must use `"use strict";` at the top.
+- Import `bot` and `mcData` from `../main.js`.
+- The `main` function should be defined and exported. This function is executed when the node runs.
+- Use `try` and `catch` statements for error handling. If an error occurs, log it and rethrow it to ensure it can be caught elsewhere.
+
+### 4. Update `functions.json`
+
+In the `flow_functions` directory, open the `functions.json` file and add an entry for your new node:
+
+```json
+{
+  "YOUR_NODE_NAME": {
+    "name": "YOUR_NODE_NAME",
+    "file": "YOUR_NODE_NAME.js",
+    "id": "YOUR_NODE_NAME",
+    "label": "DISPLAY NAME",
+    "hasInput": true,
+    "description": "YOUR NODE DESCRIPTION",
+    "inputLabel": "Amount",
+    "inputType": "number",
+    "author": "YOUR NAME"
+  }
+}
+```
+
+**Replace the placeholders:**
+
+- `YOUR_NODE_NAME` - The name of your node (in lowercase with underscores)
+- `DISPLAY NAME` - The name displayed in the UI
+- `YOUR NODE DESCRIPTION` - A description of what your node does
+- `YOUR NAME` - Your name or username
+
+### 5. Submit a Pull Request
+
+Once you’ve added your node and updated the `functions.json` file, push your changes to a new branch and open a pull request on GitHub.
 
 ```bash
-git clone https://github.com/the-lodestone-project/Beehive.git
+git checkout -b your-feature-branch
+git add .
+git commit -m "Add custom node YOUR_NODE_NAME"
+git push origin your-feature-branch
 ```
 
-3. Move to the new directory:
+Go to the GitHub repository and create a pull request. Your changes will be reviewed, and if everything looks good, they will be merged!
 
-```bash
-cd Beehive
-```
+## Thank You!
 
-4. Install all the dependencies using following command:
+Thank you for contributing to the project! If you have any questions or need further assistance, feel free to reach out.
 
-```bash
-pip install -r requirements.txt
-```
-
-After cloning the repository and installing all the dependencies, run the python script with the following command:
-
-```bash
-python main.py
-```
-
-This command will start Project Beehive and map it to port 8000 on your local machine.
-
-Open your web browser and navigate to http://localhost:8000 to access the bot.
-Please note that Python and pip must be installed and running on your machine to execute these steps. If you don't have python and pip installed, you can download it from [here](https://www.python.org/downloads/).
+Happy coding! 🚀
 
 ## images:
+
 <!-- 
 ![alt text](https://i.imgur.com/RRHOgzp.png) -->
-
-
-## Contributing
-
-We welcome contributions from the Minecraft community! Whether you're a developer, designer, or just have great ideas, there's a place for you in Project Skyview. See our [CONTRIBUTING.md](link-to-contributing) for more information.
 
 ## Support
 

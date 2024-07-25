@@ -454,6 +454,7 @@ export default function Dashboard() {
       description: "Mine X amount of oak logs",
       inputLabel: "Amount",
       inputType: "number",
+      author: "SilkePilon",
     },
     {
       id: "smelt_iron_ore",
@@ -462,12 +463,14 @@ export default function Dashboard() {
       description: "Smelt X amount of iron ore",
       inputLabel: "Amount",
       inputType: "number",
+      author: "SilkePilon",
     },
     {
       id: "craft_planks",
       label: "Craft Planks",
       hasInput: false,
       description: "Craft planks",
+      author: "SilkePilon",
     },
     {
       id: "wait_for_chat_message",
@@ -476,6 +479,7 @@ export default function Dashboard() {
       description: "Wait for a chat message containing a specific keyword",
       inputLabel: "Keyword",
       inputType: "text",
+      author: "SilkePilon",
     },
     // Add more node types as needed
   ];
@@ -506,6 +510,7 @@ export default function Dashboard() {
           description: selectedNode.description,
           inputLabel: selectedNode.inputLabel,
           inputType: selectedNode.inputType,
+          author: selectedNode.author,
           inputValue: "",
           onChange: (value: any) => {
             setNodes((nds: any) =>
@@ -879,6 +884,25 @@ export default function Dashboard() {
                     <strong>3. Run Your Flow:</strong> Once you&apos;re
                     satisfied with your setup, just press the &quot;Run
                     Flow&quot; button to see your bot bring your design to life!
+                    <br></br>
+                    <br></br>
+                    <strong>NOTE!</strong> <br></br>Placing a node behind its
+                    predecessor while still being connected to it will result in
+                    an error.
+                    <br></br>
+                    <br></br>
+                    <strong>Create your own nodes</strong> <br></br>Missing a
+                    node? You can create your own by contributing to the project
+                    on{" "}
+                    <a
+                      className="underline"
+                      href={
+                        "https://github.com/SilkePilon/OpenDeliveryBot/tree/main"
+                      }
+                    >
+                      GitHub
+                    </a>
+                    .
                   </p>
                   <Separator
                     style={{
@@ -887,6 +911,7 @@ export default function Dashboard() {
                       right: "-1rem",
                       bottom: "65px",
                       width: "auto",
+                      height: "1px",
                     }}
                   />
                   <div style={{ height: "25px" }}></div>
@@ -901,7 +926,7 @@ export default function Dashboard() {
                     <SelectContent>
                       {nodeTypes.map((nodeType) => (
                         <SelectItem key={nodeType.id} value={nodeType.id}>
-                          {nodeType.label}
+                          &apos;{nodeType.label}&apos; by {nodeType.author}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -914,6 +939,7 @@ export default function Dashboard() {
                       right: "-1rem",
                       bottom: "-1.5rem",
                       width: "auto",
+                      height: "1px",
                     }}
                   />
                 </div>

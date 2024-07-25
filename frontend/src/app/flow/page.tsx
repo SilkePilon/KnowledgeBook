@@ -202,14 +202,26 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => (
       )}
     </CardContent>
     <CardFooter className="text-xs text-muted-foreground">
-      by&nbsp;
-      <a
-        target="_blank"
-        href={`https://github.com/${data.author}`}
-        className="underline"
-      >
-        {data.author}
-      </a>
+      <Separator
+        style={{
+          position: "absolute",
+          left: "-0.01rem",
+          right: "-0.01rem",
+          bottom: "36px",
+          width: "auto",
+          height: "1px",
+        }}
+      />
+      <div style={{ marginLeft: "-10px", marginBottom: "-12px" }}>
+        by&nbsp;
+        <a
+          target="_blank"
+          href={`https://github.com/${data.author}`}
+          className="underline"
+        >
+          {data.author}
+        </a>
+      </div>
     </CardFooter>
     <Handle
       type="source"
@@ -1071,7 +1083,7 @@ export default function Dashboard() {
                   zoomOnScroll={true}
                   zoomOnPinch={true}
                   zoomOnDoubleClick={true}
-                  maxZoom={1}
+                  maxZoom={2}
                 >
                   <Controls />
                   {/* <Background /> */}

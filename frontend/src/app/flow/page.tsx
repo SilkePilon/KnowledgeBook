@@ -36,7 +36,7 @@ import axios from "axios";
 import { ModeToggle } from "@/components/modeswitch";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTheme } from "next-themes";
-import { Handle, Position } from "@xyflow/react";
+import { Handle, Position, ControlButton } from "@xyflow/react";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -161,85 +161,163 @@ type Edge = {
   target: string;
 };
 
-const CustomNode = ({ data, id }: { data: any; id: string }) => (
-  <Card
-    className="custom-node"
-    style={{ maxWidth: "300px", overflowWrap: "break-word" }}
-  >
-    <Handle
-      type="target"
-      position={Position.Left}
-      style={{
-        background: "#555",
-        width: "1rem",
-        height: "1rem",
-        borderRadius: "6px",
-      }}
-    />
-    <CardHeader className="p-4">
-      <CardTitle className="flex items-center justify-between text-sm font-medium">
-        <span>{data.label}</span>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => data.onDelete(id)}
-          className="h-6 w-6 p-0"
-        >
-          <X className="h-3 w-3" />
-        </Button>
-      </CardTitle>
-      <CardDescription className="text-xs">{data.description}</CardDescription>
-    </CardHeader>
-    <CardContent className="p-4 pt-0">
-      {data.hasInput && (
-        <input
-          type={data.inputType}
-          value={data.inputValue}
-          onChange={(e) => {
-            data.onChange(e.target.value);
-          }}
-          onBlur={(e) => {
-            data.onChange(e.target.value);
-          }}
-          placeholder={data.inputLabel}
-          className="w-full p-1 text-sm border rounded"
-        />
-      )}
-    </CardContent>
-    <CardFooter className="text-xs text-muted-foreground">
-      <Separator
+function animateCenter(
+  reactFlowInstance: any,
+  nodeId: string,
+  duration = 1000,
+  onComplete?: () => void
+) {
+  const startTime = Date.now();
+  const startViewport = reactFlowInstance.getViewport();
+
+  // Get the target viewport by using fitView
+  console.log(reactFlowInstance.getNode(nodeId));
+  reactFlowInstance.fitView({
+    nodes: [reactFlowInstance.getNode(nodeId)],
+    duration: 0,
+    padding: 0.2,
+  });
+  const endViewport = reactFlowInstance.getViewport();
+
+  // Reset to the starting viewport
+  reactFlowInstance.setViewport(startViewport);
+
+  function animate() {
+    const currentTime = Date.now();
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+
+    // Easing function (ease-out-cubic)
+    const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+    const currentX =
+      startViewport.x + (endViewport.x - startViewport.x) * easeProgress;
+    const currentY =
+      startViewport.y + (endViewport.y - startViewport.y) * easeProgress;
+    const currentZoom =
+      startViewport.zoom +
+      (endViewport.zoom - startViewport.zoom) * easeProgress;
+
+    reactFlowInstance.setViewport({
+      x: currentX,
+      y: currentY,
+      zoom: currentZoom,
+    });
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else if (onComplete) {
+      onComplete();
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+const CustomNode = ({ data, id }: { data: any; id: string }) => {
+  const [isInFocus, setIsInFocus] = useState(false);
+
+  useEffect(() => {
+    // Reset focus state when node data changes
+    setIsInFocus(false);
+  }, [data.position.x, data.position.y]);
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!(e.target instanceof HTMLInputElement) && !isInFocus) {
+      console.log("Clicked on node", id);
+      setIsInFocus(true);
+      animateCenter(
+        data.reactFlowInstance,
+        id, // Pass the node id instead of coordinates
+        2000, // Duration in milliseconds
+        () => setIsInFocus(false) // Callback to reset focus state after animation
+      );
+    }
+  };
+
+  return (
+    <Card
+      className="custom-node"
+      style={{ maxWidth: "300px", overflowWrap: "break-word" }}
+      onClick={handleClick}
+    >
+      <Handle
+        type="target"
+        position={Position.Left}
         style={{
-          position: "absolute",
-          left: "-0.01rem",
-          right: "-0.01rem",
-          bottom: "36px",
-          width: "auto",
-          height: "1px",
+          background: "#555",
+          width: "1rem",
+          height: "1rem",
+          borderRadius: "6px",
         }}
       />
-      <div style={{ marginLeft: "-10px", marginBottom: "-12px" }}>
-        by&nbsp;
-        <a
-          target="_blank"
-          href={`https://github.com/${data.author}`}
-          className="underline"
-        >
-          {data.author}
-        </a>
-      </div>
-    </CardFooter>
-    <Handle
-      type="source"
-      position={Position.Right}
-      style={{
-        background: "#555",
-        width: "1rem",
-        height: "1rem",
-        borderRadius: "6px",
-      }}
-    />
-  </Card>
-);
+      <CardHeader className="p-4">
+        <CardTitle className="flex items-center justify-between text-sm font-medium">
+          <span>{data.label}</span>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => data.onDelete(id)}
+            className="h-6 w-6 p-0"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        </CardTitle>
+        <CardDescription className="text-xs">
+          {data.description}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-4 pt-0">
+        {data.hasInput && (
+          <input
+            type={data.inputType}
+            value={data.inputValue}
+            onChange={(e) => {
+              data.onChange(e.target.value);
+            }}
+            onBlur={(e) => {
+              data.onChange(e.target.value);
+            }}
+            placeholder={data.inputLabel}
+            className="w-full p-1 text-sm border rounded"
+          />
+        )}
+      </CardContent>
+      <CardFooter className="text-xs text-muted-foreground">
+        <Separator
+          style={{
+            position: "absolute",
+            left: "-0.01rem",
+            right: "-0.01rem",
+            bottom: "36px",
+            width: "auto",
+            height: "1px",
+          }}
+        />
+        <div style={{ marginLeft: "-10px", marginBottom: "-12px" }}>
+          by&nbsp;
+          <a
+            target="_blank"
+            href={`https://github.com/${data.author}`}
+            className="underline"
+          >
+            {data.author}
+          </a>
+        </div>
+      </CardFooter>
+      <Handle
+        type="source"
+        position={Position.Right}
+        style={{
+          background: "#555",
+          width: "1rem",
+          height: "1rem",
+          borderRadius: "6px",
+        }}
+      />
+    </Card>
+  );
+};
 
 export default function Dashboard() {
   const [storageArea, setStorageArea] = useState({ x: 0, y: 0, z: 0 });
@@ -247,6 +325,7 @@ export default function Dashboard() {
   const [deliveryItems, setDeliveryItems] = useState([]);
   const [destination, setDestination] = useState({ x: 0, y: 0, z: 0 });
   const [botStatus, setBotStatus] = useState("Idle");
+  const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
   const { toast } = useToast();
   const [iframeError, setIframeError] = useState(false);
   const { theme, setTheme } = useTheme();
@@ -532,6 +611,7 @@ export default function Dashboard() {
   const [isRunning, setIsRunning] = useState(false);
   const [yLever, setYLever] = useState(0);
   const [yLevelIncrement, setYLevelIncrement] = useState(0);
+  const [isInFocus, setIsInFocus] = useState(false);
   const openDialog = () => setIsOpen(true);
   const closeDialog = () => setIsOpen(false);
 
@@ -559,6 +639,8 @@ export default function Dashboard() {
           inputLabel: selectedNode.inputLabel,
           inputType: selectedNode.inputType,
           author: selectedNode.author,
+          position: { x: nodes.length * 400, y: yLever },
+          reactFlowInstance: reactFlowInstance,
           inputValue: "",
           onChange: (value: any) => {
             setNodes((nds: any) =>
@@ -594,9 +676,10 @@ export default function Dashboard() {
       }, 0);
 
       toast({
-        title: "Node added",
-        description: `A new node of type "${selectedNode.label}" has been added.`,
+        title: "New Node Added",
+        description: `A new node of type "${selectedNode.label}" has been added. Click on the node to focus it.`,
       });
+      setIsInFocus(true);
     } else {
       toast({
         title: "Node type not selected",
@@ -1107,6 +1190,14 @@ export default function Dashboard() {
             <div className="flex-1">
               <div style={{ height: "87vh" }}>
                 <ReactFlow
+                  onClick={(e) => {
+                    if (!(e.target instanceof HTMLInputElement)) {
+                      reactFlowInstance.fitView({
+                        // minZoom: 0.0,
+                        duration: 1000,
+                      });
+                    }
+                  }}
                   nodes={nodes}
                   edges={edges}
                   colorMode={theme === "dark" ? "dark" : "light"}
@@ -1124,7 +1215,18 @@ export default function Dashboard() {
                   zoomOnDoubleClick={true}
                   maxZoom={2}
                 >
-                  <Controls />
+                  {/* <Controls>
+                    <ControlButton
+                      onClick={() =>
+                        reactFlowInstance.fitView({
+                          padding: 0.2,
+                          duration: 800,
+                        })
+                      }
+                    >
+                      <X></X>
+                    </ControlButton>
+                  </Controls> */}
                   {/* <Background /> */}
                 </ReactFlow>
                 <AlertDialog open={isOpen} onOpenChange={setIsOpen}>

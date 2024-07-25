@@ -917,8 +917,10 @@ export default function Dashboard() {
                     <Button
                       onClick={(e) => {
                         e.preventDefault();
+                        console.log(selectedNode);
                         addNode();
                       }}
+                      disabled={!selectedNode}
                     >
                       Add Selected Node
                     </Button>

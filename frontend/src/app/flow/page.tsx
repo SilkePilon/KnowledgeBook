@@ -81,6 +81,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { toPng } from "html-to-image";
 import {
   Card,
   CardContent,
@@ -154,12 +155,61 @@ import { Checkbox } from "@/components/ui/checkbox";
 import io, { Socket } from "socket.io-client";
 import e from "cors";
 import { set } from "react-hook-form";
+import { Panel, getNodesBounds, getViewportForBounds } from "@xyflow/react";
 
 type Edge = {
   id: string;
   source: string;
   target: string;
 };
+
+function downloadImage(dataUrl: any) {
+  const a = document.createElement("a");
+
+  a.setAttribute("download", "reactflow.png");
+  a.setAttribute("href", dataUrl);
+  a.click();
+}
+
+const imageWidth = 1024;
+const imageHeight = 768;
+
+function DownloadButton() {
+  const { getNodes } = useReactFlow();
+  const onClick = () => {
+    // we calculate a transform for the nodes so that all nodes are visible
+    // we then overwrite the transform of the `.react-flow__viewport` element
+    // with the style option of the html-to-image library
+    const nodesBounds = getNodesBounds(getNodes());
+    // @ts-ignore
+    const viewport = getViewportForBounds(
+      nodesBounds,
+      imageWidth,
+      imageHeight,
+      0.5,
+      2
+    );
+    // @ts-ignore
+    toPng(document.querySelector(".react-flow__viewport"), {
+      backgroundColor: "#00000000",
+      width: imageWidth,
+      height: imageHeight,
+      style: {
+        width: imageWidth,
+        height: imageHeight,
+        transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
+      },
+    }).then(downloadImage);
+  };
+
+  return (
+    <Panel position="top-right">
+      <button className="download-btn" onClick={onClick}>
+        Download Image
+      </button>
+    </Panel>
+  );
+}
 
 function animateCenter(
   reactFlowInstance: any,
@@ -222,7 +272,7 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
     setIsInFocus(false);
   }, [data.position.x, data.position.y]);
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = (e: any) => {
     if (!(e.target instanceof HTMLInputElement) && !isInFocus) {
       console.log("Clicked on node", id);
       setIsInFocus(true);
@@ -277,6 +327,14 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
             }}
             onBlur={(e) => {
               data.onChange(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                data.reactFlowInstance.fitView({
+                  // minZoom: 0.0,
+                  duration: 1000,
+                });
+              }
             }}
             placeholder={data.inputLabel}
             className="w-full p-1 text-sm border rounded"
@@ -1213,7 +1271,7 @@ export default function Dashboard() {
                   zoomOnScroll={true}
                   zoomOnPinch={true}
                   zoomOnDoubleClick={true}
-                  maxZoom={2}
+                  maxZoom={2.5}
                 >
                   {/* <Controls>
                     <ControlButton
@@ -1227,6 +1285,7 @@ export default function Dashboard() {
                       <X></X>
                     </ControlButton>
                   </Controls> */}
+                  <DownloadButton />
                   {/* <Background /> */}
                 </ReactFlow>
                 <AlertDialog open={isOpen} onOpenChange={setIsOpen}>

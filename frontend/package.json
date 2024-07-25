@@ -32,6 +32,7 @@
     "cmdk": "^1.0.0",
     "cors": "^2.8.5",
     "framer-motion": "^11.2.13",
+    "html-to-image": "^1.11.11",
     "input-otp": "^1.2.4",
     "ldrs": "^1.0.2",
     "lucide-react": "^0.400.0",

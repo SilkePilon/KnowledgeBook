@@ -156,11 +156,50 @@ import io, { Socket } from "socket.io-client";
 import e from "cors";
 import { set } from "react-hook-form";
 import { Panel, getNodesBounds, getViewportForBounds } from "@xyflow/react";
+import { BaseEdge, EdgeLabelRenderer, getStraightPath } from "@xyflow/react";
+// @ts-ignore
+function CustomEdge({ id, sourceX, sourceY, targetX, targetY }) {
+  const { setEdges } = useReactFlow();
+  const [edgePath, labelX, labelY] = getStraightPath({
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+  });
 
+  // Calculate the angle between source and target
+  const dx = targetX - sourceX;
+  const dy = targetY - sourceY;
+  const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 45;
+
+  return (
+    <>
+      <BaseEdge id={id} path={edgePath} />
+      <EdgeLabelRenderer>
+        <img
+          style={{
+            position: "absolute",
+            transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px) rotate(${angle}deg)`,
+            pointerEvents: "all",
+            imageRendering: "pixelated",
+            width: "3rem",
+          }}
+          className="nodrag nopan"
+          src="https://minecraft.wiki/images/Invicon_Arrow.png"
+          alt="Arrow"
+        />
+      </EdgeLabelRenderer>
+    </>
+  );
+}
 type Edge = {
   id: string;
   source: string;
   target: string;
+};
+
+const edgeTypes = {
+  "custom-edge": CustomEdge,
 };
 
 function downloadImage(dataUrl: any) {
@@ -266,6 +305,7 @@ function animateCenter(
 
 const CustomNode = ({ data, id }: { data: any; id: string }) => {
   const [isInFocus, setIsInFocus] = useState(false);
+  const isRunning = id === data.runningNodeId;
 
   useEffect(() => {
     // Reset focus state when node data changes
@@ -276,19 +316,25 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
     if (!(e.target instanceof HTMLInputElement) && !isInFocus) {
       console.log("Clicked on node", id);
       setIsInFocus(true);
-      animateCenter(
-        data.reactFlowInstance,
-        id, // Pass the node id instead of coordinates
-        2000, // Duration in milliseconds
-        () => setIsInFocus(false) // Callback to reset focus state after animation
+      animateCenter(data.reactFlowInstance, id, 2000, () =>
+        setIsInFocus(false)
       );
     }
   };
 
   return (
     <Card
-      className="custom-node"
-      style={{ maxWidth: "300px", overflowWrap: "break-word" }}
+      className={`custom-node ${isRunning ? "running-node" : ""}`}
+      style={{
+        maxWidth: "300px",
+        overflowWrap: "break-word",
+        borderColor: isRunning
+          ? data.theme === "dark"
+            ? "white"
+            : "black"
+          : undefined,
+        borderWidth: isRunning ? "3px" : undefined,
+      }}
       onClick={handleClick}
     >
       <Handle
@@ -387,6 +433,7 @@ export default function Dashboard() {
   const { toast } = useToast();
   const [iframeError, setIframeError] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [runningNodeId, setRunningNodeId] = useState(null);
   const [chatMessages, setChatMessages] = useState<
     { timestamp: string; sender: string; message: string }[]
   >([]);
@@ -672,6 +719,18 @@ export default function Dashboard() {
   const [isInFocus, setIsInFocus] = useState(false);
   const openDialog = () => setIsOpen(true);
   const closeDialog = () => setIsOpen(false);
+  // @ts-ignore
+  useEffect(() => {
+    // @ts-ignore
+    setNodes((nds) =>
+      nds.map((node) => ({
+        // @ts-ignore
+        ...node,
+        // @ts-ignore
+        data: { ...node.data, runningNodeId: runningNodeId },
+      }))
+    );
+  }, [runningNodeId]);
 
   const reactFlowInstance = useReactFlow();
 
@@ -699,6 +758,7 @@ export default function Dashboard() {
           author: selectedNode.author,
           position: { x: nodes.length * 400, y: yLever },
           reactFlowInstance: reactFlowInstance,
+          theme: theme,
           inputValue: "",
           onChange: (value: any) => {
             setNodes((nds: any) =>
@@ -710,6 +770,7 @@ export default function Dashboard() {
             );
           },
           onDelete: deleteNode,
+          runningNodeId: runningNodeId,
         },
       };
       // @ts-ignore
@@ -724,6 +785,7 @@ export default function Dashboard() {
             id: `edge-${nodes.length}`,
             source: previousNodeId,
             target: newNodeId,
+            type: "custom-edge",
             animated: true,
           },
         ]);
@@ -816,6 +878,7 @@ export default function Dashboard() {
       return;
     }
     for (let node of sortedNodes) {
+      setRunningNodeId(node.id);
       console.log(
         `Executing ${node.data.label} with input ${node.data.inputValue}`
       );
@@ -846,6 +909,7 @@ export default function Dashboard() {
       // Add a delay to simulate processing time
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
+    setRunningNodeId(null);
     console.log("Flow execution completed");
     toast({
       title: "Flow execution completed",
@@ -1263,6 +1327,7 @@ export default function Dashboard() {
                   // onEdgesChange={onEdgesChange}
                   onConnect={onConnect}
                   nodeTypes={{ custom: CustomNode }}
+                  edgeTypes={edgeTypes}
                   fitView
                   style={{
                     background: "rgba(52, 52, 52, 0.2)",

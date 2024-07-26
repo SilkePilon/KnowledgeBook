@@ -49,5 +49,16 @@
     "description": "Sleeps for a certain amount of seconds.",
     "input": { "seconds": "number" },
     "author": "SilkePilon"
+  },
+
+  "mine": {
+    "name": "mine",
+    "file": "mine.js",
+    "id": "mine",
+    "label": "Mine",
+    "hasInput": true,
+    "description": "Mine a specific amount of a specified block",
+    "input": { "block name": "text", "amount": "number" },
+    "author": "Ash"
   }
 }

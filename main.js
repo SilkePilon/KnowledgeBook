@@ -448,6 +448,7 @@ app.get("/functions", async (req, res) => {
         inputLabel: value.inputLabel,
         inputType: value.inputType,
         author: value.author,
+        input: value.input,
       })
     );
 

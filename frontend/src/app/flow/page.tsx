@@ -210,6 +210,7 @@ interface NodeType {
   inputLabel: string;
   inputType: string;
   author: string;
+  input: {};
 }
 
 function downloadImage(dataUrl: any) {
@@ -318,7 +319,6 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
   const isRunning = id === data.runningNodeId;
 
   useEffect(() => {
-    // Reset focus state when node data changes
     setIsInFocus(false);
   }, [data.position.x, data.position.y]);
 
@@ -374,28 +374,32 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="p-4 pt-0">
-        {data.hasInput && (
-          <input
-            type={data.inputType}
-            value={data.inputValue}
-            onChange={(e) => {
-              data.onChange(e.target.value);
-            }}
-            onBlur={(e) => {
-              data.onChange(e.target.value);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                data.reactFlowInstance.fitView({
-                  // minZoom: 0.0,
-                  duration: 1000,
-                });
-              }
-            }}
-            placeholder={data.inputLabel}
-            className="w-full p-1 text-sm border rounded"
-          />
-        )}
+        {data.input &&
+          Object.entries(data.input).map(([key, type]) => (
+            <div key={key} className="mb-2">
+              <Label htmlFor={`${id}-${key}`}>{key}</Label>
+              <Input
+                id={`${id}-${key}`}
+                type={type === "number" ? "number" : "text"}
+                value={data.inputValues?.[key] || ""}
+                onChange={(e) => {
+                  data.onChange(key, e.target.value);
+                }}
+                onBlur={(e) => {
+                  data.onChange(key, e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    data.reactFlowInstance.fitView({
+                      duration: 1000,
+                    });
+                  }
+                }}
+                placeholder={`Enter ${key}`}
+                className="w-full p-1 text-sm border rounded"
+              />
+            </div>
+          ))}
       </CardContent>
       <CardFooter className="text-xs text-muted-foreground">
         <Separator
@@ -743,20 +747,27 @@ export default function Dashboard() {
         position: { x: nodes.length * 400, y: yLever },
         data: {
           label: selectedNode.label,
-          hasInput: selectedNode.hasInput,
           description: selectedNode.description,
-          inputLabel: selectedNode.inputLabel,
-          inputType: selectedNode.inputType,
           author: selectedNode.author,
           position: { x: nodes.length * 400, y: yLever },
           reactFlowInstance: reactFlowInstance,
+          input: selectedNode.input,
           theme: theme,
-          inputValue: "",
-          onChange: (value: any) => {
+          inputValues: {},
+          onChange: (key: string, value: any) => {
             setNodes((nds: any) =>
               nds.map((node: any) =>
                 node.id === newNodeId
-                  ? { ...node, data: { ...node.data, inputValue: value } }
+                  ? {
+                      ...node,
+                      data: {
+                        ...node.data,
+                        inputValues: {
+                          ...node.data.inputValues,
+                          [key]: value,
+                        },
+                      },
+                    }
                   : node
               )
             );
@@ -874,29 +885,26 @@ export default function Dashboard() {
     for (let node of sortedNodes) {
       setRunningNodeId(node.id);
       console.log(
-        `Executing ${node.data.label} with input ${node.data.inputValue}`
+        `Executing ${node.data.label} with inputs`,
+        node.data.inputValues
       );
       toast({
         title: "Executing node",
-        description: `Executing ${node.data.label} with input ${node.data.inputValue}`,
+        description: `Executing ${
+          node.data.label
+        } with inputs: ${JSON.stringify(node.data.inputValues)}`,
       });
 
       try {
-        // Convert the node label to a flow name (lowercase with underscores)
-        // const that find node.data.label in nodeTypes.
         const flowNameFinder = nodeTypes.find(
           (nt) => nt.label === node.data.label
         );
         const flowName = flowNameFinder ? flowNameFinder.id : "";
         console.log(flowName);
-        // const flowName = node.data.label.toLowerCase().replace(/ /g, "_");
 
-        // Call the API to execute the flow
         const response = await axios.post(
           `http://localhost:3001/flow/${flowName}`,
-          {
-            [node.data.inputLabel.toLowerCase()]: node.data.inputValue,
-          }
+          node.data.inputValues
         );
 
         if (response.status === 200) {
@@ -919,7 +927,6 @@ export default function Dashboard() {
         return;
       }
 
-      // Add a small delay between nodes to avoid overwhelming the server
       await new Promise((resolve) => setTimeout(resolve, 500));
     }
 

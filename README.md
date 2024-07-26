@@ -99,7 +99,35 @@ Navigate to the `flow_functions` folder in the project directory. Create a new f
 
 For example, if you want to create a node for crafting planks, you might name the file `craft_planks.js`.
 
-### 3. Implement the Node
+### 3. Update `functions.json`
+
+In the `flow_functions` directory, open the `functions.json` file and add an entry for your new node:
+
+```json
+{
+  "YOUR_NODE_NAME": {
+    "name": "YOUR_NODE_NAME",
+    "file": "YOUR_NODE_NAME.js",
+    "id": "YOUR_NODE_NAME",
+    "label": "DISPLAY NAME",
+    "hasInput": true,
+    "description": "YOUR NODE DESCRIPTION",
+    // example of input
+    "input": { "amount": "number", "message": "text" },
+    "author": "YOUR NAME"
+  }
+}
+```
+
+**Replace the placeholders:**
+
+- `YOUR_NODE_NAME` - The name of your node (in lowercase with underscores)
+- `DISPLAY NAME` - The name displayed in the UI
+- `YOUR NODE DESCRIPTION` - A description of what your node does
+- `YOUR NAME` - Your GitHub username
+- `{ "NAME": "number", "NAME": "text" }` - Your input fields.
+
+### 4. Implement the Node
 
 Open your newly created file and implement your node using the following structure:
 
@@ -118,10 +146,18 @@ module.exports = { main };
 
 **Key Points:**
 
-- Any arguments from the frontend like amounts will be passed as first argument to the `main` function. In this example we get the amount from the frontend. This can be accessed with data.amount. This is set by converting `inputLabel` from `functions.json` to lowercase.
 - Require `bot` from `../main.js`.
 - The `main` function should be defined and exported. This function is executed when the node runs.
 - Use `try` and `catch` statements for error handling. If an error occurs, log it and rethrow it to ensure it can be caught elsewhere.
+
+
+**Accessing input fields**
+In order to the get values from the input field of a node you can use the `data` argument in the `main` function
+an example:
+in `functions.json` I've added an function with the following input:
+`{ "Amount": "number", "Message": "text" }`
+now i can access them in the `main` function by doing: `data.amount` and `data.message`
+the parameter name is based on the key provided in the input.
 
 **Examples**
 
@@ -131,35 +167,8 @@ You can also checkout some of the already made nodes:
 - [Walk to](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flow_functions/walk_to.js)
 
 **Limitations**
-- Input is currently limited to 1 per node.
 - no way of outputting custom data from a node.
 
-### 4. Update `functions.json`
-
-In the `flow_functions` directory, open the `functions.json` file and add an entry for your new node:
-
-```json
-{
-  "YOUR_NODE_NAME": {
-    "name": "YOUR_NODE_NAME",
-    "file": "YOUR_NODE_NAME.js",
-    "id": "YOUR_NODE_NAME",
-    "label": "DISPLAY NAME",
-    "hasInput": true,
-    "description": "YOUR NODE DESCRIPTION",
-    "inputLabel": "Amount",
-    "inputType": "number",
-    "author": "YOUR NAME"
-  }
-}
-```
-
-**Replace the placeholders:**
-
-- `YOUR_NODE_NAME` - The name of your node (in lowercase with underscores)
-- `DISPLAY NAME` - The name displayed in the UI
-- `YOUR NODE DESCRIPTION` - A description of what your node does
-- `YOUR NAME` - Your GitHub username
 
 ### 5. Submit a Pull Request
 

@@ -6,8 +6,7 @@
     "label": "Test Node",
     "hasInput": true,
     "description": "Test node to check if everything is working correctly.",
-    "inputLabel": "Amount",
-    "inputType": "number",
+    "input": { "number": "number", "text": "text" },
     "author": "SilkePilon"
   },
   "chat": {
@@ -17,8 +16,7 @@
     "label": "Send Chat Message",
     "hasInput": true,
     "description": "Send an chat message to public chat.",
-    "inputLabel": "Message",
-    "inputType": "text",
+    "input": { "message": "text" },
     "author": "SilkePilon"
   },
   "walk_to": {
@@ -28,8 +26,7 @@
     "label": "Walk to location",
     "hasInput": true,
     "description": "Use pathfinding to walk to a location.",
-    "inputLabel": "x y z",
-    "inputType": "text",
+    "input": { "x y z": "text" },
     "author": "SilkePilon"
   },
   "wait_for_chat_message": {
@@ -38,9 +35,8 @@
     "id": "wait_for_chat_message",
     "label": "Wait for chat message",
     "hasInput": true,
+    "input": { "keyword": "text", "amount": "number" },
     "description": "Waits for a chat message containing a specific keyword.",
-    "inputLabel": "keyword",
-    "inputType": "text",
     "author": "SilkePilon",
     "badges": ["beta"]
   },
@@ -51,8 +47,7 @@
     "label": "Sleep",
     "hasInput": true,
     "description": "Sleeps for a certain amount of seconds.",
-    "inputLabel": "seconds",
-    "inputType": "number",
+    "input": { "seconds": "number" },
     "author": "SilkePilon"
   }
 }

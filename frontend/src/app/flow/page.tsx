@@ -434,6 +434,9 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
 };
 
 export default function Dashboard() {
+  window.onbeforeunload = () =>
+    "Are you sure you want to leave? Changes you made may not be saved.";
+
   const [storageArea, setStorageArea] = useState({ x: 0, y: 0, z: 0 });
   const [chestIndex, setChestIndex] = useState({});
   const [deliveryItems, setDeliveryItems] = useState([]);
@@ -1120,11 +1123,6 @@ export default function Dashboard() {
               <CreateBotDialog></CreateBotDialog>
             </>
           )}
-          {/* {botState.spawned ? (
-            <p>Bot has spawned and is ready.</p>
-          ) : (
-            <p>Bot is created but hasn&apos;t spawned yet.</p>
-          )} */}
         </header>
         <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-3">
           <div
@@ -1264,7 +1262,7 @@ export default function Dashboard() {
                       // variant={botState.created ? "default" : "secondary"}
                     >
                       {!botState.created
-                        ? "Run Flow (Bot not connected)"
+                        ? "Not Connected"
                         : isRunning
                         ? "Executing flow..."
                         : "Run Flow"}

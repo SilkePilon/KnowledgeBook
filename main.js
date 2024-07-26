@@ -458,7 +458,7 @@ app.get("/functions", async (req, res) => {
   }
 });
 
-app.post("/flow/:flowName", (req, res) => {
+app.post("/flow/:flowName", async (req, res) => {
   const flowName = req.params.flowName;
   const inputData = req.body;
 
@@ -470,7 +470,8 @@ app.post("/flow/:flowName", (req, res) => {
       throw new Error("Invalid flow function");
     }
 
-    flowModule.main(inputData);
+    await flowModule.main(inputData);
+    delete require.cache[require.resolve(flowPath)];
     res.status(200).json({ message: "Flow executed successfully" });
   } catch (error) {
     console.error(`Error executing flow ${flowName}:`, error);
@@ -1133,8 +1134,13 @@ async function findAndOpenNearbyChest() {
   return await bot.openContainer(chestBlock);
 }
 
+function getBot() {
+  bot.goToLocation = goToLocation;
+  return bot;
+}
+
 // Start the API server
 server.listen(PORT, () => {
   console.log(`API server running on port ${PORT}`);
 });
-module.exports = { bot };
+module.exports = { getBot };

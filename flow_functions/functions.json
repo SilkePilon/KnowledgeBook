@@ -9,5 +9,49 @@
     "inputLabel": "Amount",
     "inputType": "number",
     "author": "SilkePilon"
+  },
+  "chat": {
+    "name": "chat",
+    "file": "chat.js",
+    "id": "chat",
+    "label": "Send Chat Message",
+    "hasInput": true,
+    "description": "Send an chat message to public chat.",
+    "inputLabel": "Message",
+    "inputType": "text",
+    "author": "SilkePilon"
+  },
+  "walk_to": {
+    "name": "walk_to",
+    "file": "walk_to.js",
+    "id": "walk_to",
+    "label": "Walk to location",
+    "hasInput": true,
+    "description": "Use pathfinding to walk to a location.",
+    "inputLabel": "x y z",
+    "inputType": "text",
+    "author": "SilkePilon"
+  },
+  "wait_for_chat_message": {
+    "name": "wait_for_chat_message",
+    "file": "wait_for_chat_message.js",
+    "id": "wait_for_chat_message",
+    "label": "Wait for chat message",
+    "hasInput": true,
+    "description": "Waits for a chat message to be sent in public chat.",
+    "inputLabel": "Message",
+    "inputType": "text",
+    "author": "SilkePilon"
+  },
+  "sleep": {
+    "name": "sleep",
+    "file": "sleep.js",
+    "id": "sleep",
+    "label": "Sleep",
+    "hasInput": true,
+    "description": "Sleeps for a certain amount of seconds.",
+    "inputLabel": "seconds",
+    "inputType": "number",
+    "author": "SilkePilon"
   }
 }

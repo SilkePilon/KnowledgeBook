@@ -104,12 +104,13 @@ For example, if you want to create a node for crafting planks, you might name th
 Open your newly created file and implement your node using the following structure:
 
 ```javascript
-const { bot } = require("../main.js");
+const { getBot } = require("../main.js");
 
 function main(data) {
+  // Get the bot object
+  const bot = getBot();
   // Your function logic here
   console.log("Executing test_node with data:", data);
-  // Use bot as needed
 }
 
 module.exports = { main };

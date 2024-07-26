@@ -454,8 +454,11 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
 };
 
 export default function Dashboard() {
-  window.onbeforeunload = () =>
-    "Are you sure you want to leave? Changes you made may not be saved.";
+  useEffect(() => {
+    // This code will only run on the client side
+    window.onbeforeunload = () =>
+      "Are you sure you want to leave? Changes you made may not be saved.";
+  }, []);
 
   const [storageArea, setStorageArea] = useState({ x: 0, y: 0, z: 0 });
   const [chestIndex, setChestIndex] = useState({});

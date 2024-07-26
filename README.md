@@ -123,6 +123,13 @@ module.exports = { main };
 - The `main` function should be defined and exported. This function is executed when the node runs.
 - Use `try` and `catch` statements for error handling. If an error occurs, log it and rethrow it to ensure it can be caught elsewhere.
 
+**Examples**
+
+You can also checkout some of the already made nodes:
+- [Chat](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flow_functions/chat.js)
+- [Wait for chat message](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flow_functions/wait_for_chat_message.js)
+- [Walk to](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flow_functions/walk_to.js)
+
 ### 4. Update `functions.json`
 
 In the `flow_functions` directory, open the `functions.json` file and add an entry for your new node:

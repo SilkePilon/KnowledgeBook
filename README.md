@@ -130,6 +130,10 @@ You can also checkout some of the already made nodes:
 - [Wait for chat message](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flow_functions/wait_for_chat_message.js)
 - [Walk to](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flow_functions/walk_to.js)
 
+**Limitations**
+- Input is currently limited to 1 per node.
+- no way of outputting custom data from a node.
+
 ### 4. Update `functions.json`
 
 In the `flow_functions` directory, open the `functions.json` file and add an entry for your new node:

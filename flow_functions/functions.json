@@ -41,7 +41,8 @@
     "description": "Waits for a chat message to be sent in public chat.",
     "inputLabel": "Message",
     "inputType": "text",
-    "author": "SilkePilon"
+    "author": "SilkePilon",
+    "badges": ["beta"]
   },
   "sleep": {
     "name": "sleep",

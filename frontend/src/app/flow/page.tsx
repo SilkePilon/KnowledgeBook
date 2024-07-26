@@ -395,7 +395,7 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
                     });
                   }
                 }}
-                placeholder={`Enter ${key}`}
+                placeholder={`${type}`}
                 className="w-full p-1 text-sm border rounded"
               />
             </div>

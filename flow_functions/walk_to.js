@@ -6,7 +6,7 @@ async function main(data) {
   console.log("Executing test_node with data:", data);
   // Use bot as needed
   try {
-    await bot.goToLocation(data["x y z"]);
+    await bot.goToLocation(data["x y z"], (useElytra = false));
     console.log("Reached destination");
   } catch (error) {
     console.error(error);

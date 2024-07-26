@@ -1369,7 +1369,7 @@ export default function Dashboard() {
                   zoomOnScroll={true}
                   zoomOnPinch={true}
                   zoomOnDoubleClick={true}
-                  maxZoom={2.5}
+                  maxZoom={1.6}
                 >
                   {/* <Controls>
                     <ControlButton

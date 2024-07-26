@@ -104,37 +104,21 @@ For example, if you want to create a node for crafting planks, you might name th
 Open your newly created file and implement your node using the following structure:
 
 ```javascript
-"use strict";
-
-import { bot } from "../main.js";
-import { mcData } from "../main.js";
+const { bot } = require("../main.js");
 
 function main(data) {
-  try {
-    // Check if bot has enough resources
-    if (bot.inventory.count(mcData.itemsByName.oak_log.id) >= 1) {
-      // Craft planks
-      bot.craft(mcData.findItemOrBlockByName("oak_planks").id, 4, 1, (err) => {
-        if (err) {
-          console.error(err);
-          throw err;
-        }
-      });
-    }
-  } catch (error) {
-    console.error("An error occurred:", error);
-    throw error;
-  }
+  // Your function logic here
+  console.log("Executing test_node with data:", data);
+  // Use bot as needed
 }
 
-export { main };
+module.exports = { main };
 ```
 
 **Key Points:**
 
-- The file must use `"use strict";` at the top.
 - Any arguments from the frontend like amounts will be passed as first argument to the `main` function. In this example we get the amount from the frontend. This can be accessed with data.amount. This is set by converting `inputLabel` from `functions.json` to lowercase.
-- Import `bot` and `mcData` from `../main.js`.
+- Require `bot` from `../main.js`.
 - The `main` function should be defined and exported. This function is executed when the node runs.
 - Use `try` and `catch` statements for error handling. If an error occurs, log it and rethrow it to ensure it can be caught elsewhere.
 

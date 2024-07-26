@@ -12,6 +12,7 @@ const bodyParser = require("body-parser");
 const toolPlugin = require("mineflayer-tool").plugin;
 const https = require("https");
 const http = require("http");
+const path = require("path");
 const { Image } = require("canvas");
 const fs = require("fs").promises;
 const Vec3 = require("vec3").Vec3;
@@ -428,6 +429,57 @@ app.get("/bot-state", (req, res) => {
   res.json(botState);
 });
 
+app.get("/functions", async (req, res) => {
+  try {
+    const functionsPath = path.join(
+      __dirname,
+      "flow_functions",
+      "functions.json"
+    );
+    const functionsData = await fs.readFile(functionsPath, "utf-8");
+    const functionsJson = JSON.parse(functionsData);
+
+    const formattedFunctions = Object.entries(functionsJson).map(
+      ([key, value]) => ({
+        id: key,
+        label: value.label,
+        hasInput: value.hasInput,
+        description: value.description,
+        inputLabel: value.inputLabel,
+        inputType: value.inputType,
+        author: value.author,
+      })
+    );
+
+    res.json(formattedFunctions);
+  } catch (error) {
+    console.error("Error reading functions.json:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/flow/:flowName", (req, res) => {
+  const flowName = req.params.flowName;
+  const inputData = req.body;
+
+  try {
+    const flowPath = path.join(__dirname, "flow_functions", `${flowName}.js`);
+    const flowModule = require(flowPath);
+
+    if (typeof flowModule.main !== "function") {
+      throw new Error("Invalid flow function");
+    }
+
+    flowModule.main(inputData);
+    res.status(200).json({ message: "Flow executed successfully" });
+  } catch (error) {
+    console.error(`Error executing flow ${flowName}:`, error);
+    res
+      .status(500)
+      .json({ error: "Flow execution failed", details: error.message });
+  }
+});
+
 // API endpoint to stop the bot.
 app.post("/stop-bot", async (req, res) => {
   if (bot) {
@@ -517,10 +569,10 @@ app.post("/create-bot", async (req, res) => {
       // loadChestIndex();
       // startChestMonitoring();
       // Scan area periodically
-      console.log("Scanning area...");
-      (async () => {
-        await scanArea(4); // Adjust radius as needed
-      })();
+      // console.log("Scanning area...");
+      // (async () => {
+      //   await scanArea(4); // Adjust radius as needed
+      // })();
       // setInterval(async () => {
       //   await scanArea(4); // Adjust radius as needed
       // }, 10000); // Every 10 seconds
@@ -530,7 +582,6 @@ app.post("/create-bot", async (req, res) => {
     bot.on("death", async () => {
       await bot.waitForChunksToLoad();
       await bot.waitForTicks(20);
-      startChestMonitoring();
     });
 
     // Error handling
@@ -1086,3 +1137,4 @@ async function findAndOpenNearbyChest() {
 server.listen(PORT, () => {
   console.log(`API server running on port ${PORT}`);
 });
+module.exports = { bot };

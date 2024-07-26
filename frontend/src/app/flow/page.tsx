@@ -202,6 +202,16 @@ const edgeTypes = {
   "custom-edge": CustomEdge,
 };
 
+interface NodeType {
+  id: string;
+  label: string;
+  hasInput: boolean;
+  description: string;
+  inputLabel: string;
+  inputType: string;
+  author: string;
+}
+
 function downloadImage(dataUrl: any) {
   const a = document.createElement("a");
 
@@ -449,6 +459,27 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [nodeTypes, setNodeTypes] = useState<NodeType[]>([]);
+  const [selectedNode, setSelectedNode] = useState<NodeType | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNodeTypes = async () => {
+      try {
+        const response = await axios.get<NodeType[]>(
+          "http://localhost:3001/functions"
+        );
+        setNodeTypes(response.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching node types:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchNodeTypes();
+  }, []);
+
   const handleIframeError = () => {
     setIframeError(true);
   };
@@ -667,51 +698,9 @@ export default function Dashboard() {
     [height]
   );
 
-  const nodeTypes = [
-    {
-      id: "mine_wood_logs",
-      label: "Mine Wood Logs",
-      hasInput: true,
-      description: "Mine X amount of wood logs (any type)",
-      inputLabel: "Amount",
-      inputType: "number",
-      author: "SilkePilon",
-    },
-    {
-      id: "wait_for_chat_message",
-      label: "Wait For Chat Message",
-      hasInput: true,
-      description: "Wait for a chat message containing a specific keyword",
-      inputLabel: "Keyword",
-      inputType: "text",
-      author: "SilkePilon",
-    },
-    {
-      id: "elytra_fly_to",
-      label: "Elytra Fly To Location",
-      hasInput: true,
-      description:
-        "Use an elytra to fly to a specific location (x, y, z). Bot must have an elytra in its inventory. ~ will make the bot use its current x z or y as the value.",
-      inputLabel: "Format: x y z",
-      inputType: "text",
-      author: "SilkePilon",
-    },
-    {
-      id: "walk_to",
-      label: "Walk To Location",
-      hasInput: true,
-      description:
-        "Use pathfinding (A*) to go to a specific location (x, y, z). ~ will make the bot use its current x z or y as the value",
-      inputLabel: "Format: x y z",
-      inputType: "text",
-      author: "SilkePilon",
-    },
-    // Add more node types as needed
-  ];
-
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges] = useState<Edge[]>([]);
-  const [selectedNode, setSelectedNode] = useState(null) as any;
+  // const [selectedNode, setSelectedNode] = useState(null) as any;
   const [isOpen, setIsOpen] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [yLever, setYLever] = useState(0);
@@ -869,6 +858,7 @@ export default function Dashboard() {
     const sortedNodes = nodes.sort(
       (a: any, b: any) => a.position.x - b.position.x
     ) as any[];
+
     if (sortedNodes.length === 0) {
       toast({
         title: "No nodes to run",
@@ -877,6 +867,7 @@ export default function Dashboard() {
       });
       return;
     }
+
     for (let node of sortedNodes) {
       setRunningNodeId(node.id);
       console.log(
@@ -887,28 +878,48 @@ export default function Dashboard() {
         description: `Executing ${node.data.label} with input ${node.data.inputValue}`,
       });
 
-      // Here you would add the actual logic to perform each action
-      switch (node.data.label) {
-        case "Mine Oak Log":
+      try {
+        // Convert the node label to a flow name (lowercase with underscores)
+        // const that find node.data.label in nodeTypes.
+        const flowNameFinder = nodeTypes.find(
+          (nt) => nt.label === node.data.label
+        );
+        const flowName = flowNameFinder ? flowNameFinder.id : "";
+        console.log(flowName);
+        // const flowName = node.data.label.toLowerCase().replace(/ /g, "_");
+
+        // Call the API to execute the flow
+        const response = await axios.post(
+          `http://localhost:3001/flow/${flowName}`,
+          {
+            [node.data.inputLabel.toLowerCase()]: node.data.inputValue,
+          }
+        );
+
+        if (response.status === 200) {
           toast({
-            title: "Mining oak logs",
-            description: `Mining ${node.data.inputValue} oak logs`,
+            title: "Node executed successfully",
+            description: `${node.data.label} completed successfully`,
           });
-          break;
-        case "Smelt Iron Ore":
-          toast({
-            title: "Smelting iron ore",
-            description: `Smelting ${node.data.inputValue} iron ore`,
-          });
-          break;
-        // Add more cases for other node types
-        default:
-          console.log(`Unknown action: ${node.data.label}`);
+        } else {
+          throw new Error(`Failed to execute ${node.data.label}`);
+        }
+      } catch (error: any) {
+        console.error(`Error executing ${node.data.label}:`, error);
+        toast({
+          title: "Error",
+          variant: "destructive",
+          description: `Failed to execute ${node.data.label}: ${error.message}`,
+        });
+        setIsRunning(false);
+        setRunningNodeId(null);
+        return;
       }
 
-      // Add a delay to simulate processing time
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Add a small delay between nodes to avoid overwhelming the server
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
+
     setRunningNodeId(null);
     console.log("Flow execution completed");
     toast({
@@ -1174,6 +1185,7 @@ export default function Dashboard() {
                   <div style={{ height: "25px" }}></div>
                   <Select
                     onValueChange={(value) =>
+                      // @ts-ignore
                       setSelectedNode(nodeTypes.find((nt) => nt.id === value))
                     }
                   >

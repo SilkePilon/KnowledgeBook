@@ -1,11 +1,11 @@
 {
-  "craft_planks": {
-    "name": "craft_planks",
-    "file": "craft_planks.js",
-    "id": "smelt_iron_ore",
-    "label": "Smelt Iron Ore",
+  "test": {
+    "name": "test",
+    "file": "test.js",
+    "id": "test",
+    "label": "Test Node",
     "hasInput": true,
-    "description": "Smelt X amount of iron ore",
+    "description": "Test node to check if everything is working correctly.",
     "inputLabel": "Amount",
     "inputType": "number",
     "author": "SilkePilon"

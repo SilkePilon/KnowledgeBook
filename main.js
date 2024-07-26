@@ -1135,6 +1135,10 @@ async function findAndOpenNearbyChest() {
   return await bot.openContainer(chestBlock);
 }
 
+/**
+ * 
+ * @returns {import("mineflayer").Bot}
+ */
 function getBot() {
   bot.goToLocation = goToLocation;
   return bot;

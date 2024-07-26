@@ -82,7 +82,7 @@ Welcome to the project! This guide will walk you through the steps to add custom
 First, make a local copy of the repository:
 
 ```bash
-git clone https://github.com/yourusername/your-repo.git
+git clone https://github.com/SilkePilon/OpenDeliveryBot.git
 ```
 
 Open the cloned repository in your preferred IDE.
@@ -150,7 +150,6 @@ module.exports = { main };
 - The `main` function should be defined and exported. This function is executed when the node runs.
 - Use `try` and `catch` statements for error handling. If an error occurs, log it and rethrow it to ensure it can be caught elsewhere.
 
-
 **Accessing input fields**
 In order to the get values from the input field of a node you can use the `data` argument in the `main` function
 an example:
@@ -162,13 +161,14 @@ the parameter name is based on the key provided in the input.
 **Examples**
 
 You can also checkout some of the already made nodes:
+
 - [Chat](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flow_functions/chat.js)
 - [Wait for chat message](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flow_functions/wait_for_chat_message.js)
 - [Walk to](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flow_functions/walk_to.js)
 
 **Limitations**
-- no way of outputting custom data from a node.
 
+- no way of outputting custom data from a node.
 
 ### 5. Submit a Pull Request
 

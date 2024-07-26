@@ -9,7 +9,7 @@ async function main(data) {
       // Use await here
       bot.on("messagestr", (message, messagePosition, jsonMsg, sender) => {
         console.log("Message received:", message);
-        if (message === data.message) {
+        if (message === data.keyword) {
           console.log("Message matched:", message);
           resolve();
         }

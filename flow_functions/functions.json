@@ -38,8 +38,8 @@
     "id": "wait_for_chat_message",
     "label": "Wait for chat message",
     "hasInput": true,
-    "description": "Waits for a chat message to be sent in public chat.",
-    "inputLabel": "Message",
+    "description": "Waits for a chat message containing a specific keyword.",
+    "inputLabel": "keyword",
     "inputType": "text",
     "author": "SilkePilon",
     "badges": ["beta"]

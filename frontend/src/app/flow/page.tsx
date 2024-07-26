@@ -316,13 +316,25 @@ function animateCenter(
 
 const CustomNode = ({ data, id }: { data: any; id: string }) => {
   const [isInFocus, setIsInFocus] = useState(false);
+  const [emptyInputs, setEmptyInputs] = useState<Record<string, boolean>>({});
   const isRunning = id === data.runningNodeId;
 
   useEffect(() => {
     setIsInFocus(false);
   }, [data.position.x, data.position.y]);
 
-  const handleClick = (e: any) => {
+  useEffect(() => {
+    if (data.input && data.inputValues) {
+      const newEmptyInputs: Record<string, boolean> = {};
+      Object.keys(data.input).forEach((key) => {
+        newEmptyInputs[key] =
+          !data.inputValues[key] || data.inputValues[key].trim() === "";
+      });
+      setEmptyInputs(newEmptyInputs);
+    }
+  }, [data.input, data.inputValues]);
+
+  const handleClick = (e: React.MouseEvent) => {
     if (!(e.target instanceof HTMLInputElement) && !isInFocus) {
       console.log("Clicked on node", id);
       setIsInFocus(true);
@@ -330,6 +342,11 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
         setIsInFocus(false)
       );
     }
+  };
+
+  const handleInputChange = (key: string, value: string) => {
+    data.onChange(key, value);
+    setEmptyInputs((prev) => ({ ...prev, [key]: value.trim() === "" }));
   };
 
   return (
@@ -382,12 +399,8 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
                 id={`${id}-${key}`}
                 type={type === "number" ? "number" : "text"}
                 value={data.inputValues?.[key] || ""}
-                onChange={(e) => {
-                  data.onChange(key, e.target.value);
-                }}
-                onBlur={(e) => {
-                  data.onChange(key, e.target.value);
-                }}
+                onChange={(e) => handleInputChange(key, e.target.value)}
+                onBlur={(e) => handleInputChange(key, e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     data.reactFlowInstance.fitView({
@@ -396,7 +409,9 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
                   }
                 }}
                 placeholder={`${type}`}
-                className="w-full p-1 text-sm border rounded"
+                className={`w-full p-1 text-sm border rounded ${
+                  emptyInputs[key] ? "border-red-500" : ""
+                }`}
               />
             </div>
           ))}
@@ -416,6 +431,7 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
           by&nbsp;
           <a
             target="_blank"
+            rel="noopener noreferrer"
             href={`https://github.com/${data.author}`}
             className="underline"
           >

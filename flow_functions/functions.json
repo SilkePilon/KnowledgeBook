@@ -35,7 +35,7 @@
     "id": "wait_for_chat_message",
     "label": "Wait for chat message",
     "hasInput": true,
-    "input": { "keyword": "text", "amount": "number" },
+    "input": { "keyword": "text" },
     "description": "Waits for a chat message containing a specific keyword.",
     "author": "SilkePilon",
     "badges": ["beta"]

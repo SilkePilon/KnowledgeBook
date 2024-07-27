@@ -32,6 +32,7 @@ async function main(data) {
         await autoTool(bot, block);
         await bot.dig(block);
       } catch (err) {
+        console.error(err);
         throw new Error(`Failed to mine ${block.name}`);
       }
     } else {
@@ -53,7 +54,11 @@ function getBlock(bot, targetBlock) {
   const possibleBlocks = {};
 
   const blockPositions = bot.findBlocks({
-    matching: (block) => block.name.includes(targetBlock),
+    matching: (block) => {
+      if (block.name.includes(targetBlock)) {
+        return true;
+      }
+    },
     maxDistance: 64,
     count: 128,
     point: bot.entity.position,

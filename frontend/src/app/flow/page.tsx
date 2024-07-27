@@ -939,7 +939,7 @@ export default function Dashboard() {
         toast({
           title: "Error",
           variant: "destructive",
-          description: `Failed to execute ${node.data.label}: ${error.message}`,
+          description: `Failed to execute ${node.data.label}.`,
         });
         setIsRunning(false);
         setRunningNodeId(null);

@@ -5,8 +5,10 @@ async function main(data) {
   const bot = getBot();
   console.log("Executing test_node with data:", data);
   // Use bot as needed
+  locationList = toString(data["x y z"]).split(" ");
+  location = { x: locationList[0], y: locationList[1], z: locationList[2] };
   try {
-    await bot.goToLocation(data["x y z"], (useElytra = false));
+    await bot.usePathfinding(location);
     console.log("Reached destination");
   } catch (error) {
     console.error(error);

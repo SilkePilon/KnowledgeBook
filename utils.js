@@ -57,7 +57,7 @@ function bestHarvestTool(bot, block) {
  * @param {string} item
  */
 async function getItem(bot, item) {
-  const itemInRegistry = mcData.itemsByName[item];
+  const itemInRegistry = bot.registry.itemsByName[item];
 
   if (!itemInRegistry) return;
 

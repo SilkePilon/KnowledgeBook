@@ -6,7 +6,7 @@ async function main(data) {
   console.log("Executing test_node with data:", data);
   // Use bot as needed
   try {
-    await bot.chat(toString(data.message));
+    await bot.chat(data.message);
     console.log("Chat message sent");
   } catch (error) {
     console.error(error);

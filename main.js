@@ -24,13 +24,14 @@ const WebSocket = require("ws");
 const { fetch } = require("node-fetch");
 const { EventEmitter } = require("events");
 const sharp = require("sharp");
-const { createPlugin, goals } = require("@nxg-org/mineflayer-pathfinder");
-const { GoalNear, GoalLookAt, GoalBlock } = goals;
+const pathfinder = require("mineflayer-pathfinder").pathfinder;
+const Movements = require("mineflayer-pathfinder").Movements;
+const { GoalNear, GoalBlock } = require("mineflayer-pathfinder").goals;
 const {
   default: loader,
   EntityState,
 } = require("@nxg-org/mineflayer-physics-util");
-const pathfinder = createPlugin();
+// const pathfinder = createPlugin();
 // Express API setup
 const app = express();
 const server = http.createServer(app);
@@ -561,11 +562,11 @@ app.post("/create-bot", async (req, res) => {
       setupChatListener();
 
       bot.physics.autojumpCooldown = 0;
-      // const defaultMove = new Movements(bot);
+      const defaultMove = new Movements(bot);
 
-      // defaultMove.digCost = 10;
-      // defaultMove.placeCost = 10;
-      // bot.pathfinder.setMovements(defaultMove); // Update the movement instance pathfinder uses
+      defaultMove.digCost = 10;
+      defaultMove.placeCost = 10;
+      bot.pathfinder.setMovements(defaultMove); // Update the movement instance pathfinder uses
 
       console.log("Bot spawned and ready!");
       // loadChestIndex();
@@ -1092,7 +1093,10 @@ async function goToLocation(location, useElytra = true) {
 }
 
 async function usePathfinding(location) {
-  await bot.pathfinder.goto(
+  // await bot.pathfinder.goto(
+  //   new GoalNear(location.x, location.y, location.z, 1)
+  // );
+  await bot.pathfinder.setGoal(
     new GoalNear(location.x, location.y, location.z, 1)
   );
   await sleep(1000);
@@ -1136,10 +1140,11 @@ async function findAndOpenNearbyChest() {
 }
 
 /**
- * 
+ *
  * @returns {import("mineflayer").Bot}
  */
 function getBot() {
+  bot.usePathfinding = usePathfinding;
   bot.goToLocation = goToLocation;
   return bot;
 }

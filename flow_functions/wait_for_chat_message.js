@@ -6,19 +6,27 @@ async function main(data) {
 
   try {
     await new Promise((resolve, reject) => {
-      // Use await here
-      bot.on("messagestr", (message, messagePosition, jsonMsg, sender) => {
+      const messageListener = (message, messagePosition, jsonMsg, sender) => {
         console.log("Message received:", message);
-        if (message === data.keyword) {
+        if (
+          toString(message)
+            .toLocaleLowerCase()
+            .includes(toString(data.keyword).toLocaleLowerCase())
+        ) {
           console.log("Message matched:", message);
+          bot.off("messagestr", messageListener); // Remove this specific listener
           resolve();
         }
-      });
+      };
+
+      // Add the listener
+      bot.on("messagestr", messageListener);
 
       // Add a timeout to reject the promise if the message is not received within a certain time
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
+        bot.off("messagestr", messageListener); // Remove the listener in case of timeout
         reject(new Error("Timeout waiting for the message"));
-      }, 30000); // e.g., wait for 30 seconds
+      }, data["timeout (seconds)"] * 1000);
     });
     console.log("Message processing complete");
   } catch (error) {

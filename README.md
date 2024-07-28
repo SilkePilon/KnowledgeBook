@@ -68,6 +68,14 @@ Check our [Wiki](link-to-wiki) for detailed guides on:
 ## How To Install 📥
 
 ### Simple 1 liner install
+OpenDeliveryBot can be installed using 1 line of code!
+
+#### Prerequisites
+
+Make sure you have the following installed:
+
+- [Node.js](https://nodejs.org/)
+- [npm](https://www.npmjs.com/)
 
 Linux:
 ```bash

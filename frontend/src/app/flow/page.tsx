@@ -1457,8 +1457,8 @@ export default function Dashboard() {
                     className="mb-4 w-full"
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
-                  <ScrollArea className="h-[53vh] pr-4">
-                    <div className="pr-2">
+                  <ScrollArea className="h-[53vh]">
+                    <div className="">
                       {nodeTypes
                         .filter(
                           (node) =>
@@ -1470,7 +1470,10 @@ export default function Dashboard() {
                               .includes(searchTerm.toLowerCase())
                         )
                         .map((nodeType) => (
-                          <Card key={nodeType.id} className="mb-3 relative p-3">
+                          <Card
+                            key={nodeType.id}
+                            className="mb-3 relative w-full p-3"
+                          >
                             <div className="pr-16">
                               <h3 className="text-sm font-semibold">
                                 {nodeType.label}
@@ -1637,7 +1640,7 @@ export default function Dashboard() {
                   <Button
                     onClick={(e) => {
                       e.preventDefault();
-                      // runFlow();
+                      runFlow();
                     }}
                     style={{ width: "100%" }}
                     disabled={

@@ -262,7 +262,7 @@ function DownloadButton() {
   };
 
   return (
-    <Panel position="top-right">
+    <Panel position="bottom-right">
       <button className="download-btn" onClick={onClick}>
         Download Image
       </button>
@@ -818,6 +818,7 @@ export default function Dashboard() {
   const openDialog = () => setIsOpen(true);
   const closeDialog = () => setIsOpen(false);
   const { setViewport, getNodes, getEdges } = useReactFlow();
+  const [showClearConfirmation, setShowClearConfirmation] = useState(false);
   const [importedFlowData, setImportedFlowData] = useState<{
     nodes: Node[];
     edges: Edge[];
@@ -893,49 +894,93 @@ export default function Dashboard() {
     event.target.value = "";
   };
 
-  const applyImportedFlow = () => {
+  const waitForNodeToBeAdded = (nodeId: string) => {
+    return new Promise((resolve) => {
+      const interval = setInterval(() => {
+        const node = reactFlowInstance.getNodes().find((n) => n.id === nodeId);
+        if (node) {
+          clearInterval(interval);
+          // @ts-ignore
+          resolve();
+        }
+      }, 100); // Check every 100 milliseconds
+    });
+  };
+
+  const applyImportedFlow = async () => {
     if (importedFlowData) {
-      const updatedNodes = importedFlowData.nodes.map((node) => ({
-        ...node,
-        data: {
-          ...node.data,
-          reactFlowInstance: reactFlowInstance,
-          onDelete: deleteNode,
-          onChange: (key: string, value: any) => {
-            // @ts-ignore
-            setNodes((nds) =>
-              nds.map((n) =>
-                // @ts-ignore
-                n.id === node.id
-                  ? {
-                      // @ts-ignore
-                      ...n,
-                      data: {
+      const updatedNodes: Node[] = [];
+
+      for (const node of importedFlowData.nodes) {
+        const updatedNode: Node = {
+          ...node,
+          data: {
+            ...node.data,
+            reactFlowInstance: reactFlowInstance,
+            onDelete: deleteNode,
+            onChange: (key: string, value: any) => {
+              // @ts-ignore
+              setNodes((nds) =>
+                nds.map((n) =>
+                  // @ts-ignore
+                  n.id === node.id
+                    ? {
                         // @ts-ignore
-                        ...n.data,
-                        inputValues: {
+                        ...n,
+                        data: {
                           // @ts-ignore
-                          ...n.data.inputValues,
-                          [key]: value,
+                          ...n.data,
+                          inputValues: {
+                            // @ts-ignore
+                            ...n.data.inputValues,
+                            [key]: value,
+                          },
                         },
-                      },
-                    }
-                  : n
-              )
-            );
+                      }
+                    : n
+                )
+              );
+            },
           },
-        },
-      }));
-      // @ts-ignore
-      setNodes(updatedNodes);
+        };
+
+        updatedNodes.push(updatedNode);
+
+        // Add the node to the flow
+        // @ts-ignore
+        setNodes((nds) => [...nds, updatedNode]);
+
+        // Wait for the node to be added
+        await waitForNodeToBeAdded(updatedNode.id);
+
+        // Animate center on the new node
+        await animateCenter(reactFlowInstance, updatedNode.id, 600);
+
+        // Wait for the animation to complete
+        await new Promise((resolve) => setTimeout(resolve, 600));
+      }
+
+      // Fit the view to all nodes once all nodes are added
+      await sleep(900);
+      reactFlowInstance.fitView({ padding: 0.2, duration: 1000 });
+
       setEdges(importedFlowData.edges);
       setImportedFlowData(null);
+
       toast({
         title: "Flow Applied",
         description: "The imported flow has been successfully applied.",
       });
     }
   };
+  const clearAllNodes = useCallback(() => {
+    setNodes([]);
+    setEdges([]);
+    toast({
+      title: "Flow Cleared",
+      description: "All nodes and connections have been removed.",
+    });
+  }, [setNodes, setEdges]);
 
   const addNode = useCallback(
     (nodeData: NodeType) => {
@@ -1701,6 +1746,46 @@ export default function Dashboard() {
                     </ControlButton>
                   </Controls> */}
                   <DownloadButton />
+                  <Panel position="top-right">
+                    <AlertDialog
+                      open={showClearConfirmation}
+                      onOpenChange={setShowClearConfirmation}
+                    >
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setShowClearConfirmation(true);
+                          }}
+                          style={{ width: "100%" }}
+                          variant="destructive"
+                          disabled={nodes.length === 0}
+                        >
+                          Clear All Nodes
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action will remove all nodes and connections
+                            from your flow. This cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => {
+                              clearAllNodes();
+                              setShowClearConfirmation(false);
+                            }}
+                          >
+                            Clear All
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </Panel>
                   {/* <Background /> */}
                 </ReactFlow>
                 <AlertDialog open={isOpen} onOpenChange={setIsOpen}>

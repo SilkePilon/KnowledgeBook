@@ -183,6 +183,12 @@ In the `flow_functions` directory, open the `functions.json` file and add an ent
 - `YOUR NAME` - Your GitHub username
 - `{ "NAME": "number", "NAME": "text" }` - Your input fields.
 
+**Available input options:**
+- `text` - An general text input box
+- `number` - An input box limited to numbers only
+- `switch` - An switch that can be set to true or false
+
+
 ### 4. Implement the Node
 
 Open your newly created file and implement your node using the following structure:

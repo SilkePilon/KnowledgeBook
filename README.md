@@ -63,7 +63,7 @@ OpenDeliveryBot can be installed using 1 line of code!
 
 Make sure you have the following installed:
 
-- [Node.js](https://nodejs.org/)
+- [Node.js](https://nodejs.org/) 18 or above
 - [npm](https://www.npmjs.com/)
 
 #### Linux:
@@ -239,7 +239,7 @@ Thank you for contributing to the project! If you have any questions or need fur
 
 Happy coding! 🚀
 
-## images:
+<iframe style="width:100%;height:auto;min-width:600px;min-height:400px;" src="https://star-history.com/embed?secret=Z2hwX0FTaTh0STkzN2NXcG9nOVdQY0U0RUxJWnJVSllPTjJ4ZlJyNA==#SilkePilon/OpenDeliveryBot&Date" frameBorder="0"></iframe>
 
 <!-- 
 ![alt text](https://i.imgur.com/RRHOgzp.png) -->

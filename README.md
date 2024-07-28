@@ -87,9 +87,6 @@ Invoke-WebRequest -Uri "https://github.com/SilkePilon/OpenDeliveryBot/archive/re
 MacOS:
 ```bash
 curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm install && cd .. && rm main.zip && cd OpenDeliveryBot-main && node main.js
-
-
-
 ```
 
 ### Manual Install

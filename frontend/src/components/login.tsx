@@ -32,6 +32,7 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { set } from "react-hook-form";
 
 const socket = io("http://localhost:3001");
 
@@ -48,6 +49,7 @@ export function CreateBotDialog() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [versions, setVersions] = React.useState<string[]>([]);
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
+  const [isLoading, setisLoading] = React.useState(false);
 
   //   bouncy.register();
 
@@ -121,6 +123,7 @@ export function CreateBotDialog() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setisLoading(true);
     try {
       const response = await fetch("http://localhost:3001/create-bot", {
         method: "POST",
@@ -309,8 +312,12 @@ export function CreateBotDialog() {
                   Waiting for MSA...
                 </Button>
               ) : (
-                <Button type="submit" disabled={isButtonDisabled}>
-                  Create Bot
+                <Button
+                  type="submit"
+                  disabled={isButtonDisabled || isLoading}
+                  // onClick={setisLoading(true)}
+                >
+                  {isLoading ? "Creating Bot..." : "Create Bot"}
                 </Button>
               )}
             </AlertDialogFooter>

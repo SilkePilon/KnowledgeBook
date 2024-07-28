@@ -24,6 +24,8 @@ import {
   Minus,
   Info,
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+
 import {
   Popover,
   PopoverContent,
@@ -341,7 +343,7 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
         newEmptyInputs[key] = typeof value !== "string" || value.trim() === "";
 
         // Initialize undefined checkboxes to false
-        if (data.input[key] === "checkbox" && value === undefined) {
+        if (data.input[key] === "switch" && value === undefined) {
           updatedInputValues[key] = false;
           newEmptyInputs[key] = false;
           needsUpdate = true;
@@ -386,7 +388,7 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
   useEffect(() => {
     if (data.input) {
       Object.entries(data.input).map(([key, type]) => {
-        if (type === "checkbox" && data.inputValues[key] === undefined) {
+        if (type === "switch" && data.inputValues[key] === undefined) {
           handleInputChange(key, false);
         }
       });
@@ -438,17 +440,26 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
         {data.input &&
           Object.entries(data.input).map(([key, type]) => (
             <div key={key} className="mb-2">
-              {type === "checkbox" ? (
+              {type === "switch" ? (
                 <>
                   <Label htmlFor={`${id}-${key}`}>{key}</Label>
                   <div className="flex items-center space-x-2">
-                    <Checkbox
+                    {/* <Checkbox
                       id={`${id}-${key}`}
                       checked={data.inputValues?.[key] || false}
                       onCheckedChange={(checked) =>
                         handleInputChange(key, checked)
                       }
                       onClick={(e) => e.stopPropagation()} // This prevents the card's onClick from firing
+                    /> */}
+                    <Switch
+                      id={`${id}-${key}`}
+                      checked={data.inputValues?.[key] || false}
+                      onCheckedChange={(checked) =>
+                        handleInputChange(key, checked)
+                      }
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ borderRadius: "6px" }}
                     />
                     <label
                       htmlFor={`${id}-${key}`}

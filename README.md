@@ -169,7 +169,7 @@ In the `flow_functions` directory, open the `functions.json` file and add an ent
     "hasInput": true,
     "description": "YOUR NODE DESCRIPTION",
     // example of input
-    "input": { "amount": "number", "message": "text", "sneak": "checkbox" },
+    "input": { "amount": "number", "message": "text", "sneak": "switch" },
     "author": "YOUR NAME"
   }
 }

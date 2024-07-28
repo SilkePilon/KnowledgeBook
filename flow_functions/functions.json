@@ -9,8 +9,8 @@
     "input": {
       "number": "number",
       "text": "text",
-      "Test Checkbox 1": "checkbox",
-      "Test Checkbox 2": "checkbox"
+      "Test Switch 1": "switch",
+      "Test Switch 2": "switch"
     },
     "author": "SilkePilon",
     "badges": ["test"]
@@ -150,7 +150,7 @@
     "label": "Toggle Sneak",
     "hasInput": true,
     "description": "Toggle sneak mode on or off",
-    "input": { "sneak": "checkbox" },
+    "input": { "sneak": "switch" },
     "author": "Assistant"
   },
   "use_block": {

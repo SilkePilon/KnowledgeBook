@@ -1001,7 +1001,7 @@ async function goToLocation(location, useElytra = true) {
   }
 
   const elytraItem = bot.inventory.slots.find(
-    (item) => item?.name === "elytra"
+    (item) => item && item.name === "elytra"
   );
   if (!elytraItem || !useElytra) {
     console.log("No elytra available for long-distance travel");
@@ -1010,7 +1010,7 @@ async function goToLocation(location, useElytra = true) {
 
   await bot.equip(elytraItem, "torso");
   const fireworkItem = bot.inventory.slots.find(
-    (item) => item?.name === "firework_rocket"
+    (item) => item && item.name === "firework_rocket"
   );
   if (!fireworkItem) {
     console.log("No fireworks");

@@ -18,10 +18,10 @@ async function main(data) {
     const furnaceBlock = await bot.openFurnace(furnace);
     await bot.waitForTicks(8);
     const item = await furnaceBlock.slots.find(
-      (item) => item?.name === itemName
+      (item) => item && item.name === itemName
     );
     const fuel = await furnaceBlock.slots.find(
-      (item) => item?.name === fuelName
+      (item) => item && item.name === fuelName
     );
     console.log(item);
     console.log(fuel);

@@ -7,7 +7,8 @@ async function main(data) {
 
   try {
     const item = await bot.inventory.slots.find(
-      (item) => item?.name.toLocaleLowerCase() === itemName.toLocaleLowerCase()
+      (item) =>
+        item && item.name.toLocaleLowerCase() === itemName.toLocaleLowerCase()
     );
     if (!item) {
       throw new Error(`Unknown item: ${itemName}`);

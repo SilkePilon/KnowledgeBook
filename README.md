@@ -68,6 +68,7 @@ Check our [Wiki](link-to-wiki) for detailed guides on:
 ## How To Install 📥
 
 ## Simple 1 liner install
+
 OpenDeliveryBot can be installed using 1 line of code!
 
 #### Prerequisites
@@ -78,27 +79,33 @@ Make sure you have the following installed:
 - [npm](https://www.npmjs.com/)
 
 #### Linux:
+
 ```bash
 curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm install && cd .. && rm main.zip && cd OpenDeliveryBot-main && node main.js
 ```
 
 #### Windows (curl):
+
 ```bash
 curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && tar -xf main.zip && cd OpenDeliveryBot-main && npm install && cd .. && del main.zip && cd OpenDeliveryBot-main && node main.js
 ```
 
 #### Windows (PowerShell):
+
 ```powershell
 Invoke-WebRequest -Uri "https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip" -OutFile "main.zip"; Expand-Archive -Path "main.zip" -DestinationPath .; cd .\OpenDeliveryBot-main; npm install; cd ..; Remove-Item -Path "main.zip"; cd .\OpenDeliveryBot-main; node main.js
 ```
 
 #### MacOS:
+
 ```bash
 curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm install && cd .. && rm main.zip && cd OpenDeliveryBot-main && node main.js
 ```
 
 ## Manual Install
+
 #### 1. Clone the Repository
+
 First, make a local copy of the repository:
 
 ```bash
@@ -108,6 +115,7 @@ git clone https://github.com/SilkePilon/OpenDeliveryBot.git
 Open the cloned repository in your preferred terminal app.
 
 #### 1. Install packages
+
 Assuming you have [Node](https://nodejs.org/en/download/package-manager/current) and [NPM](https://www.npmjs.com/) installed you can run the following commands:
 
 ```bash
@@ -161,7 +169,7 @@ In the `flow_functions` directory, open the `functions.json` file and add an ent
     "hasInput": true,
     "description": "YOUR NODE DESCRIPTION",
     // example of input
-    "input": { "amount": "number", "message": "text" },
+    "input": { "amount": "number", "message": "text", "sneak": "checkbox" },
     "author": "YOUR NAME"
   }
 }

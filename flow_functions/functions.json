@@ -12,7 +12,8 @@
       "Test Checkbox 1": "checkbox",
       "Test Checkbox 2": "checkbox"
     },
-    "author": "SilkePilon"
+    "author": "SilkePilon",
+    "badges": ["test"]
   },
   "chat": {
     "name": "chat",
@@ -32,7 +33,8 @@
     "hasInput": true,
     "description": "Use pathfinding to walk to a location.",
     "input": { "x y z": "text" },
-    "author": "SilkePilon"
+    "author": "SilkePilon",
+    "badges": ["Not Working"]
   },
   "wait_for_chat_message": {
     "name": "wait_for_chat_message",
@@ -42,8 +44,7 @@
     "hasInput": true,
     "input": { "keyword": "text", "timeout (seconds)": "number" },
     "description": "Waits for a chat message containing a specific keyword.",
-    "author": "SilkePilon",
-    "badges": ["beta"]
+    "author": "SilkePilon"
   },
   "sleep": {
     "name": "sleep",
@@ -63,7 +64,8 @@
     "hasInput": true,
     "description": "Mine a specific amount of a specified block",
     "input": { "block name": "text", "amount": "number" },
-    "author": "Ash"
+    "author": "Ash",
+    "badges": ["beta", "user made"]
   },
   "place_block": {
     "name": "place_block",
@@ -138,7 +140,8 @@
     "hasInput": true,
     "description": "Collect dropped items within a specified range",
     "input": { "range": "number" },
-    "author": "Assistant"
+    "author": "Assistant",
+    "badges": ["Not Working"]
   },
   "toggle_sneak": {
     "name": "toggle_sneak",
@@ -171,7 +174,8 @@
       "blockName": "text",
       "range": "number"
     },
-    "author": "Assistant"
+    "author": "Assistant",
+    "badges": ["Not Working"]
   },
   "smelt_item": {
     "name": "smelt_item",

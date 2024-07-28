@@ -217,6 +217,7 @@ interface NodeType {
   inputType: string;
   author: string;
   input: {};
+  badges: string[];
 }
 
 function downloadImage(dataUrl: any) {
@@ -440,7 +441,7 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
               {type === "checkbox" ? (
                 <>
                   <Label htmlFor={`${id}-${key}`}>{key}</Label>
-                  <div className="flex items-center space-x-2" onrender>
+                  <div className="flex items-center space-x-2">
                     <Checkbox
                       id={`${id}-${key}`}
                       checked={data.inputValues?.[key] || false}
@@ -842,6 +843,7 @@ export default function Dashboard() {
           position: { x: nodes.length * 400, y: yLever },
           reactFlowInstance: reactFlowInstance,
           input: nodeData.input,
+          badges: nodeData.badges || [],
           theme: theme,
           inputValues: {},
           onChange: (key: string, value: any) => {
@@ -1344,6 +1346,34 @@ export default function Dashboard() {
                                     )
                                   )}
                                 </ul>
+                                {/* <Separator></Separator> */}
+                                <div style={{ height: "0.5rem" }}></div>
+                                {nodeType.badges &&
+                                nodeType.badges.length > 0 ? (
+                                  <>
+                                    <p className="text-xs font-medium">
+                                      Badges:
+                                    </p>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        gap: "6px",
+                                        flexWrap: "wrap",
+                                        marginTop: "0.5rem",
+                                      }}
+                                    >
+                                      {nodeType.badges.map((badge, index) => (
+                                        <Badge
+                                          style={{ borderRadius: "0.4rem" }}
+                                          key={index}
+                                          variant="default"
+                                        >
+                                          {badge}
+                                        </Badge>
+                                      ))}
+                                    </div>
+                                  </>
+                                ) : null}
                               </div>
                             </div>
                             <div className="absolute inset-y-0 right-5 flex items-center">

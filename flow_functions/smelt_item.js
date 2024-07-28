@@ -34,23 +34,24 @@ async function main(data) {
     await furnaceBlock.putFuel(fuel.type, null, fuel.count);
     await furnaceBlock.putInput(item.type, null, item.count);
     console.log(`Started smelting ${itemName}`);
-
-    await new Promise((resolve) => {
-      furnaceBlock.on("update", () => {
-        if (furnaceBlock.slots[2]?.count === item.count) {
-          console.log("Smelting complete");
-          resolve();
-        }
-        if (!furnaceBlock.slots[1]?.count) {
-          if (!furnaceBlock.slots[0]?.count) {
-            console.log("Fuel depleted");
+    if (data["wait for completion"]) {
+      await new Promise((resolve) => {
+        furnaceBlock.on("update", () => {
+          if (furnaceBlock.slots[2]?.count === item.count) {
+            console.log("Smelting complete");
             resolve();
           }
-        }
+          if (!furnaceBlock.slots[1]?.count) {
+            if (!furnaceBlock.slots[0]?.count) {
+              console.log("Fuel depleted");
+              resolve();
+            }
+          }
+        });
       });
-    });
+      const output = await furnaceBlock.takeOutput();
+    }
 
-    const output = await furnaceBlock.takeOutput();
     await furnaceBlock.close();
     console.log(`Finished smelting ${output.name}`);
   } catch (error) {

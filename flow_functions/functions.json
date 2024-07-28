@@ -80,7 +80,7 @@
       "y": "text",
       "z": "text"
     },
-    "author": "Assistant"
+    "author": "AI model"
   },
   "craft_item": {
     "name": "craft_item",
@@ -90,7 +90,7 @@
     "hasInput": true,
     "description": "Craft a specified amount of an item",
     "input": { "itemName": "text", "amount": "number" },
-    "author": "Assistant"
+    "author": "AI model"
   },
   "equip_item": {
     "name": "equip_item",
@@ -100,7 +100,7 @@
     "hasInput": true,
     "description": "Equip a specified item to a destination (e.g., 'hand')",
     "input": { "itemName": "text", "destination": "text" },
-    "author": "Assistant"
+    "author": "AI model"
   },
   "look_at": {
     "name": "look_at",
@@ -110,7 +110,7 @@
     "hasInput": true,
     "description": "Make the bot look at a specific coordinate",
     "input": { "x": "number", "y": "number", "z": "number" },
-    "author": "Assistant"
+    "author": "AI model"
   },
   "eat_food": {
     "name": "eat_food",
@@ -120,7 +120,7 @@
     "hasInput": true,
     "description": "Make the bot eat a specified food item",
     "input": { "foodName": "text" },
-    "author": "Assistant"
+    "author": "AI model"
   },
   "attack_entity": {
     "name": "attack_entity",
@@ -130,7 +130,7 @@
     "hasInput": true,
     "description": "Attack a specified entity or player within a given range",
     "input": { "entityName": "text", "range": "number" },
-    "author": "Assistant"
+    "author": "AI model"
   },
   "collect_items": {
     "name": "collect_items",
@@ -140,18 +140,26 @@
     "hasInput": true,
     "description": "Collect dropped items within a specified range",
     "input": { "range": "number" },
-    "author": "Assistant",
+    "author": "AI model",
     "badges": ["Not Working"]
   },
-  "toggle_sneak": {
-    "name": "toggle_sneak",
-    "file": "toggle_sneak.js",
-    "id": "toggle_sneak",
-    "label": "Toggle Sneak",
+  "toggle_options": {
+    "name": "toggle_options",
+    "file": "toggle_options.js",
+    "id": "toggle_options",
+    "label": "Toggle Player Options",
     "hasInput": true,
-    "description": "Toggle sneak mode on or off",
-    "input": { "sneak": "switch" },
-    "author": "Assistant"
+    "description": "Toggle player options on or off",
+    "input": {
+      "sneak": "switch",
+      "sprint": "switch",
+      "jump": "switch",
+      "forward": "switch",
+      "back": "switch",
+      "left": "switch",
+      "right": "switch"
+    },
+    "author": "AI model"
   },
   "use_block": {
     "name": "use_block",
@@ -161,7 +169,7 @@
     "hasInput": true,
     "description": "Use (right-click) a block at a relative position",
     "input": { "x": "number", "y": "number", "z": "number" },
-    "author": "Assistant"
+    "author": "AI model"
   },
   "place_block_nearby": {
     "name": "place_block_nearby",
@@ -174,7 +182,7 @@
       "blockName": "text",
       "range": "number"
     },
-    "author": "Assistant",
+    "author": "AI model",
     "badges": ["Not Working"]
   },
   "smelt_item": {
@@ -184,8 +192,12 @@
     "label": "Smelt Item",
     "hasInput": true,
     "description": "Smelt an item in a nearby furnace",
-    "input": { "itemName": "text", "fuelName": "text" },
-    "author": "Assistant"
+    "input": {
+      "itemName": "text",
+      "fuelName": "text",
+      "skip completion check": "switch"
+    },
+    "author": "AI model"
   },
   "drop_item": {
     "name": "drop_item",
@@ -195,6 +207,6 @@
     "hasInput": true,
     "description": "Drop a specified amount of an item",
     "input": { "itemName": "text", "amount": "number" },
-    "author": "Assistant"
+    "author": "AI model"
   }
 }

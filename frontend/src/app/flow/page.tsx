@@ -1391,9 +1391,9 @@ export default function Dashboard() {
                               <Button
                                 variant="default"
                                 size="sm"
-                                onClick={(e) => {
+                                onClick={async (e) => {
                                   e.preventDefault();
-                                  addNode(nodeType);
+                                  await addNode(nodeType);
                                 }}
                               >
                                 Add Node

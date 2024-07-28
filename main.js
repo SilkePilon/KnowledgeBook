@@ -44,6 +44,17 @@ const io = new Server(server, {
 });
 app.use(bodyParser.json());
 app.use(cors()); // Add this line to enable CORS for all routes
+
+// set up rate limiter: maximum of five requests per minute
+var RateLimit = require("express-rate-limit");
+var limiter = RateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // max 100 requests per windowMs
+});
+
+// apply rate limiter to all requests
+app.use(limiter);
+
 const PORT = 3001;
 const versions = require("minecraft-data").supportedVersions.pc;
 // Bot state
@@ -477,7 +488,7 @@ app.post("/flow/:flowName", async (req, res) => {
     delete require.cache[require.resolve(flowPath)];
     res.status(200).json({ message: "Flow executed successfully" });
   } catch (error) {
-    console.error(`Error executing flow ${flowName}:`, error);
+    console.error(`Error executing flow ${flowName}: %s`, error);
     res
       .status(500)
       .json({ error: "Flow execution failed", details: error.message });

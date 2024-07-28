@@ -25,7 +25,7 @@ import {
   Info,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-
+import { ChangeEvent } from "react";
 import {
   Popover,
   PopoverContent,
@@ -817,6 +817,11 @@ export default function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const openDialog = () => setIsOpen(true);
   const closeDialog = () => setIsOpen(false);
+  const { setViewport, getNodes, getEdges } = useReactFlow();
+  const [importedFlowData, setImportedFlowData] = useState<{
+    nodes: Node[];
+    edges: Edge[];
+  } | null>(null);
   // @ts-ignore
   useEffect(() => {
     // @ts-ignore
@@ -838,6 +843,94 @@ export default function Dashboard() {
     },
     [setEdges]
   );
+
+  const exportFlow = () => {
+    const flowData = {
+      nodes: nodes,
+      edges: edges,
+    };
+    const jsonString = JSON.stringify(flowData, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = "flow_export.json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const importFlow = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault(); // Prevent any default behavior
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const importedData = JSON.parse(e.target?.result as string) as {
+            nodes: Node[];
+            edges: Edge[];
+          };
+          setImportedFlowData(importedData);
+          toast({
+            title: "Flow Loaded",
+            description:
+              "The flow has been successfully loaded. Click 'Apply Imported Flow' to use it.",
+          });
+        } catch (error) {
+          console.error("Error parsing imported file:", error);
+          toast({
+            title: "Import Failed",
+            description:
+              "Failed to import the flow. Please check the file format.",
+            variant: "destructive",
+          });
+        }
+      };
+      reader.readAsText(file);
+    }
+    // Reset the file input so the same file can be selected again if needed
+    event.target.value = "";
+  };
+
+  const applyImportedFlow = () => {
+    if (importedFlowData) {
+      const updatedNodes = importedFlowData.nodes.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          reactFlowInstance: reactFlowInstance,
+          onDelete: deleteNode,
+          onChange: (key: string, value: any) => {
+            setNodes((nds) =>
+              nds.map((n) =>
+                n.id === node.id
+                  ? {
+                      ...n,
+                      data: {
+                        ...n.data,
+                        inputValues: {
+                          ...n.data.inputValues,
+                          [key]: value,
+                        },
+                      },
+                    }
+                  : n
+              )
+            );
+          },
+        },
+      }));
+
+      setNodes(updatedNodes);
+      setEdges(importedFlowData.edges);
+      setImportedFlowData(null);
+      toast({
+        title: "Flow Applied",
+        description: "The imported flow has been successfully applied.",
+      });
+    }
+  };
 
   const addNode = useCallback(
     (nodeData: NodeType) => {
@@ -1244,7 +1337,10 @@ export default function Dashboard() {
             className="relative hidden flex-col items-start gap-8 md:flex"
             x-chunk="dashboard-03-chunk-0"
           >
-            <form className="grid w-full items-start gap-6">
+            <form
+              className="grid w-full items-start gap-6"
+              onSubmit={(e) => e.preventDefault()}
+            >
               <fieldset className="grid gap-6 rounded-lg border p-4">
                 <legend className="-ml-1 px-1 text-sm font-medium">
                   Nodes
@@ -1442,44 +1538,52 @@ export default function Dashboard() {
                   {/* <div style={{ width: "1px" }} /> */}
                   {/* <Label htmlFor="x">Flow Controls</Label> */}
                   <div className="flex w-full items-center space-x-2">
-                    {/* <Button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        console.log(selectedNode);
-                        addNode();
-                      }}
-                      disabled={!selectedNode || isRunning}
-                      style={{ width: "100%" }}
-                    >
-                      Add Selected Node
-                    </Button> */}
                     <Button
                       onClick={(e) => {
                         e.preventDefault();
-                        // runFlow();
-                      }}
-                      style={{ width: "100%" }}
-                      // disabled={
-                      //   nodes.length === 0 ||
-                      //   botState.created === false ||
-                      //   isRunning
-                      // }
-                      // variant={botState.created ? "default" : "secondary"}
-                    >
-                      Import Flow
-                    </Button>
-                    <Button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        // runFlow();
+                        exportFlow();
                       }}
                       style={{ width: "100%" }}
                       disabled={nodes.length === 0}
-                      // variant={botState.created ? "default" : "secondary"}
                     >
                       Export Flow
                     </Button>
+                    <label htmlFor="import-flow" style={{ width: "100%" }}>
+                      <Button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          document.getElementById("import-flow")?.click();
+                        }}
+                        style={{ width: "100%" }}
+                      >
+                        Select Flow File
+                      </Button>
+                      <input
+                        id="import-flow"
+                        type="file"
+                        accept=".json"
+                        style={{ display: "none" }}
+                        onChange={importFlow}
+                      />
+                    </label>
+                    <input
+                      id="import-flow"
+                      type="file"
+                      accept=".json"
+                      style={{ display: "none" }}
+                      onChange={importFlow}
+                    />
                   </div>
+                  <Button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      applyImportedFlow();
+                    }}
+                    style={{ width: "100%" }}
+                    disabled={!importedFlowData}
+                  >
+                    Apply Imported Flow
+                  </Button>
                   <Button
                     onClick={(e) => {
                       e.preventDefault();

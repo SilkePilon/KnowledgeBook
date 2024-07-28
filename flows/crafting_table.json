@@ -1,0 +1,264 @@
+{
+  "nodes": [
+    {
+      "id": "node-1",
+      "type": "custom",
+      "position": {
+        "x": -142.02048190478115,
+        "y": -209.63587501870896
+      },
+      "data": {
+        "label": "Wait for chat message",
+        "description": "Waits for a chat message containing a specific keyword.",
+        "author": "SilkePilon",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "reactFlowInstance": {
+          "viewportInitialized": true
+        },
+        "input": {
+          "keyword": "text",
+          "timeout (seconds)": "number"
+        },
+        "badges": [],
+        "theme": "dark",
+        "inputValues": {
+          "keyword": "start",
+          "timeout (seconds)": "120"
+        },
+        "runningNodeId": null
+      },
+      "measured": {
+        "width": 300,
+        "height": 283
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "node-2",
+      "type": "custom",
+      "position": {
+        "x": 209.47833467692044,
+        "y": -122.70495757297569
+      },
+      "data": {
+        "label": "Send Chat Message",
+        "description": "Send an chat message to public chat.",
+        "author": "SilkePilon",
+        "position": {
+          "x": 400,
+          "y": 0
+        },
+        "reactFlowInstance": {
+          "viewportInitialized": true
+        },
+        "input": {
+          "message": "text"
+        },
+        "badges": [],
+        "theme": "dark",
+        "inputValues": {
+          "message": "starting!"
+        },
+        "runningNodeId": null
+      },
+      "measured": {
+        "width": 258,
+        "height": 195
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "node-3",
+      "type": "custom",
+      "position": {
+        "x": 542.9826788198479,
+        "y": -105.07890479188538
+      },
+      "data": {
+        "label": "Mine",
+        "description": "Mine a specific amount of a specified block",
+        "author": "Ash",
+        "position": {
+          "x": 800,
+          "y": 0
+        },
+        "reactFlowInstance": {
+          "viewportInitialized": true
+        },
+        "input": {
+          "block name": "text",
+          "amount": "number"
+        },
+        "badges": [
+          "beta",
+          "user made"
+        ],
+        "theme": "dark",
+        "inputValues": {
+          "block name": "oak_log",
+          "amount": "2"
+        },
+        "runningNodeId": null
+      },
+      "measured": {
+        "width": 291,
+        "height": 267
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "node-4",
+      "type": "custom",
+      "position": {
+        "x": 907.3897000712877,
+        "y": 20.116958120098957
+      },
+      "data": {
+        "label": "Craft Item",
+        "description": "Craft a specified amount of an item",
+        "author": "AI model",
+        "position": {
+          "x": 1200,
+          "y": 0
+        },
+        "reactFlowInstance": {
+          "viewportInitialized": true
+        },
+        "input": {
+          "itemName": "text",
+          "amount": "number"
+        },
+        "badges": [],
+        "theme": "dark",
+        "inputValues": {
+          "itemName": "oak_planks",
+          "amount": "4"
+        },
+        "runningNodeId": null
+      },
+      "measured": {
+        "width": 246,
+        "height": 267
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "node-5",
+      "type": "custom",
+      "position": {
+        "x": 1238,
+        "y": 110
+      },
+      "data": {
+        "label": "Craft Item",
+        "description": "Craft a specified amount of an item",
+        "author": "AI model",
+        "position": {
+          "x": 1600,
+          "y": 0
+        },
+        "reactFlowInstance": {
+          "viewportInitialized": true
+        },
+        "input": {
+          "itemName": "text",
+          "amount": "number"
+        },
+        "badges": [],
+        "theme": "dark",
+        "inputValues": {
+          "itemName": "crafting_table",
+          "amount": "1"
+        },
+        "runningNodeId": null
+      },
+      "measured": {
+        "width": 246,
+        "height": 267
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "node-6",
+      "type": "custom",
+      "position": {
+        "x": 1544.7495422363281,
+        "y": 190
+      },
+      "data": {
+        "label": "Drop Item",
+        "description": "Drop a specified amount of an item",
+        "author": "AI model",
+        "position": {
+          "x": 2000,
+          "y": 0
+        },
+        "reactFlowInstance": {
+          "viewportInitialized": true
+        },
+        "input": {
+          "itemName": "text",
+          "amount": "number"
+        },
+        "badges": [],
+        "theme": "dark",
+        "inputValues": {
+          "itemName": "crafting_table",
+          "amount": "1"
+        },
+        "runningNodeId": null
+      },
+      "measured": {
+        "width": 242,
+        "height": 267
+      },
+      "selected": false,
+      "dragging": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "source": "node-1",
+      "target": "node-2",
+      "type": "custom-edge",
+      "animated": true
+    },
+    {
+      "id": "edge-2",
+      "source": "node-2",
+      "target": "node-3",
+      "type": "custom-edge",
+      "animated": true
+    },
+    {
+      "id": "edge-3",
+      "source": "node-3",
+      "target": "node-4",
+      "type": "custom-edge",
+      "animated": true
+    },
+    {
+      "id": "edge-4",
+      "source": "node-4",
+      "target": "node-5",
+      "type": "custom-edge",
+      "animated": true
+    },
+    {
+      "id": "edge-5",
+      "source": "node-5",
+      "target": "node-6",
+      "type": "custom-edge",
+      "animated": true
+    }
+  ]
+}

@@ -46,24 +46,12 @@ Check our [Wiki](link-to-wiki) for detailed guides on:
 - Add an way in export and import flows.
 - Auto save flows to browser.
 
-## Features 🕹
+## Ready to download flows🕹
 
-| Feature name        | Description                               | Available   |
-| ------------------- | ----------------------------------------- | ----------- |
-| Defender            | Follows and attacks nearby players        | No          |
-| Shield Aura         | Follows and protects owner                | No          |
-| Schematic Builder   | Builds structures from schematics         | Planned     |
-| Raid Alerts         | Sends alerts on explosions and mob spawns | No          |
-| Area Miner          | Mines designated areas                    | No          |
-| Chat Spy            | Views the bot's chat                      | Planned     |
-| Sugar Cane Farmer   | Harvests and stores sugar cane            | Coming soon |
-| Cactus Farm Builder | Builds cactus farms                       | Yes         |
-| Container Viewer    | Checks bots' inventories                  | Coming soon |
-| Chat to Discord     | Forwards chat to Discord                  | Planned     |
-| Wander              | Moves bots randomly                       | Planned     |
-| Auto Eater          | Eats when hungry or damaged               | Planned     |
-| Crop Farmer         | Farms crops                               | Planned     |
-| Inventory Manager   | Manages bot inventories                   | Planned     |
+| Flow name             | Description                                          | Download                                                                                 |
+| --------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Obtain crafting table | Collects wood to craft a crafting table and drops it | [Download](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flows/crafting_table.js) |
+|                       |                                                      |                                                                                          |
 
 ## How To Install 📥
 
@@ -184,10 +172,10 @@ In the `flow_functions` directory, open the `functions.json` file and add an ent
 - `{ "NAME": "number", "NAME": "text" }` - Your input fields.
 
 **Available input options:**
+
 - `text` - An general text input box
 - `number` - An input box limited to numbers only
 - `switch` - An switch that can be set to true or false
-
 
 ### 4. Implement the Node
 

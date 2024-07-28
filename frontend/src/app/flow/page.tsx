@@ -332,13 +332,29 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
   useEffect(() => {
     if (data.input && data.inputValues) {
       const newEmptyInputs: Record<string, boolean> = {};
+      const updatedInputValues = { ...data.inputValues };
+      let needsUpdate = false;
+
       Object.keys(data.input).forEach((key) => {
-        newEmptyInputs[key] =
-          !data.inputValues[key] || data.inputValues[key].trim() === "";
+        const value = data.inputValues[key];
+        newEmptyInputs[key] = typeof value !== "string" || value.trim() === "";
+
+        // Initialize undefined checkboxes to false
+        if (data.input[key] === "checkbox" && value === undefined) {
+          updatedInputValues[key] = false;
+          newEmptyInputs[key] = false;
+          needsUpdate = true;
+        }
       });
+
       setEmptyInputs(newEmptyInputs);
+
+      // Only update the inputValues in data if we modified any
+      if (needsUpdate) {
+        data.onChange(null, updatedInputValues);
+      }
     }
-  }, [data.input, data.inputValues]);
+  }, [data.input]);
 
   const handleClick = (e: React.MouseEvent) => {
     if (!(e.target instanceof HTMLInputElement) && !isInFocus) {
@@ -350,16 +366,31 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
     }
   };
 
-  const handleInputChange = (key: string, value: string) => {
+  const handleInputChange = (key: string, value: string | boolean) => {
+    const updatedValues = { ...data.inputValues, [key]: value };
     data.onChange(key, value);
-    setEmptyInputs((prev) => ({ ...prev, [key]: value.trim() === "" }));
+    setEmptyInputs((prev) => ({
+      ...prev,
+      [key]: typeof value === "string" ? value.trim() === "" : !value,
+    }));
   };
+
   useEffect(() => {
     if (isRunning) {
       setIsInFocus(true);
       animateCenter(data.reactFlowInstance, id, 500, () => setIsInFocus(false));
     }
   }, [isRunning]);
+
+  useEffect(() => {
+    if (data.input) {
+      Object.entries(data.input).map(([key, type]) => {
+        if (type === "checkbox" && data.inputValues[key] === undefined) {
+          handleInputChange(key, false);
+        }
+      });
+    }
+  }, []);
 
   return (
     <Card
@@ -406,28 +437,55 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
         {data.input &&
           Object.entries(data.input).map(([key, type]) => (
             <div key={key} className="mb-2">
-              <Label htmlFor={`${id}-${key}`}>{key}</Label>
-              <Input
-                id={`${id}-${key}`}
-                type={type === "number" ? "number" : "text"}
-                value={data.inputValues?.[key] || ""}
-                onChange={(e) => handleInputChange(key, e.target.value)}
-                onBlur={(e) => handleInputChange(key, e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    data.reactFlowInstance.fitView({
-                      duration: 1000,
-                    });
-                  }
-                }}
-                placeholder={`${type}`}
-                className={`w-full p-1 text-sm border rounded ${
-                  emptyInputs[key] ? "border-red-500" : ""
-                }`}
-              />
+              {type === "checkbox" ? (
+                <>
+                  <Label htmlFor={`${id}-${key}`}>{key}</Label>
+                  <div className="flex items-center space-x-2" onrender>
+                    <Checkbox
+                      id={`${id}-${key}`}
+                      checked={data.inputValues?.[key] || false}
+                      onCheckedChange={(checked) =>
+                        handleInputChange(key, checked)
+                      }
+                      onClick={(e) => e.stopPropagation()} // This prevents the card's onClick from firing
+                    />
+                    <label
+                      htmlFor={`${id}-${key}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {data.inputValues?.[key] || false
+                        ? "Enabled"
+                        : "Disabled"}
+                    </label>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Label htmlFor={`${id}-${key}`}>{key}</Label>
+                  <Input
+                    id={`${id}-${key}`}
+                    type={type === "number" ? "number" : "text"}
+                    value={data.inputValues?.[key] || ""}
+                    onChange={(e) => handleInputChange(key, e.target.value)}
+                    onBlur={(e) => handleInputChange(key, e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        data.reactFlowInstance.fitView({
+                          duration: 1000,
+                        });
+                      }
+                    }}
+                    placeholder={`${type}`}
+                    className={`w-full p-1 text-sm border rounded ${
+                      emptyInputs[key] ? "border-red-500" : ""
+                    }`}
+                  />
+                </>
+              )}
             </div>
           ))}
       </CardContent>
+
       <CardFooter className="text-xs text-muted-foreground">
         <Separator
           style={{
@@ -1272,9 +1330,15 @@ export default function Dashboard() {
                                   {Object.entries(nodeType.input).map(
                                     ([key, value]) => (
                                       <li key={key}>
-                                        {key}:{" "}
+                                        {key
+                                          .replace(" ", "_")
+                                          .toLowerCase()
+                                          .replace(" ", "_")}
+                                        :{" "}
                                         <span className="font-mono">
-                                          {String(value)}
+                                          {String(value)
+                                            .toLowerCase()
+                                            .replace(" ", "_")}
                                         </span>
                                       </li>
                                     )

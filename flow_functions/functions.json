@@ -6,7 +6,12 @@
     "label": "Test Node",
     "hasInput": true,
     "description": "Test node to check if everything is working correctly.",
-    "input": { "number": "number", "text": "text" },
+    "input": {
+      "number": "number",
+      "text": "text",
+      "Test Checkbox 1": "checkbox",
+      "Test Checkbox 2": "checkbox"
+    },
     "author": "SilkePilon"
   },
   "chat": {
@@ -142,7 +147,7 @@
     "label": "Toggle Sneak",
     "hasInput": true,
     "description": "Toggle sneak mode on or off",
-    "input": { "sneak": "boolean" },
+    "input": { "sneak": "checkbox" },
     "author": "Assistant"
   },
   "use_block": {

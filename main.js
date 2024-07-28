@@ -49,7 +49,7 @@ app.use(cors()); // Add this line to enable CORS for all routes
 var RateLimit = require("express-rate-limit");
 var limiter = RateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // max 100 requests per windowMs
+  max: 100000, // max 100 requests per windowMs
 });
 
 // apply rate limiter to all requests

@@ -48,10 +48,10 @@ Check our [Wiki](link-to-wiki) for detailed guides on:
 
 ## Ready to download flows🕹
 
-| Flow name             | Description                                          | Download                                                                                 |
-| --------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Obtain crafting table | Collects wood to craft a crafting table and drops it | [Download](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flows/crafting_table.js) |
-|                       |                                                      |                                                                                          |
+| Flow name             | Description                                          | Download                                                                                   |
+| --------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Obtain crafting table | Collects wood to craft a crafting table and drops it | [Download](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flows/crafting_table.json) |
+|                       |                                                      |                                                                                            |
 
 ## How To Install 📥
 

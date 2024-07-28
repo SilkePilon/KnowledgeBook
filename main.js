@@ -33,6 +33,7 @@ const {
 } = require("@nxg-org/mineflayer-physics-util");
 // const pathfinder = createPlugin();
 // Express API setup
+console.clear();
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -633,11 +634,11 @@ app.post("/send-chat", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("Client connected");
+  // console.log("Client connected");
 
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-  });
+  // socket.on("disconnect", () => {
+  //   console.log("Client disconnected");
+  // });
 
   chatEmitter.on("newMessage", (message) => {
     socket.emit("chatMessage", message);
@@ -1152,5 +1153,8 @@ function getBot() {
 // Start the API server
 server.listen(PORT, () => {
   console.log(`API server running on port ${PORT}`);
+  console.log(
+    `Backend server is running. Please go to https://open-delivery-bot.vercel.app/`
+  );
 });
 module.exports = { getBot };

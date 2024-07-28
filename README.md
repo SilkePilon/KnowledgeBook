@@ -67,7 +67,7 @@ Check our [Wiki](link-to-wiki) for detailed guides on:
 
 ## How To Install 📥
 
-### Simple 1 liner install
+## Simple 1 liner install
 OpenDeliveryBot can be installed using 1 line of code!
 
 #### Prerequisites
@@ -97,7 +97,7 @@ MacOS:
 curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm install && cd .. && rm main.zip && cd OpenDeliveryBot-main && node main.js
 ```
 
-### Manual Install
+## Manual Install
 #### 1. Clone the Repository
 First, make a local copy of the repository:
 

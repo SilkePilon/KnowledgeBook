@@ -77,22 +77,22 @@ Make sure you have the following installed:
 - [Node.js](https://nodejs.org/)
 - [npm](https://www.npmjs.com/)
 
-Linux:
+#### Linux:
 ```bash
 curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm install && cd .. && rm main.zip && cd OpenDeliveryBot-main && node main.js
 ```
 
-Windows (curl):
+#### Windows (curl):
 ```bash
 curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && tar -xf main.zip && cd OpenDeliveryBot-main && npm install && cd .. && del main.zip && cd OpenDeliveryBot-main && node main.js
 ```
 
-Windows (PowerShell):
+#### Windows (PowerShell):
 ```powershell
 Invoke-WebRequest -Uri "https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip" -OutFile "main.zip"; Expand-Archive -Path "main.zip" -DestinationPath .; cd .\OpenDeliveryBot-main; npm install; cd ..; Remove-Item -Path "main.zip"; cd .\OpenDeliveryBot-main; node main.js
 ```
 
-MacOS:
+#### MacOS:
 ```bash
 curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm install && cd .. && rm main.zip && cd OpenDeliveryBot-main && node main.js
 ```

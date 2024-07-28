@@ -68,6 +68,7 @@ const TEXTURE_BASE_URL = "http://localhost:3000/block/";
 const chatMessages = [];
 const MAX_CHAT_MESSAGES = 100;
 const chatEmitter = new EventEmitter();
+chatEmitter.setMaxListeners(50);
 
 const FALLBACK_TEXTURE = "obsidian.png";
 

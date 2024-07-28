@@ -50,6 +50,12 @@ import {
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+
+import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
@@ -738,6 +744,7 @@ export default function Dashboard() {
   const [yLever, setYLever] = useState(0);
   const [yLevelIncrement, setYLevelIncrement] = useState(0);
   const [isInFocus, setIsInFocus] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const openDialog = () => setIsOpen(true);
   const closeDialog = () => setIsOpen(false);
   // @ts-ignore
@@ -762,21 +769,21 @@ export default function Dashboard() {
     [setEdges]
   );
 
-  const addNode = () => {
-    setYLever(yLever + yLevelIncrement);
-    if (selectedNode) {
+  const addNode = useCallback(
+    (nodeData: NodeType) => {
+      setYLever(yLever + yLevelIncrement);
       const newNodeId = `node-${nodes.length + 1}`;
       const newNode = {
         id: newNodeId,
         type: "custom",
         position: { x: nodes.length * 400, y: yLever },
         data: {
-          label: selectedNode.label,
-          description: selectedNode.description,
-          author: selectedNode.author,
+          label: nodeData.label,
+          description: nodeData.description,
+          author: nodeData.author,
           position: { x: nodes.length * 400, y: yLever },
           reactFlowInstance: reactFlowInstance,
-          input: selectedNode.input,
+          input: nodeData.input,
           theme: theme,
           inputValues: {},
           onChange: (key: string, value: any) => {
@@ -802,7 +809,7 @@ export default function Dashboard() {
         },
       };
       // @ts-ignore
-      setNodes([...nodes, newNode]);
+      setNodes((prevNodes) => [...prevNodes, newNode]);
 
       // Connect to previous node if it exists
       if (nodes.length > 0) {
@@ -825,17 +832,19 @@ export default function Dashboard() {
 
       toast({
         title: "New Node Added",
-        description: `A new node of type "${selectedNode.label}" has been added. Click on the node to focus it.`,
+        description: `A new node of type "${nodeData.label}" has been added. Click on the node to focus it.`,
       });
-      setIsInFocus(true);
-    } else {
-      toast({
-        title: "Node type not selected",
-        variant: "destructive",
-        description: "Please select a node type before adding a node.",
-      });
-    }
-  };
+    },
+    [
+      nodes,
+      edges,
+      yLever,
+      yLevelIncrement,
+      theme,
+      runningNodeId,
+      reactFlowInstance,
+    ]
+  );
 
   const deleteNode = useCallback(
     (nodeId: any) => {
@@ -1173,66 +1182,122 @@ export default function Dashboard() {
                   className="grid gap-3"
                   style={{ position: "relative", overflow: "visible" }}
                 >
-                  <Label htmlFor="role">How it works</Label>
-                  <p className="text-sm text-muted-foreground">
-                    <strong>1. Create Your Flow:</strong> Select and arrange
-                    nodes to define the actions you want the bot to perform.
-                    Each node represents a different action or decision point.
-                    <br></br>
-                    <strong>2. Customize Your Commands:</strong> Connect nodes
-                    to create complex sequences or simple tasks, tailored to
-                    your needs.<br></br>
-                    <strong>3. Run Your Flow:</strong> Once you&apos;re
-                    satisfied with your setup, just press the &quot;Run
-                    Flow&quot; button to see your bot bring your design to life!
-                    <br></br>
-                    <br></br>
-                    <strong>NOTE!</strong> <br></br>Placing a node behind its
-                    predecessor while still being connected to it will result in
-                    an error.
-                    <br></br>
-                    <br></br>
-                    <strong>Create your own nodes</strong> <br></br>Missing a
-                    node? You can create your own by contributing to the project
-                    on{" "}
-                    <a
-                      className="underline"
-                      href={
-                        "https://github.com/SilkePilon/OpenDeliveryBot/tree/main"
-                      }
-                    >
-                      GitHub
-                    </a>
-                    .
-                  </p>
-                  <Separator
+                  <Collapsible>
+                    <CollapsibleTrigger>
+                      <Label htmlFor="role">How it works</Label>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <p className="text-sm text-muted-foreground">
+                        <strong>1. Create Your Flow:</strong> Select and arrange
+                        nodes to define the actions you want the bot to perform.
+                        Each node represents a different action or decision
+                        point.
+                        <br></br>
+                        <strong>2. Customize Your Commands:</strong> Connect
+                        nodes to create complex sequences or simple tasks,
+                        tailored to your needs.<br></br>
+                        <strong>3. Run Your Flow:</strong> Once you&apos;re
+                        satisfied with your setup, just press the &quot;Run
+                        Flow&quot; button to see your bot bring your design to
+                        life!
+                        <br></br>
+                        <br></br>
+                        <strong>NOTE!</strong> <br></br>Placing a node behind
+                        its predecessor while still being connected to it will
+                        result in an error.
+                        <br></br>
+                        <br></br>
+                        <strong>Create your own nodes</strong> <br></br>Missing
+                        a node? You can create your own by contributing to the
+                        project on{" "}
+                        <a
+                          className="underline"
+                          href={
+                            "https://github.com/SilkePilon/OpenDeliveryBot/tree/main"
+                          }
+                        >
+                          GitHub
+                        </a>
+                        .
+                      </p>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  {/* <Separator
                     style={{
-                      position: "absolute",
+                      position: "relative",
                       left: "-1rem",
-                      right: "-1rem",
-                      bottom: "65px",
-                      width: "auto",
+                      right: "-rem",
+
+                      // width: "auto",
                       height: "1px",
                     }}
+                  /> */}
+                  {/* <div style={{ height: "25px" }}></div> */}
+                  <Input
+                    type="text"
+                    placeholder="Search nodes..."
+                    className="mb-4 w-full"
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
-                  <div style={{ height: "25px" }}></div>
-                  <Select
-                    onValueChange={(value) =>
-                      // @ts-ignore
-                      setSelectedNode(nodeTypes.find((nt) => nt.id === value))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a node" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {nodeTypes.map((nodeType) => (
-                        <SelectItem key={nodeType.id} value={nodeType.id}>
-                          &apos;{nodeType.label}&apos; by {nodeType.author}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <ScrollArea className="h-[53vh] pr-4">
+                    <div className="pr-2">
+                      {nodeTypes
+                        .filter(
+                          (node) =>
+                            node.label
+                              .toLowerCase()
+                              .includes(searchTerm.toLowerCase()) ||
+                            node.description
+                              .toLowerCase()
+                              .includes(searchTerm.toLowerCase())
+                        )
+                        .map((nodeType) => (
+                          <Card key={nodeType.id} className="mb-3 relative p-3">
+                            <div className="pr-16">
+                              <h3 className="text-sm font-semibold">
+                                {nodeType.label}
+                              </h3>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {nodeType.description}
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                by {nodeType.author}
+                              </p>
+                              <div className="mt-2">
+                                <p className="text-xs font-medium">
+                                  Input Fields:
+                                </p>
+                                <ul className="text-xs text-muted-foreground mt-1 list-disc list-inside">
+                                  {Object.entries(nodeType.input).map(
+                                    ([key, value]) => (
+                                      <li key={key}>
+                                        {key}:{" "}
+                                        <span className="font-mono">
+                                          {String(value)}
+                                        </span>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              </div>
+                            </div>
+                            <div className="absolute inset-y-0 right-5 flex items-center">
+                              <Button
+                                variant="default"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  addNode(nodeType);
+                                }}
+                              >
+                                Add Node
+                              </Button>
+                            </div>
+                          </Card>
+                        ))}
+                    </div>
+                  </ScrollArea>
 
                   <Separator
                     style={{
@@ -1272,7 +1337,7 @@ export default function Dashboard() {
                   {/* <div style={{ width: "1px" }} /> */}
                   {/* <Label htmlFor="x">Flow Controls</Label> */}
                   <div className="flex w-full items-center space-x-2">
-                    <Button
+                    {/* <Button
                       onClick={(e) => {
                         e.preventDefault();
                         console.log(selectedNode);
@@ -1282,7 +1347,7 @@ export default function Dashboard() {
                       style={{ width: "100%" }}
                     >
                       Add Selected Node
-                    </Button>
+                    </Button> */}
                     <Button
                       onClick={(e) => {
                         e.preventDefault();

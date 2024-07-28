@@ -42,7 +42,7 @@ Check our [Wiki](link-to-wiki) for detailed guides on:
 
 ## Roadmap
 
-- Add an highlight to the currently running node.
+- Add checkboxes to nodes (booleans)
 - Add an way in export and import flows.
 - Auto save flows to browser.
 
@@ -67,7 +67,56 @@ Check our [Wiki](link-to-wiki) for detailed guides on:
 
 ## How To Install 📥
 
-# SOON!
+### Simple 1 liner install
+
+Linux:
+```bash
+curl -sL https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip -o main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm i && node main.js
+
+```
+
+Windows (curl):
+```bash
+curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && tar -xf main.zip && cd OpenDeliveryBot-main && npm install && node main.js
+
+```
+
+Windows (PowerShell):
+```powershell
+Invoke-WebRequest -Uri "https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip" -OutFile "main.zip"; 
+Expand-Archive -Path "main.zip" -DestinationPath .; 
+cd .\OpenDeliveryBot-main; 
+npm install; 
+node main.js
+
+
+```
+
+MacOS:
+```bash
+curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm install && node main.js
+
+```
+
+### Manual Install
+#### 1. Clone the Repository
+First, make a local copy of the repository:
+
+```bash
+git clone https://github.com/SilkePilon/OpenDeliveryBot.git
+```
+
+Open the cloned repository in your preferred terminal app.
+
+#### 1. Install packages
+Assuming you have [Node](https://nodejs.org/en/download/package-manager/current) and [NPM](https://www.npmjs.com/) installed you can run the following commands:
+
+```bash
+npm install
+node main.js
+```
+
+That's it! You can now open up https://open-delivery-bot.vercel.app/ and start creating!
 
 ## Adding Custom Nodes to the Project
 

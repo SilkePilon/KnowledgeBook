@@ -902,14 +902,19 @@ export default function Dashboard() {
           reactFlowInstance: reactFlowInstance,
           onDelete: deleteNode,
           onChange: (key: string, value: any) => {
+            // @ts-ignore
             setNodes((nds) =>
               nds.map((n) =>
+                // @ts-ignore
                 n.id === node.id
                   ? {
+                      // @ts-ignore
                       ...n,
                       data: {
+                        // @ts-ignore
                         ...n.data,
                         inputValues: {
+                          // @ts-ignore
                           ...n.data.inputValues,
                           [key]: value,
                         },
@@ -921,7 +926,7 @@ export default function Dashboard() {
           },
         },
       }));
-
+      // @ts-ignore
       setNodes(updatedNodes);
       setEdges(importedFlowData.edges);
       setImportedFlowData(null);

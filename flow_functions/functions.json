@@ -50,7 +50,6 @@
     "input": { "seconds": "number" },
     "author": "SilkePilon"
   },
-
   "mine": {
     "name": "mine",
     "file": "mine.js",
@@ -60,5 +59,133 @@
     "description": "Mine a specific amount of a specified block",
     "input": { "block name": "text", "amount": "number" },
     "author": "Ash"
+  },
+  "place_block": {
+    "name": "place_block",
+    "file": "place_block.js",
+    "id": "place_block",
+    "label": "Place Block",
+    "hasInput": true,
+    "description": "Place a specified block at a relative position",
+    "input": {
+      "blockName": "text",
+      "x": "text",
+      "y": "text",
+      "z": "text"
+    },
+    "author": "Assistant"
+  },
+  "craft_item": {
+    "name": "craft_item",
+    "file": "craft_item.js",
+    "id": "craft_item",
+    "label": "Craft Item",
+    "hasInput": true,
+    "description": "Craft a specified amount of an item",
+    "input": { "itemName": "text", "amount": "number" },
+    "author": "Assistant"
+  },
+  "equip_item": {
+    "name": "equip_item",
+    "file": "equip_item.js",
+    "id": "equip_item",
+    "label": "Equip Item",
+    "hasInput": true,
+    "description": "Equip a specified item to a destination (e.g., 'hand')",
+    "input": { "itemName": "text", "destination": "text" },
+    "author": "Assistant"
+  },
+  "look_at": {
+    "name": "look_at",
+    "file": "look_at.js",
+    "id": "look_at",
+    "label": "Look At",
+    "hasInput": true,
+    "description": "Make the bot look at a specific coordinate",
+    "input": { "x": "number", "y": "number", "z": "number" },
+    "author": "Assistant"
+  },
+  "eat_food": {
+    "name": "eat_food",
+    "file": "eat_food.js",
+    "id": "eat_food",
+    "label": "Eat Food",
+    "hasInput": true,
+    "description": "Make the bot eat a specified food item",
+    "input": { "foodName": "text" },
+    "author": "Assistant"
+  },
+  "attack_entity": {
+    "name": "attack_entity",
+    "file": "attack_entity.js",
+    "id": "attack_entity",
+    "label": "Attack Entity",
+    "hasInput": true,
+    "description": "Attack a specified entity or player within a given range",
+    "input": { "entityName": "text", "range": "number" },
+    "author": "Assistant"
+  },
+  "collect_items": {
+    "name": "collect_items",
+    "file": "collect_items.js",
+    "id": "collect_items",
+    "label": "Collect Dropped Items",
+    "hasInput": true,
+    "description": "Collect dropped items within a specified range",
+    "input": { "range": "number" },
+    "author": "Assistant"
+  },
+  "toggle_sneak": {
+    "name": "toggle_sneak",
+    "file": "toggle_sneak.js",
+    "id": "toggle_sneak",
+    "label": "Toggle Sneak",
+    "hasInput": true,
+    "description": "Toggle sneak mode on or off",
+    "input": { "sneak": "boolean" },
+    "author": "Assistant"
+  },
+  "use_block": {
+    "name": "use_block",
+    "file": "use_block.js",
+    "id": "use_block",
+    "label": "Use Block",
+    "hasInput": true,
+    "description": "Use (right-click) a block at a relative position",
+    "input": { "x": "number", "y": "number", "z": "number" },
+    "author": "Assistant"
+  },
+  "place_block_nearby": {
+    "name": "place_block_nearby",
+    "file": "place_block_nearby.js",
+    "id": "place_block_nearby",
+    "label": "Place Block Nearby",
+    "hasInput": true,
+    "description": "Place a specified block in an open spot within a given range from the player",
+    "input": {
+      "blockName": "text",
+      "range": "number"
+    },
+    "author": "Assistant"
+  },
+  "smelt_item": {
+    "name": "smelt_item",
+    "file": "smelt_item.js",
+    "id": "smelt_item",
+    "label": "Smelt Item",
+    "hasInput": true,
+    "description": "Smelt an item in a nearby furnace",
+    "input": { "itemName": "text", "fuelName": "text" },
+    "author": "Assistant"
+  },
+  "drop_item": {
+    "name": "drop_item",
+    "file": "drop_item.js",
+    "id": "drop_item",
+    "label": "Drop Item",
+    "hasInput": true,
+    "description": "Drop a specified amount of an item",
+    "input": { "itemName": "text", "amount": "number" },
+    "author": "Assistant"
   }
 }

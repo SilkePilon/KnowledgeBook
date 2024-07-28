@@ -348,6 +348,12 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
     data.onChange(key, value);
     setEmptyInputs((prev) => ({ ...prev, [key]: value.trim() === "" }));
   };
+  useEffect(() => {
+    if (isRunning) {
+      setIsInFocus(true);
+      animateCenter(data.reactFlowInstance, id, 500, () => setIsInFocus(false));
+    }
+  }, [isRunning]);
 
   return (
     <Card
@@ -956,6 +962,9 @@ export default function Dashboard() {
       description: "All nodes in the flow have been executed.",
     });
     setIsRunning(false);
+    reactFlowInstance.fitView({
+      duration: 2000,
+    });
     openDialog();
   };
   return (

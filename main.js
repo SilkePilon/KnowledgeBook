@@ -44,7 +44,6 @@ const io = new Server(server, {
 app.use(bodyParser.json());
 app.use(cors()); // Add this line to enable CORS for all routes
 const PORT = 3001;
-
 const versions = require("minecraft-data").supportedVersions.pc;
 // Bot state
 let botState = {
@@ -556,6 +555,7 @@ app.post("/create-bot", async (req, res) => {
       });
       bot.loadPlugin(pathfinder);
       bot.loadPlugin(loader);
+      bot.loadPlugin(require("mineflayer-collectblock").plugin);
 
       bot.loadPlugin(elytrafly);
       bot.loadPlugin(toolPlugin);

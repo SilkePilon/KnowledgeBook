@@ -5,42 +5,48 @@ async function main(data) {
   const bot = getBot();
   let { amount, "block name": blockName } = data;
 
-  while (amount > 0) {
-    const blockInRegistry = bot.registry.blocksByName[blockName];
+  try {
+    while (amount > 0) {
+      const blockInRegistry = bot.registry.blocksByName[blockName];
 
-    if (!blockInRegistry) {
-      return;
-    }
-
-    const block = getBlock(bot, blockName);
-
-    if (block) {
-      const distance = bot.entity.position.distanceTo(block.position);
-
-      if (distance > 3) {
-        const { x, y, z } = block.position;
-        await bot.goToLocation({ x, y, z }, false);
+      if (!blockInRegistry) {
+        return;
       }
 
-      try {
+      const block = getBlock(bot, blockName);
+
+      if (block) {
         const distance = bot.entity.position.distanceTo(block.position);
 
-        if (distance > 4) {
-          continue;
+        if (distance > 3) {
+          const { x, y, z } = block.position;
+          await bot.goToLocation({ x, y, z }, false);
         }
 
-        await autoTool(bot, block);
-        await bot.dig(block);
-      } catch (err) {
-        console.error(err);
-        throw new Error(`Failed to mine ${block.name}`);
-      }
-    } else {
-      throw new Error(`Could not find block: ${block}`);
-    }
+        try {
+          const distance = bot.entity.position.distanceTo(block.position);
 
-    amount--;
-    await sleep(100);
+          if (distance > 4) {
+            continue;
+          }
+
+          await autoTool(bot, block);
+          await bot.collectBlock.collect(block);
+        } catch (err) {
+          console.error(err);
+          throw new Error(`Failed to mine ${block.name}`);
+        }
+      } else {
+        throw new Error(`Could not find block: ${block}`);
+      }
+
+      amount--;
+      await sleep(100);
+    }
+  } catch (err) {
+    console.error(`Error encountered: ${err.message}`);
+    await sleep(1000); // Wait for 1 second before retrying
+    main(data); // Retry the main function with the same data
   }
 }
 

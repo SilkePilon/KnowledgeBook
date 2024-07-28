@@ -8,6 +8,7 @@
     "minecraft-data": "^3.66.0",
     "mineflayer": "^4.20.1",
     "mineflayer-auto-eat": "^4.0.0",
+    "mineflayer-collectblock": "^1.4.1",
     "mineflayer-elytrafly": "^1.4.6",
     "mineflayer-pathfinder": "^2.4.5",
     "mineflayer-tool": "^1.2.0",

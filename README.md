@@ -239,7 +239,7 @@ Thank you for contributing to the project! If you have any questions or need fur
 
 Happy coding! 🚀
 
-<iframe style="width:100%;height:auto;min-width:600px;min-height:400px;" src="https://star-history.com/embed?secret=Z2hwX0FTaTh0STkzN2NXcG9nOVdQY0U0RUxJWnJVSllPTjJ4ZlJyNA==#SilkePilon/OpenDeliveryBot&Date" frameBorder="0"></iframe>
+[![Star History Chart](https://api.star-history.com/svg?repos=SilkePilon/OpenDeliveryBot&type=Date)](https://star-history.com/#SilkePilon/OpenDeliveryBot&Date)
 
 <!-- 
 ![alt text](https://i.imgur.com/RRHOgzp.png) -->

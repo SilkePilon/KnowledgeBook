@@ -1456,23 +1456,49 @@ export default function Dashboard() {
                     <Button
                       onClick={(e) => {
                         e.preventDefault();
-                        runFlow();
+                        // runFlow();
                       }}
                       style={{ width: "100%" }}
-                      disabled={
-                        nodes.length === 0 ||
-                        botState.created === false ||
-                        isRunning
-                      }
+                      // disabled={
+                      //   nodes.length === 0 ||
+                      //   botState.created === false ||
+                      //   isRunning
+                      // }
                       // variant={botState.created ? "default" : "secondary"}
                     >
-                      {!botState.created
-                        ? "Not Connected"
-                        : isRunning
-                        ? "Executing flow..."
-                        : "Run Flow"}
+                      Import Flow
+                    </Button>
+                    <Button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        // runFlow();
+                      }}
+                      style={{ width: "100%" }}
+                      disabled={nodes.length === 0}
+                      // variant={botState.created ? "default" : "secondary"}
+                    >
+                      Export Flow
                     </Button>
                   </div>
+                  <Button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      // runFlow();
+                    }}
+                    style={{ width: "100%" }}
+                    disabled={
+                      nodes.length === 0 ||
+                      botState.created === false ||
+                      isRunning
+                    }
+                    // variant={botState.created ? "default" : "secondary"}
+                  >
+                    {!botState.created
+                      ? "Not Connected"
+                      : isRunning
+                      ? "Executing flow..."
+                      : "Run Flow"}
+                  </Button>
                 </div>
               </fieldset>
 

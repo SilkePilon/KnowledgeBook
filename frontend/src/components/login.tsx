@@ -102,23 +102,29 @@ export function SetApiKeyDialog() {
                 <p className="text-sm text-muted-foreground">
                   <strong>Instructions to Obtain an API Key:</strong>
                   <br />
-                  1. Visit the API provider&apos;s website.
+                  1. Visit{" "}
+                  <a
+                    className="underline"
+                    href="https://build.nvidia.com/meta/llama-3_1-8b-instruct"
+                  >
+                    nvidia playground
+                  </a>
+                  .
                   <br />
                   2. Sign in or create an account.
                   <br />
-                  3. Navigate to the API section.
+                  3. Find the &apos;Get API Key&apos; button above the example
+                  code
                   <br />
-                  4. Generate a new API key.
+                  4. Click &apos;Generate Key&apos;
                   <br />
-                  5. Copy the key and paste it into the field above.
+                  5. Copy the key and paste it into the field below.
                   <br />
                   <br />
                   <strong>Why is the API Key Useful?</strong>
                   <br />
-                  The API key is required to authenticate and interact with the
-                  server. It helps ensure that only authorized users can access
-                  or modify the service. Make sure to keep it secure and never
-                  share it publicly.
+                  The API key is required to generate custom nodes based on a
+                  text input.
                 </p>
               </div>
             </AlertDialogDescription>

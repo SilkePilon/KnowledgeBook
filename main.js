@@ -23,6 +23,7 @@ const { createCanvas, loadImage } = require("canvas");
 const WebSocket = require("ws");
 const { fetch } = require("node-fetch");
 const { EventEmitter } = require("events");
+const OpenAI = require("openai");
 const sharp = require("sharp");
 const pathfinder = require("mineflayer-pathfinder").pathfinder;
 const Movements = require("mineflayer-pathfinder").Movements;
@@ -434,6 +435,378 @@ async function generateMapImage() {
   return canvas.toBuffer();
 }
 
+// Function to get examples from flow_functions folder
+async function getExamples() {
+  const folderPath = path.join(__dirname, "flow_functions");
+  const files = await fs.readdir(folderPath);
+  const examples = [];
+
+  for (const file of files) {
+    if (file.endsWith(".js")) {
+      const content = await fs.readFile(path.join(folderPath, file), "utf-8");
+      examples.push({ filename: file, content });
+    }
+  }
+
+  return examples;
+}
+
+async function updateFunctionsJson(newNode) {
+  const functionsPath = path.join(
+    __dirname,
+    "flow_functions",
+    "functions.json"
+  );
+  const functionsData = await fs.readFile(functionsPath, "utf-8");
+  const functionsJson = JSON.parse(functionsData);
+
+  const nodeId = newNode; // Get the new node's ID directly
+  console.log("New node:", nodeId);
+  let nodeName;
+  for (const key in newNode) {
+    if (newNode[key].name) {
+      nodeName = newNode[key].name;
+    }
+  }
+  console.log(nodeName);
+  const insides = newNode[nodeName];
+  var now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1; // Months are zero-based, so add 1
+  const day = now.getDate();
+  const badges = insides["badges"];
+  const updatedInsides = (insides["badges"] = [
+    `${badges} @ ${day}/${month}/${year}`,
+  ]);
+  console.log(insides);
+  // Ensure the node doesn't have an extra key layer
+  if (functionsJson[nodeName]) {
+    console.error(`Node with ID ${nodeId} already exists.`);
+  } else {
+    functionsJson[nodeName] = insides;
+  }
+
+  await fs.writeFile(functionsPath, JSON.stringify(functionsJson, null, 2));
+}
+
+function getInnerObject(dynamicObj, key) {
+  if (dynamicObj[key]) {
+    return dynamicObj[key];
+  }
+  return null;
+}
+
+function getFilename(dynamicObj) {
+  for (const key in dynamicObj) {
+    if (dynamicObj[key].file) {
+      return dynamicObj[key].file;
+    }
+  }
+  return null;
+}
+
+app.post("/generate-node", async (req, res) => {
+  try {
+    const { description } = req.body;
+    const apiKey = req.app.locals.apiKey;
+
+    if (!apiKey) {
+      return res
+        .status(400)
+        .json({ error: "API key not set. Please set the API key first." });
+    }
+
+    const openai = new OpenAI({
+      apiKey: apiKey,
+      baseURL: "https://integrate.api.nvidia.com/v1",
+    });
+
+    if (!description) {
+      return res.status(400).json({ error: "Description is required" });
+    }
+
+    const examples = await getExamples();
+
+    const prompt = `
+      Create a new flow node based on the following description:
+      ${description}
+
+      Here are some examples of existing nodes:
+      ${examples.map((ex) => `${ex.filename}:\n${ex.content}\n`).join("\n")}
+
+      Generate a new node in the same format, including:
+      1. The main function implementation
+      2. A JSON object for the functions.json file entry
+      3. Add an badge "badges": ["Made With AI"]
+      4. for author use 'meta/llama-3.1-405b-instruct'
+
+
+      when working with coordinates:
+      the data you get from the input will be in a string format that the bot cant use.
+      to convert it to a vec3 object you can use the following code:
+      const { Vec3 } = require("vec3");
+      let position;
+      if (data.includes(",")) {
+        position = data.split(",");
+      if (data.includes(" ")) {
+        position = data.split(" ");
+      }
+      const positionVec = new Vec3(position[0], position[1], position[3]);
+
+      for the input names please explain what the user needs to input and what format it should be in.
+      then access that input in the main function by doing data['input_name']
+
+
+      Ensure the node follows the project's conventions and best practices.
+
+      Here are some documentation you can use:
+      2. Create a New Node File
+Navigate to the flow_functions folder in the project directory. Create a new file for your node with the following naming conventions:
+
+Name Format: your_node_name.js
+Rules:
+Use lowercase letters
+Use underscores (_) to separate words
+Do not include numbers in the file name
+For example, if you want to create a node for crafting planks, you might name the file craft_planks.js.
+
+3. Update functions.json
+In the flow_functions directory, open the functions.json file and add an entry for your new node:
+
+{
+  "YOUR_NODE_NAME": {
+    "name": "YOUR_NODE_NAME",
+    "file": "YOUR_NODE_NAME.js",
+    "id": "YOUR_NODE_NAME",
+    "label": "DISPLAY NAME",
+    "hasInput": true,
+    "description": "YOUR NODE DESCRIPTION",
+    // example of input
+    "input": { "amount": "number", "message": "text", "explain what state does": "switch" },
+    "author": "YOUR NAME"
+  }
+}
+Replace the placeholders:
+
+YOUR_NODE_NAME - The name of your node (in lowercase with underscores)
+DISPLAY NAME - The name displayed in the UI
+YOUR NODE DESCRIPTION - A description of what your node does
+YOUR NAME - Your GitHub username
+{ "Explain input and format": "number", "Explain input and format": "text" } - Your input fields.
+Available input options:
+
+text - An general text input box
+number - An input box limited to numbers only
+switch - An switch that can be set to true or false
+4. Implement the Node
+Open your newly created file and implement your node using the following structure:
+
+const { getBot } = require("../main.js");
+
+function main(data) {
+  // Get the bot object
+  const bot = getBot();
+  // Your function logic here
+  console.log("Executing test_node with data:", data);
+}
+
+module.exports = { main };
+Key Points:
+
+Require bot from ../main.js.
+The main function should be defined and exported. This function is executed when the node runs.
+Use try and catch statements for error handling. If an error occurs, log it and rethrow it to ensure it can be caught elsewhere.
+Accessing input fields In order to the get values from the input field of a node you can use the data argument in the main function an example: in functions.json I've added an function with the following input: { "Amount": "number", "Message": "text" } now i can access them in the main function by doing: data['amount'] and data['message'] the parameter name is based on the key provided in the input.
+    `;
+
+    const completion = await openai.chat.completions.create({
+      model: "meta/llama-3.1-405b-instruct",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.7,
+      max_tokens: 1500,
+    });
+
+    const generatedContent = completion.choices[0].message.content;
+
+    // Extract the JavaScript code and JSON object from the generated content
+    const jsCode = generatedContent
+      .match(/```javascript([\s\S]*?)```/)[1]
+      .trim();
+    const jsonObject = JSON.parse(
+      generatedContent.match(/```json([\s\S]*?)```/)[1].trim()
+    );
+
+    // Generate a filename for the new node
+    let nodeId = getFilename(jsonObject);
+    console.log(jsonObject);
+    console.log("Node ID:", nodeId);
+    if (!nodeId) {
+      // Fallback: generate an id from the name or label
+      nodeId = (jsonObject.name || jsonObject.label || "generated_node")
+        .toLowerCase()
+        .replace(/\s+/g, "_")
+        .replace(/[^a-z0-9_]/g, "");
+      jsonObject.id = nodeId;
+    }
+    console.log("Node ID:", nodeId);
+    // Update functions.json and get the node ID
+    await updateFunctionsJson(jsonObject);
+
+    const filename = `${nodeId}`;
+    const filePath = path.join(__dirname, "flow_functions", filename);
+
+    // Write the new node file
+    await fs.writeFile(filePath, jsCode);
+
+    res.json({
+      message: "Node generated successfully",
+      filename,
+      functionsJsonEntry: jsonObject,
+    });
+  } catch (error) {
+    console.error("Error generating node:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to generate node", details: error.message });
+  }
+});
+
+// // New endpoint
+// app.post("/generate-node", async (req, res) => {
+//   try {
+//     const { description } = req.body;
+//     const apiKey = req.app.locals.apiKey;
+
+//     if (!apiKey) {
+//       return res
+//         .status(400)
+//         .json({ error: "API key not set. Please set the API key first." });
+//     }
+
+//     const openai = new OpenAI({
+//       apiKey: apiKey,
+//       baseURL: "https://integrate.api.nvidia.com/v1",
+//     });
+
+//     if (!description) {
+//       return res.status(400).json({ error: "Description is required" });
+//     }
+
+//     const examples = await getExamples();
+
+//     const prompt = `
+//       Create a new flow node based on the following description:
+//       ${description}
+
+//       Here are some examples of existing nodes:
+//       ${examples.map((ex) => `${ex.filename}:\n${ex.content}\n`).join("\n")}
+
+//       Generate a new node in the same format, including:
+//       1. The main function implementation
+//       2. A JSON object for the functions.json file entry
+
+//       Ensure the node follows the project's conventions and best practices.
+
+//       Here are some documentation you can use:
+//       2. Create a New Node File
+// Navigate to the flow_functions folder in the project directory. Create a new file for your node with the following naming conventions:
+
+// Name Format: your_node_name.js
+// Rules:
+// Use lowercase letters
+// Use underscores (_) to separate words
+// Do not include numbers in the file name
+// For example, if you want to create a node for crafting planks, you might name the file craft_planks.js.
+
+// 3. Update functions.json
+// In the flow_functions directory, open the functions.json file and add an entry for your new node:
+
+// {
+//   "YOUR_NODE_NAME": {
+//     "name": "YOUR_NODE_NAME",
+//     "file": "YOUR_NODE_NAME.js",
+//     "id": "YOUR_NODE_NAME",
+//     "label": "DISPLAY NAME",
+//     "hasInput": true,
+//     "description": "YOUR NODE DESCRIPTION",
+//     // example of input
+//     "input": { "amount": "number", "message": "text", "sneak": "switch" },
+//     "author": "YOUR NAME"
+//   }
+// }
+// Replace the placeholders:
+
+// YOUR_NODE_NAME - The name of your node (in lowercase with underscores)
+// DISPLAY NAME - The name displayed in the UI
+// YOUR NODE DESCRIPTION - A description of what your node does
+// YOUR NAME - Your GitHub username
+// { "NAME": "number", "NAME": "text" } - Your input fields.
+// Available input options:
+
+// text - An general text input box
+// number - An input box limited to numbers only
+// switch - An switch that can be set to true or false
+// 4. Implement the Node
+// Open your newly created file and implement your node using the following structure:
+
+// const { getBot } = require("../main.js");
+
+// function main(data) {
+//   // Get the bot object
+//   const bot = getBot();
+//   // Your function logic here
+//   console.log("Executing test_node with data:", data);
+// }
+
+// module.exports = { main };
+// Key Points:
+
+// Require bot from ../main.js.
+// The main function should be defined and exported. This function is executed when the node runs.
+// Use try and catch statements for error handling. If an error occurs, log it and rethrow it to ensure it can be caught elsewhere.
+// Accessing input fields In order to the get values from the input field of a node you can use the data argument in the main function an example: in functions.json I've added an function with the following input: { "Amount": "number", "Message": "text" } now i can access them in the main function by doing: data.amount and data.message the parameter name is based on the key provided in the input.
+//     `;
+
+//     const completion = await openai.chat.completions.create({
+//       model: "meta/llama-3.1-405b-instruct",
+//       messages: [{ role: "user", content: prompt }],
+//       temperature: 0.7,
+//       max_tokens: 1500,
+//     });
+
+//     const generatedContent = completion.choices[0].message.content;
+
+//     // Extract the JavaScript code and JSON object from the generated content
+//     const jsCode = generatedContent
+//       .match(/```javascript([\s\S]*?)```/)[1]
+//       .trim();
+//     const jsonObject = JSON.parse(
+//       generatedContent.match(/```json([\s\S]*?)```/)[1].trim()
+//     );
+
+//     // Generate a filename for the new node
+//     const filename = `${jsonObject.id}.js`;
+//     const filePath = path.join(__dirname, "flow_functions", filename);
+
+//     // Write the new node file
+//     await fs.writeFile(filePath, jsCode);
+
+//     // Update functions.json
+//     await updateFunctionsJson(jsonObject);
+
+//     res.json({
+//       message: "Node generated successfully",
+//       filename,
+//       functionsJsonEntry: jsonObject,
+//     });
+//   } catch (error) {
+//     console.error("Error generating node:", error);
+//     res
+//       .status(500)
+//       .json({ error: "Failed to generate node", details: error.message });
+//   }
+// });
+
 // API endpoints
 
 // API endpoint to get bot state
@@ -470,6 +843,53 @@ app.get("/functions", async (req, res) => {
   } catch (error) {
     console.error("Error reading functions.json:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/set-api-key", (req, res) => {
+  const { apiKey } = req.body;
+  if (!apiKey) {
+    return res.status(400).json({ error: "API key is required" });
+  }
+  // In a real application, you'd want to store this securely, not in memory
+  req.app.locals.apiKey = apiKey;
+  res.json({ message: "API key set successfully" });
+});
+
+app.post("/generate-text", async (req, res) => {
+  const { prompt } = req.body;
+  const apiKey = req.app.locals.apiKey;
+
+  if (!apiKey) {
+    return res
+      .status(400)
+      .json({ error: "API key not set. Please set the API key first." });
+  }
+
+  if (!prompt) {
+    return res.status(400).json({ error: "Prompt is required" });
+  }
+
+  const openai = new OpenAI({
+    apiKey: apiKey,
+    baseURL: "https://integrate.api.nvidia.com/v1",
+  });
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "meta/llama-3.1-405b-instruct",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.2,
+      top_p: 0.7,
+      max_tokens: 1024,
+    });
+
+    res.json({ response: completion.choices[0]?.message?.content || "" });
+  } catch (error) {
+    console.error("Error generating text:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to generate text", details: error.message });
   }
 });
 
@@ -1159,6 +1579,7 @@ async function findAndOpenNearbyChest() {
  */
 function getBot() {
   bot.usePathfinding = usePathfinding;
+  bot.vec3 = Vec3;
   bot.goToLocation = goToLocation;
   return bot;
 }

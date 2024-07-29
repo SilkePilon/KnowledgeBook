@@ -13,7 +13,9 @@
       "Test Switch 2": "switch"
     },
     "author": "SilkePilon",
-    "badges": ["test"]
+    "badges": [
+      "test"
+    ]
   },
   "chat": {
     "name": "chat",
@@ -22,7 +24,9 @@
     "label": "Send Chat Message",
     "hasInput": true,
     "description": "Send an chat message to public chat.",
-    "input": { "message": "text" },
+    "input": {
+      "message": "text"
+    },
     "author": "SilkePilon"
   },
   "walk_to": {
@@ -32,9 +36,13 @@
     "label": "Walk to location",
     "hasInput": true,
     "description": "Use pathfinding to walk to a location.",
-    "input": { "x y z": "text" },
+    "input": {
+      "x y z": "text"
+    },
     "author": "SilkePilon",
-    "badges": ["Not Working"]
+    "badges": [
+      "Not Working"
+    ]
   },
   "wait_for_chat_message": {
     "name": "wait_for_chat_message",
@@ -42,7 +50,10 @@
     "id": "wait_for_chat_message",
     "label": "Wait for chat message",
     "hasInput": true,
-    "input": { "keyword": "text", "timeout (seconds)": "number" },
+    "input": {
+      "keyword": "text",
+      "timeout (seconds)": "number"
+    },
     "description": "Waits for a chat message containing a specific keyword.",
     "author": "SilkePilon"
   },
@@ -53,7 +64,9 @@
     "label": "Sleep",
     "hasInput": true,
     "description": "Sleeps for a certain amount of seconds.",
-    "input": { "seconds": "number" },
+    "input": {
+      "seconds": "number"
+    },
     "author": "SilkePilon"
   },
   "mine": {
@@ -63,9 +76,15 @@
     "label": "Mine",
     "hasInput": true,
     "description": "Mine a specific amount of a specified block",
-    "input": { "block name": "text", "amount": "number" },
+    "input": {
+      "block name": "text",
+      "amount": "number"
+    },
     "author": "Ash",
-    "badges": ["beta", "user made"]
+    "badges": [
+      "beta",
+      "user made"
+    ]
   },
   "place_block": {
     "name": "place_block",
@@ -89,7 +108,10 @@
     "label": "Craft Item",
     "hasInput": true,
     "description": "Craft a specified amount of an item",
-    "input": { "itemName": "text", "amount": "number" },
+    "input": {
+      "itemName": "text",
+      "amount": "number"
+    },
     "author": "AI model"
   },
   "equip_item": {
@@ -99,7 +121,10 @@
     "label": "Equip Item",
     "hasInput": true,
     "description": "Equip a specified item to a destination (e.g., 'hand')",
-    "input": { "itemName": "text", "destination": "text" },
+    "input": {
+      "itemName": "text",
+      "destination": "text"
+    },
     "author": "AI model"
   },
   "look_at": {
@@ -109,7 +134,11 @@
     "label": "Look At",
     "hasInput": true,
     "description": "Make the bot look at a specific coordinate",
-    "input": { "x": "number", "y": "number", "z": "number" },
+    "input": {
+      "x": "number",
+      "y": "number",
+      "z": "number"
+    },
     "author": "AI model"
   },
   "eat_food": {
@@ -119,7 +148,9 @@
     "label": "Eat Food",
     "hasInput": true,
     "description": "Make the bot eat a specified food item",
-    "input": { "foodName": "text" },
+    "input": {
+      "foodName": "text"
+    },
     "author": "AI model"
   },
   "attack_entity": {
@@ -129,7 +160,10 @@
     "label": "Attack Entity",
     "hasInput": true,
     "description": "Attack a specified entity or player within a given range",
-    "input": { "entityName": "text", "range": "number" },
+    "input": {
+      "entityName": "text",
+      "range": "number"
+    },
     "author": "AI model"
   },
   "collect_items": {
@@ -139,9 +173,13 @@
     "label": "Collect Dropped Items",
     "hasInput": true,
     "description": "Collect dropped items within a specified range",
-    "input": { "range": "number" },
+    "input": {
+      "range": "number"
+    },
     "author": "AI model",
-    "badges": ["Not Working"]
+    "badges": [
+      "Not Working"
+    ]
   },
   "toggle_options": {
     "name": "toggle_options",
@@ -168,7 +206,11 @@
     "label": "Use Block",
     "hasInput": true,
     "description": "Use (right-click) a block at a relative position",
-    "input": { "x": "number", "y": "number", "z": "number" },
+    "input": {
+      "x": "number",
+      "y": "number",
+      "z": "number"
+    },
     "author": "AI model"
   },
   "place_block_nearby": {
@@ -183,7 +225,9 @@
       "range": "number"
     },
     "author": "AI model",
-    "badges": ["Not Working"]
+    "badges": [
+      "Not Working"
+    ]
   },
   "smelt_item": {
     "name": "smelt_item",
@@ -206,7 +250,57 @@
     "label": "Drop Item",
     "hasInput": true,
     "description": "Drop a specified amount of an item",
-    "input": { "itemName": "text", "amount": "number" },
+    "input": {
+      "itemName": "text",
+      "amount": "number"
+    },
     "author": "AI model"
+  },
+  "say_in_chat": {
+    "name": "say_in_chat",
+    "file": "say_in_chat.js",
+    "id": "say_in_chat",
+    "label": "Say in Chat",
+    "hasInput": true,
+    "description": "Makes the bot say a message in the chat",
+    "input": {
+      "message": "text"
+    },
+    "author": "meta/llama-3.1-405b-instruct",
+    "badges": [
+      "Made With AI"
+    ]
+  },
+  "get_item_from_chest": {
+    "name": "get_item_from_chest",
+    "file": "get_item_from_chest.js",
+    "id": "get_item_from_chest",
+    "label": "Get Item from Chest",
+    "hasInput": true,
+    "description": "Gets an item from a chest at a specific location",
+    "input": {
+      "chestLocation": "text",
+      "itemName": "text"
+    },
+    "author": "meta/llama-3.1-405b-instruct",
+    "badges": [
+      "Made With AI @ 29/7/2024"
+    ]
+  },
+  "get_item_from_nearby_chest": {
+    "name": "get_item_from_nearby_chest",
+    "file": "get_item_from_nearby_chest.js",
+    "id": "get_item_from_nearby_chest",
+    "label": "Get Item from Nearby Chest",
+    "hasInput": true,
+    "description": "Searches for a chest within a given radius and collects a specified item from it",
+    "input": {
+      "itemName": "text",
+      "radius": "number"
+    },
+    "author": "meta/llama-3.1-405b-instruct",
+    "badges": [
+      "Made With AI @ 29/7/2024"
+    ]
   }
 }

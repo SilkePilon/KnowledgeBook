@@ -1017,7 +1017,7 @@ export default function Dashboard() {
         </nav>
       </aside>
       <div className="flex flex-col">
-        <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
+        <header className="sticky top-0 z-10 flex h-[57px] items-center justify-between border-b bg-background px-4">
           <h1 className="text-xl font-semibold">Map</h1>
           <Drawer>
             <DrawerTrigger asChild>

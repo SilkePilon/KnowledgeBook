@@ -982,6 +982,62 @@ export default function Dashboard() {
     });
   }, [setNodes, setEdges]);
 
+  const [description, setDescription] = useState("");
+  const [isLoading2, setIsLoading2] = useState(false);
+
+  const handleGenerateNode = async () => {
+    if (!description.trim()) {
+      toast({
+        title: "Please enter a description for the node.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:3001/generate-node", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ description }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data["error"]);
+      }
+
+      toast({
+        title: "Node generated successfully!",
+      });
+      const fetchNodeTypes = async () => {
+        try {
+          const response = await axios.get<NodeType[]>(
+            "http://localhost:3001/functions"
+          );
+          setNodeTypes(response.data);
+          setIsLoading(false);
+        } catch (error) {
+          console.error("Error fetching node types:", error);
+          setIsLoading(false);
+        }
+      };
+
+      fetchNodeTypes();
+      console.log("Generated node:", data);
+      // You can add additional logic here to update the UI or state with the new node
+    } catch (error: any) {
+      toast({
+        title: "Error generating node: " + error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const addNode = useCallback(
     (nodeData: NodeType) => {
       setYLever(yLever + yLevelIncrement);
@@ -1370,17 +1426,12 @@ export default function Dashboard() {
         </nav>
       </aside>
       <div className="flex flex-col">
-        <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
+        <header className="sticky top-0 z-10 flex h-[57px] items-center justify-between border-b bg-background px-4">
           <h1 className="text-xl font-semibold">Flow</h1>
 
-          {botState.created ? (
-            <StopBotDialog></StopBotDialog>
-          ) : (
-            // <p>Bot has been created.</p>
-            <>
-              <CreateBotDialog></CreateBotDialog>
-            </>
-          )}
+          <div className="ml-auto">
+            {botState.created ? <StopBotDialog /> : <CreateBotDialog />}
+          </div>
         </header>
         <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-2 lg:grid-cols-3">
           <div
@@ -1462,13 +1513,15 @@ export default function Dashboard() {
                       {nodeTypes
                         .filter(
                           (node) =>
-                            node.label
-                              .toLowerCase()
+                            (node.label
+                              ?.toLowerCase()
                               .includes(searchTerm.toLowerCase()) ||
-                            node.description
-                              .toLowerCase()
-                              .includes(searchTerm.toLowerCase())
+                              node.description
+                                ?.toLowerCase()
+                                .includes(searchTerm.toLowerCase())) ??
+                            false
                         )
+                        .reverse() // Reverses the order of the filtered array
                         .map((nodeType) => (
                           <Card
                             key={nodeType.id}
@@ -1655,6 +1708,28 @@ export default function Dashboard() {
                       : isRunning
                       ? "Executing flow..."
                       : "Run Flow"}
+                  </Button>
+                </div>
+              </fieldset>
+
+              <fieldset className="grid gap-6 rounded-lg border p-4">
+                <legend className="-ml-1 px-1 text-sm font-medium">
+                  Generate Nodes
+                </legend>
+                <div className="grid gap-3">
+                  <p className="text-sm text-muted-foreground">
+                    Use NVIDIA API to create new node from scratch.
+                  </p>
+                  <Label htmlFor="content">Generate Node</Label>
+                  <Input
+                    type="text"
+                    placeholder="Explain what the node should do..."
+                    className="mb-4 w-full"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                  <Button onClick={handleGenerateNode} disabled={isLoading}>
+                    {isLoading ? "Generating..." : "Generate Node"}
                   </Button>
                 </div>
               </fieldset>

@@ -1720,7 +1720,7 @@ export default function Dashboard() {
                   <p className="text-sm text-muted-foreground">
                     Use NVIDIA API to create new node from scratch.
                   </p>
-                  <Label htmlFor="content">Generate Node</Label>
+                  <Label htmlFor="content">Prompt</Label>
                   <Input
                     type="text"
                     placeholder="Explain what the node should do..."

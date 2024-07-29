@@ -14,7 +14,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 // import { bouncy } from "ldrs";
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "Input-otp";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { useToast } from "@/components/ui/use-toast";
 import { Unplug, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";

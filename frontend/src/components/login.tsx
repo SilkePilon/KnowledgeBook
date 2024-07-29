@@ -31,9 +31,9 @@ import {
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from "@/components/ui/Input-otp";
+} from "@/components/ui/input-otp";
 import { set } from "react-hook-form";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/components/ui/input";
 
 const socket = io("http://localhost:3001");
 

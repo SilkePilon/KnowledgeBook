@@ -29,6 +29,10 @@ Project Skyview (idk if this is a good name?) is an open-source Minecraft bot ma
   <a href="/"><img src="assets/node_example.png" alt="..." width="100%"></a>
 </h1>
 
+## YouTube Demo
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/tEXtJFuGw8Y/0.jpg)](https://www.youtube.com/watch?v=tEXtJFuGw8Y)
+
+
 ## Getting Started
 
 Check our [Wiki](link-to-wiki) for detailed guides on:

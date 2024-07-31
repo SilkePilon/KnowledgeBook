@@ -257,8 +257,7 @@ Happy coding! 🚀
 <!-- 
 ![alt text](https://i.imgur.com/RRHOgzp.png) -->
 
-## Support
-
-If you encounter any issues or have questions, please open an issue on this GitHub repository. We're here to help!
+## Sponsor me
+<a href="https://www.buymeacoffee.com/silkepilon"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=silkepilon&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
 
 </file-attachment-contents>

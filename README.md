@@ -25,6 +25,9 @@
 
 Project Skyview (idk if this is a good name?) is an open-source Minecraft bot management platform that provides players with a user-friendly web interface to create and control helpful bots. Our goal is to enhance the Minecraft multiplayer experience with powerful automation tools, all at no cost to the player.
 
+**AI Stuff**
+More info and docs about the new AI features will be added soon!
+
 <h1>
   <a href="/"><img src="assets/node_example.png" alt="..." width="100%"></a>
 </h1>

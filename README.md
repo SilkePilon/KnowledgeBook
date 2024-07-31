@@ -9,6 +9,7 @@
 <h4 align="center">🤖 Use open and free AI models to generate reusable nodes for Minecraft bots.</h4>
 
 <p align="center">
+  <br>
   <a href="https://www.buymeacoffee.com/silkepilon"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=silkepilon&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
   <br>
   <br>

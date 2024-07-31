@@ -12,7 +12,8 @@
   <br>
   <a href="https://www.buymeacoffee.com/silkepilon"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=silkepilon&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
   <br>
-  or donate on [PayPal](https://www.paypal.com/donate/?hosted_button_id=24FFQ9FFJCC76)
+  or donate on <a href="https://www.paypal.com/donate/?hosted_button_id=24FFQ9FFJCC76">PayPal</a>
+  <br>
   <br>
   <br>
     <img alt="Node version" src="https://img.shields.io/static/v1?label=node&message=%20%3E=18.0.0&logo=node.js&color=2334D058" />

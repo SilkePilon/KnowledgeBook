@@ -12,7 +12,7 @@
   <br>
   <a href="https://www.buymeacoffee.com/silkepilon"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=silkepilon&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
   <br>
-  or donate on <a href="https://www.paypal.com/donate/?hosted_button_id=24FFQ9FFJCC76">PayPal</a>
+  or donate on <a href="https://www.paypal.com/donate/?hosted_button_id=24FFQ9FFJCC76" taget="_blank">PayPal</a>
   <br>
   <br>
   <br>

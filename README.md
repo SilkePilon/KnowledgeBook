@@ -15,6 +15,8 @@
   <a href="soon!"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Hungarian"></a>
 </p>
 
+<a href="https://www.buymeacoffee.com/silkepilon" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
 <p align="center">
   <a href="#about-">About</a> •
   <a href="#freature-and-plugins-">Features</a> •

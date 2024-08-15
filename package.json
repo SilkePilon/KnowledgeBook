@@ -14,7 +14,7 @@
     "mineflayer-pathfinder": "^2.4.5",
     "mineflayer-tool": "^1.2.0",
     "node-fetch": "2.7.0",
-    "openai": "^4.55.3",
+    "openai": "^4.55.7",
     "prismarine-physics": "^1.8.0",
     "prismarine-viewer": "^1.28.0",
     "sharp": "^0.33.4",

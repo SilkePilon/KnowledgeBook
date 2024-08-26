@@ -43,7 +43,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.52.1",
-    "react-resizable-panels": "^2.0.22",
+    "react-resizable-panels": "^2.1.1",
     "react-skinview3d": "^5.1.0",
     "react-zoom-pan-pinch": "^3.6.1",
     "recharts": "^2.12.7",

@@ -50,7 +50,7 @@
     "recharts": "^2.12.7",
     "remark-gfm": "^4.0.0",
     "socket.io-client": "^4.7.5",
-    "tailwind-merge": "^2.4.0",
+    "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.1",
     "ws": "^8.18.0",

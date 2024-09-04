@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { ChangeEvent } from "react";
+import Markdown from "markdown-to-jsx";
 import {
   Popover,
   PopoverContent,
@@ -322,6 +323,104 @@ function animateCenter(
 
   requestAnimationFrame(animate);
 }
+
+const markdownContent = `
+Here's some detailed markdown documentation on how to use the interface:
+
+# Flow Interface Documentation
+
+The Flow interface allows you to create, manage, and execute custom workflows for your Minecraft bot. This guide will walk you through the main features and how to use them effectively.
+
+## Table of Contents
+
+1. [Creating a Flow](#creating-a-flow)
+2. [Adding Nodes](#adding-nodes)
+3. [Customizing Nodes](#customizing-nodes)
+4. [Connecting Nodes](#connecting-nodes)
+5. [Running the Flow](#running-the-flow)
+6. [Importing and Exporting Flows](#importing-and-exporting-flows)
+7. [Generating Custom Nodes](#generating-custom-nodes)
+8. [Flow Settings](#flow-settings)
+
+## Creating a Flow
+
+1. The main area of the interface is divided into two sections: the left sidebar for node selection and flow controls, and the right area for the flow canvas.
+2. To start creating a flow, simply add nodes from the left sidebar to the canvas on the right.
+
+## Adding Nodes
+
+1. In the left sidebar, you'll find a list of available node types.
+2. Use the search bar at the top of the node list to filter nodes by name or description.
+3. Each node card displays:
+   - Node name
+   - Description
+   - Author
+   - Input fields
+   - Badges (if any)
+4. To add a node to your flow, click the "Add Node" button on the desired node card.
+5. The node will appear on the canvas to the right.
+
+## Customizing Nodes
+
+1. Click on a node in the canvas to focus on it.
+2. Each node has input fields that you can customize:
+   - Text inputs: Enter the required text or values.
+   - Switches: Toggle on/off for boolean options.
+3. The node will update in real-time as you modify its inputs.
+
+## Connecting Nodes
+
+1. Nodes are automatically connected in the order they are added to the canvas.
+2. Each node has a handle on its left side (input) and right side (output).
+3. To create a custom connection:
+   - Click and drag from the output handle of one node to the input handle of another.
+4. To remove a connection:
+   - Select the connection line and press 'Delete' on your keyboard.
+
+## Running the Flow
+
+1. Once you've created your flow, click the "Run Flow" button at the bottom of the left sidebar.
+2. The flow will execute node by node, with each active node highlighted during execution.
+3. You'll see toast notifications for the start and completion of each node's execution.
+4. After all nodes have been executed, a dialog will appear confirming the completion of the flow.
+
+## Importing and Exporting Flows
+
+1. To save your current flow, click the "Export Flow" button. This will download a JSON file of your flow.
+2. To load a previously saved flow:
+   - Click "Select Flow File" and choose your saved JSON file.
+   - Then click "Apply Imported Flow" to load it into the canvas.
+
+## Generating Custom Nodes
+
+The interface offers two methods to generate custom nodes:
+
+### NVIDIA Method
+
+1. Requires an NVIDIA API key.
+2. Enter a description of what you want the node to do in the "Prompt" field.
+3. Click "Generate Node (NVIDIA)" to create a custom node based on your description.
+
+### Ollama Method
+
+1. Requires Ollama to be installed and running locally.
+2. Select the model and temperature from the dropdowns.
+3. Enter your node description in the "Prompt" field.
+4. Click "Generate Node (Ollama)" to create a custom node.
+
+## Flow Settings
+
+1. Y Level Increment: Use the slider to adjust the vertical spacing between automatically placed nodes.
+2. Clear All Nodes: Click this button to remove all nodes from the canvas. A confirmation dialog will appear before clearing.
+
+## Additional Features
+
+- Zoom and pan the canvas using mouse controls or touch gestures.
+- Use the "Download Image" button in the bottom-right of the canvas to save a PNG image of your flow.
+- The interface will warn you if you try to navigate away from the page with unsaved changes.
+
+Remember to save your work regularly by exporting your flow. Happy automating!
+`;
 
 const CustomNode = ({ data, id }: { data: any; id: string }) => {
   const [isInFocus, setIsInFocus] = useState(false);
@@ -1714,11 +1813,26 @@ export default function Dashboard() {
 
               <fieldset className="grid gap-6 rounded-lg border p-4">
                 <legend className="-ml-1 px-1 text-sm font-medium">
-                  Generate Nodes
+                  Generate Nodes (NVIDIA)
                 </legend>
                 <div className="grid gap-3">
                   <p className="text-sm text-muted-foreground">
-                    Use NVIDIA API to create new node from scratch.
+                    Uses <strong>meta/llama-3.1-405b-instruct</strong> to
+                    generate custom nodes based on your input prompt.
+                    <br></br>
+                    <br></br>
+                    <strong>
+                      <ul style={{ listStyleType: "disc", marginLeft: "15px" }}>
+                        <li>
+                          Requires an NVIDIA{" "}
+                          <a className="underline" href="">
+                            API key
+                          </a>{" "}
+                          to be set.
+                        </li>
+                      </ul>
+                    </strong>
+                    <br></br>
                   </p>
                   <Label htmlFor="content">Prompt</Label>
                   <Input
@@ -1729,7 +1843,74 @@ export default function Dashboard() {
                     onChange={(e) => setDescription(e.target.value)}
                   />
                   <Button onClick={handleGenerateNode} disabled={isLoading}>
-                    {isLoading ? "Generating..." : "Generate Node"}
+                    {isLoading ? "Generating..." : "Generate Node (NVIDIA)"}
+                  </Button>
+                </div>
+              </fieldset>
+
+              <fieldset className="grid gap-6 rounded-lg border p-4">
+                <legend className="-ml-1 px-1 text-sm font-medium">
+                  Generate Nodes (Ollama)
+                </legend>
+                <div className="grid gap-3">
+                  <p className="text-sm text-muted-foreground">
+                    Use a local running LLM to create new node from scratch.
+                    <br></br>
+                    <br></br>
+                    <strong>
+                      <ul style={{ listStyleType: "disc", marginLeft: "15px" }}>
+                        <li>
+                          Requires{" "}
+                          <a className="underline" href="">
+                            Ollama
+                          </a>{" "}
+                          - to be installed and running.
+                        </li>
+                      </ul>
+                    </strong>
+                    <br></br>
+                  </p>
+                  <Label htmlFor="content">Model & Temperature</Label>
+                  <div className="flex space-x-4">
+                    <div className="flex-grow">
+                      <Select>
+                        <SelectTrigger className="">
+                          <SelectValue placeholder="LLama3.1 7B" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="light">LLama3.1 7B</SelectItem>
+                          <SelectItem value="dark">LLama3</SelectItem>
+                          <SelectItem value="system">LLama2</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex-none w-1/4">
+                      <Select>
+                        <SelectTrigger className="">
+                          <SelectValue placeholder="1" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0.6">0.6</SelectItem>
+                          <SelectItem value="0.7">0.7</SelectItem>
+                          <SelectItem value="0.8">0.8</SelectItem>
+                          <SelectItem value="0.9">0.9</SelectItem>
+                          <SelectItem value="1">1</SelectItem>
+                          <SelectItem value="2">2</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <Label htmlFor="content">Prompt</Label>
+                  <Input
+                    type="text"
+                    placeholder="Explain what the node should do..."
+                    className="mb-4 w-full"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                  <Button onClick={handleGenerateNode} disabled={isLoading}>
+                    {isLoading ? "Generating..." : "Generate Node (Ollama)"}
                   </Button>
                 </div>
               </fieldset>
@@ -1783,7 +1964,7 @@ export default function Dashboard() {
           </div>
           <div className="relative flex h-full min-h-[50vh] flex-col rounded-xl bg-muted/50 p-4 lg:col-span-2">
             <div className="flex-1">
-              <div style={{ height: "87vh" }}>
+              <div style={{ height: "89vh" }}>
                 <ReactFlow
                   onClick={(e) => {
                     if (!(e.target instanceof HTMLInputElement)) {
@@ -1866,6 +2047,8 @@ export default function Dashboard() {
                   </Panel>
                   {/* <Background /> */}
                 </ReactFlow>
+                <br></br>
+                <Label>Soon!</Label>
                 <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
                   <AlertDialogTrigger hidden>Open</AlertDialogTrigger>
                   <AlertDialogContent>

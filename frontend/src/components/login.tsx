@@ -94,13 +94,13 @@ export function SetApiKeyDialog() {
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Set API Key</AlertDialogTitle>
+            <AlertDialogTitle>Set NVIDIA API Key</AlertDialogTitle>
             <AlertDialogDescription>
-              To use this application, you need an API key. Follow the
-              instructions below to obtain and set your API key.
+              To use some parts of this application, you need an NVIDIA API key.
+              Follow the instructions below to obtain and set your API key.
               <div className="my-4">
                 <p className="text-sm text-muted-foreground">
-                  <strong>Instructions to Obtain an API Key:</strong>
+                  <strong>Instructions to Obtain an NVIDIA API Key:</strong>
                   <br />
                   1. Visit{" "}
                   <a
@@ -326,7 +326,7 @@ export function CreateBotDialog() {
               onClick={() => setIsOpen(true)}
             >
               <Unplug className="size-4" />
-              Connect A Bot
+              Connect a bot
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
@@ -410,6 +410,22 @@ export function CreateBotDialog() {
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="port" className="text-right">
+                    API ip
+                  </label>
+                  <Input
+                    style={{ borderRadius: "0.375rem", paddingLeft: "0.50rem" }}
+                    id="port"
+                    name="port"
+                    placeholder="http://localhost:3001"
+                    type="text"
+                    // value={formData.port}
+                    onChange={handleChange}
+                    className="col-span-3"
+                    required
+                  />
                 </div>
 
                 {msaCode && (
@@ -501,7 +517,7 @@ export function CreateBotDialog() {
             backgroundColor: "#e0e0e0", // Adjust color if needed
           }}
         /> */}
-        <p>&</p>
+        <p className="text-sm text-muted-foreground">or</p>
 
         <SetApiKeyDialog />
       </div>
@@ -545,15 +561,20 @@ export function StopBotDialog() {
   };
   return (
     <>
-      <Button
-        variant="destructive"
-        size="sm"
-        className="ml-auto gap-1.5 text-sm"
-        onClick={handleDisconnect}
-      >
-        <Unplug className="size-4" />
-        Disconnect
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button
+          variant="destructive"
+          size="sm"
+          className="ml-auto gap-1.5 text-sm"
+          onClick={handleDisconnect}
+        >
+          <Unplug className="size-4" />
+          Disconnect
+        </Button>
+        <p className="text-sm text-muted-foreground">or</p>
+
+        <SetApiKeyDialog />
+      </div>
     </>
   );
 }

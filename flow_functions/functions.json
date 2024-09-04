@@ -302,5 +302,36 @@
     "badges": [
       "Made With AI @ 29/7/2024"
     ]
+  },
+  "javascript_code_executor": {
+    "name": "javascript_code_executor",
+    "file": "javascript_code_executor.js",
+    "id": "javascript_code_executor",
+    "label": "Execute JavaScript Code",
+    "hasInput": true,
+    "description": "Execute custom JavaScript code with access to the bot",
+    "input": {
+      "code": "text"
+    },
+    "author": "meta/llama-3.1-405b-instruct",
+    "badges": [
+      "Made With AI @ 31/7/2024"
+    ]
+  },
+  "find_item_in_chests": {
+    "name": "find_item_in_chests",
+    "file": "find_item_in_chests.js",
+    "id": "find_item_in_chests",
+    "label": "Find Item in Chests",
+    "hasInput": true,
+    "description": "Finds an item in chests within a given range and collects it",
+    "input": {
+      "item_name": "text",
+      "range": "number"
+    },
+    "author": "meta/llama-3.1-405b-instruct",
+    "badges": [
+      "Made With AI @ 31/7/2024"
+    ]
   }
 }

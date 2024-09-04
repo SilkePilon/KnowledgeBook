@@ -539,6 +539,8 @@ app.post("/generate-node", async (req, res) => {
       2. A JSON object for the functions.json file entry
       3. Add an badge "badges": ["Made With AI"]
       4. for author use 'meta/llama-3.1-405b-instruct'
+      5. For input fields names use lowercase and underscores for spaces. Dont add words together with no spaces or underscores.
+      6. make the input fields as clear as possible and explain what the user needs to input and what format it should be in. like for a range make it block_range
 
 
       when working with coordinates:

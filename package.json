@@ -17,6 +17,7 @@
     "openai": "^4.55.3",
     "prismarine-physics": "^1.8.0",
     "prismarine-viewer": "^1.28.0",
+    "prompt-sync": "^4.2.0",
     "sharp": "^0.33.4",
     "vec3": "^0.1.10",
     "ws": "^8.18.0"

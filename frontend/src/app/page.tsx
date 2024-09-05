@@ -119,6 +119,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 import io, { Socket } from "socket.io-client";
+import { useApiIp } from "@/lib/utils/useApiIp";
 
 export default function Dashboard() {
   const [storageArea, setStorageArea] = useState({ x: 0, y: 0, z: 0 });
@@ -142,6 +143,7 @@ export default function Dashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { apiIp } = useApiIp();
 
   const handleIframeError = () => {
     setIframeError(true);
@@ -149,13 +151,13 @@ export default function Dashboard() {
 
   useEffect(() => {
     // Fetch initial chat messages
-    fetch("http://localhost:3001/chat-messages")
+    fetch(`${apiIp}/chat-messages`)
       .then((response) => response.json())
       .then((data) => setChatMessages(data))
       .catch((error) => console.error("Error fetching chat messages:", error));
 
     // Set up WebSocket connection
-    socketRef.current = io("http://localhost:3001");
+    socketRef.current = io(`${apiIp}`);
     socketRef.current.on("chatMessage", (message: any) => {
       setChatMessages((prevMessages) =>
         [message, ...prevMessages].slice(0, 100)
@@ -179,7 +181,7 @@ export default function Dashboard() {
       return;
     }
 
-    fetch("http://localhost:3001/send-chat", {
+    fetch(`${apiIp}/send-chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -241,7 +243,7 @@ export default function Dashboard() {
 
   const fetchChestIndex = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/chest-index");
+      const response = await axios.get(`${apiIp}/chest-index`);
       setChestIndex(response.data);
     } catch (error) {
       console.error("Error fetching chest index:", error);
@@ -250,7 +252,7 @@ export default function Dashboard() {
 
   const handleSetStorageArea = async () => {
     try {
-      await axios.post("http://localhost:3001/set-storage-area", storageArea);
+      await axios.post(`${apiIp}/set-storage-area`, storageArea);
       alert("Storage area set successfully");
     } catch (error) {
       console.error("Error setting storage area:", error);
@@ -261,7 +263,7 @@ export default function Dashboard() {
   const handleDeliver = async () => {
     try {
       setBotStatus("Delivering");
-      await axios.post("http://localhost:3001/deliver", {
+      await axios.post(`${apiIp}/deliver`, {
         items: deliveryItems,
         destination: destination,
       });
@@ -293,7 +295,7 @@ export default function Dashboard() {
   useEffect(() => {
     const checkBotState = async () => {
       try {
-        const response = await fetch("http://localhost:3001/bot-state");
+        const response = await fetch(`${apiIp}/bot-state`);
         if (!response.ok) {
           throw new Error("Failed to fetch bot state");
         }

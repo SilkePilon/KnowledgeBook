@@ -34,10 +34,11 @@ import {
 } from "@/components/ui/input-otp";
 import { set } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-
-const socket = io("http://localhost:3001");
+import { useApiIp } from "@/lib/utils/useApiIp";
 
 export function SetApiKeyDialog() {
+  const { apiIp } = useApiIp();
+  const socket = io(`${apiIp}`);
   const { toast } = useToast();
   const [apiKey, setApiKey] = React.useState<string>("");
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
@@ -50,7 +51,7 @@ export function SetApiKeyDialog() {
   const setApiKey2 = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:3001/set-api-key", {
+      const response = await fetch(`${apiIp}/set-api-key`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -168,6 +169,8 @@ export function SetApiKeyDialog() {
 
 export function CreateBotDialog() {
   const { toast } = useToast();
+  const { apiIp, setApiIp } = useApiIp();
+  const [socket, setSocket] = React.useState<any>(null);
   const [formData, setFormData] = React.useState({
     username: "",
     server: "",
@@ -179,72 +182,53 @@ export function CreateBotDialog() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [versions, setVersions] = React.useState<string[]>([]);
   const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
-  const [isLoading, setisLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [apiIpStatus, setApiIpStatus] = React.useState<
+    "default" | "success" | "error"
+  >("default");
 
-  //   bouncy.register();
+  const debounceTimeout = React.useRef<NodeJS.Timeout | null>(null); // Ref to store the timeout
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/bot-state", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log(data.versions);
-        setVersions(data.versions || []);
-      } catch (error) {
-        console.error("Error fetching versions:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  React.useEffect(() => {
-    socket.on("msaCode", (code) => {
-      setMsaCode(code);
-      setIsButtonDisabled(true); // Disable the button when MSA code is shown
-    });
-
-    socket.on("botSpawned", () => {
-      localStorage.setItem("openSidebarOnLoad", "true");
-      setBotSpawned(true);
-      setIsOpen(false);
-      const iframes = document.querySelectorAll("iframe");
-      iframes.forEach((iframe) => {
-        iframe.src = iframe.src;
+  const testApiIp = async (ip: string) => {
+    try {
+      const response = await fetch(`${ip}/bot-state`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
-      if (msaCode === "") {
-        toast({
-          title: "Bot Spawned Successfully",
-          description: "Logged in with existing MSA code",
-        });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      if (msaCode !== "") {
-        toast({
-          title: "Bot Spawned Successfully",
-          description: "Logged in with new MSA code",
-        });
-      }
-    });
 
-    return () => {
-      socket.off("msaCode");
-      socket.off("botSpawned");
-    };
-  }, [msaCode, toast]);
+      const data = await response.json();
+      setVersions(data.versions || []);
+      setApiIpStatus("success");
+    } catch (error) {
+      console.error("Error fetching versions:", error);
+      setApiIpStatus("error");
+      setVersions([]);
+    }
+  };
+
+  const handleApiIpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newApiIp = e.target.value;
+    setApiIp(newApiIp);
+    setApiIpStatus("default");
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current); // Clear the previous timeout
+    }
+
+    debounceTimeout.current = setTimeout(() => {
+      testApiIp(newApiIp); // Call the API after the user has stopped typing
+    }, 500); // Adjust this delay (500ms) based on preference
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleVersionChange = (value: string) => {
@@ -253,9 +237,9 @@ export function CreateBotDialog() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setisLoading(true);
+    setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:3001/create-bot", {
+      const response = await fetch(`${apiIp}/create-bot`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -271,79 +255,102 @@ export function CreateBotDialog() {
       console.log(data.message);
     } catch (error) {
       console.error("Error creating bot:", error);
-    }
-  };
-
-  const [apiKey, setApiKeyd] = React.useState("");
-
-  const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setApiKeyd(e.target.value);
-  };
-
-  const setApiKey = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/set-api-key", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ apiKey }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log(data.message);
-      toast({
-        title: "API Key Set",
-        description: "Your API key has been set successfully",
-      });
-    } catch (error) {
-      console.error("Error setting API key:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to set API key",
+        description: "Failed to create bot",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  React.useEffect(() => {
+    if (apiIpStatus === "success" && !socket) {
+      const newSocket = io(`${apiIp}`);
+      setSocket(newSocket);
+
+      newSocket.on("msaCode", (code: string) => {
+        setMsaCode(code);
+        setIsButtonDisabled(true);
+      });
+
+      newSocket.on("botSpawned", () => {
+        localStorage.setItem("openSidebarOnLoad", "true");
+        setBotSpawned(true);
+        setIsOpen(false);
+        const iframes = document.querySelectorAll("iframe");
+        iframes.forEach((iframe) => {
+          iframe.src = iframe.src;
+        });
+
+        toast({
+          title: "Bot Spawned Successfully",
+          description: msaCode
+            ? "Logged in with new MSA code"
+            : "Logged in with existing MSA code",
+        });
+      });
+
+      return () => {
+        newSocket.off("msaCode");
+        newSocket.off("botSpawned");
+      };
+    }
+  }, [apiIpStatus, apiIp, socket, msaCode, toast]);
+
   return (
-    <>
-      <div className="flex items-center gap-2">
-        <AlertDialog
-          open={isOpen}
-          onOpenChange={(open) => !botSpawned && setIsOpen(open)}
+    <AlertDialog
+      open={isOpen}
+      onOpenChange={(open) => !botSpawned && setIsOpen(open)}
+    >
+      <AlertDialogTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className="ml-auto gap-1.5 text-sm"
+          onClick={() => setIsOpen(true)}
         >
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="ml-auto gap-1.5 text-sm"
-              onClick={() => setIsOpen(true)}
-            >
-              <Unplug className="size-4" />
-              Connect a bot
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Create a Minecraft Bot</AlertDialogTitle>
-              <AlertDialogDescription>
-                Enter the details to create and connect a Minecraft bot.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <form onSubmit={handleSubmit}>
-              <div className="grid gap-4 py-4">
+          <Unplug className="size-4" />
+          Connect a bot
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Create a Minecraft Bot</AlertDialogTitle>
+          <AlertDialogDescription>
+            Enter the details to create and connect a Minecraft bot.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <form onSubmit={handleSubmit}>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="apiIp" className="text-right">
+                API IP
+              </label>
+              <Input
+                id="apiIp"
+                name="apiIp"
+                placeholder="http://localhost:3001"
+                type="text"
+                // value={apiIp}
+                onChange={handleApiIpChange}
+                className={`col-span-3 ${
+                  apiIpStatus === "success"
+                    ? "border-green-500"
+                    : apiIpStatus === "error"
+                    ? "border-red-500"
+                    : ""
+                }`}
+              />
+            </div>
+            {apiIpStatus === "success" && (
+              <>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <label htmlFor="username" className="text-right">
                     Username
                   </label>
                   <Input
-                    style={{ borderRadius: "0.375rem", paddingLeft: "0.50rem" }}
                     id="username"
                     name="username"
                     value={formData.username}
@@ -357,7 +364,6 @@ export function CreateBotDialog() {
                     Server
                   </label>
                   <Input
-                    style={{ borderRadius: "0.375rem", paddingLeft: "0.50rem" }}
                     id="server"
                     name="server"
                     value={formData.server}
@@ -371,7 +377,6 @@ export function CreateBotDialog() {
                     Port
                   </label>
                   <Input
-                    style={{ borderRadius: "0.375rem", paddingLeft: "0.50rem" }}
                     id="port"
                     name="port"
                     type="number"
@@ -411,125 +416,96 @@ export function CreateBotDialog() {
                     </Select>
                   </div>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <label htmlFor="port" className="text-right">
-                    API ip
-                  </label>
-                  <Input
-                    style={{ borderRadius: "0.375rem", paddingLeft: "0.50rem" }}
-                    id="port"
-                    name="port"
-                    placeholder="http://localhost:3001"
-                    type="text"
-                    // value={formData.port}
-                    onChange={handleChange}
-                    className="col-span-3"
-                    required
-                  />
-                </div>
+              </>
+            )}
 
-                {msaCode && (
-                  <>
-                    {/* <div className="my-1" /> */}
-                    <Separator />
-                    <div className="flex flex-col items-center">
-                      <h3 className="text-lg font-semibold mb-2">MSA</h3>
-                      <p className="text-sm text-muted-foreground text-center">
-                        It appears to be your first time signing in to this
-                        account. To sign in, use a web browser to open the page{" "}
-                        <a
-                          href="https://www.microsoft.com/link"
-                          target="_blank"
-                          className="underline"
-                        >
-                          https://www.microsoft.com/link
-                        </a>{" "}
-                        and use the code below.
-                      </p>
-                      <div className="my-4" />
-                      <div className="flex justify-center w-full">
-                        <InputOTP
-                          pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
-                          onClick={(e) => {
-                            e.preventDefault();
-                          }}
-                          maxLength={8}
-                          value={msaCode}
-                        >
-                          <InputOTPGroup>
-                            <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            <InputOTPSlot index={3} />
-                          </InputOTPGroup>
-                          <InputOTPSeparator />
-                          <InputOTPGroup>
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
-                            <InputOTPSlot index={6} />
-                            <InputOTPSlot index={7} />
-                          </InputOTPGroup>
-                        </InputOTP>
-                      </div>
-                      <div className="my-4" />
-                      <a
-                        onClick={() => {
-                          navigator.clipboard.writeText(msaCode);
-                          toast({
-                            title: "Code Copied",
-                            description: "MSA code copied to clipboard",
-                          });
-                        }}
-                        className="text-sm text-muted-foreground flex items-center gap-1 cursor-pointer"
-                      >
-                        <Copy />
-                        Copy code to clipboard
-                      </a>
-                    </div>
-                  </>
-                )}
-              </div>
-              <div className="my-4" />
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                {msaCode ? (
-                  <Button type="button" disabled={isButtonDisabled}>
-                    Waiting for MSA...
-                  </Button>
-                ) : (
-                  <Button
-                    type="submit"
-                    disabled={isButtonDisabled || isLoading}
-                    // onClick={setisLoading(true)}
+            {msaCode && (
+              <>
+                <Separator />
+                <div className="flex flex-col items-center">
+                  <h3 className="text-lg font-semibold mb-2">MSA</h3>
+                  <p className="text-sm text-muted-foreground text-center">
+                    It appears to be your first time signing in to this account.
+                    To sign in, use a web browser to open the page{" "}
+                    <a
+                      href="https://www.microsoft.com/link"
+                      target="_blank"
+                      className="underline"
+                    >
+                      https://www.microsoft.com/link
+                    </a>{" "}
+                    and use the code below.
+                  </p>
+                  <div className="my-4" />
+                  <div className="flex justify-center w-full">
+                    <InputOTP
+                      pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                      maxLength={8}
+                      value={msaCode}
+                    >
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                      </InputOTPGroup>
+                      <InputOTPSeparator />
+                      <InputOTPGroup>
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                        <InputOTPSlot index={6} />
+                        <InputOTPSlot index={7} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
+                  <div className="my-4" />
+                  <a
+                    onClick={() => {
+                      navigator.clipboard.writeText(msaCode);
+                      toast({
+                        title: "Code Copied",
+                        description: "MSA code copied to clipboard",
+                      });
+                    }}
+                    className="text-sm text-muted-foreground flex items-center gap-1 cursor-pointer"
                   >
-                    {isLoading ? "Creating Bot..." : "Create Bot"}
-                  </Button>
-                )}
-              </AlertDialogFooter>
-            </form>
-          </AlertDialogContent>
-        </AlertDialog>
-        {/* <div
-          style={{
-            width: "0.5rem",
-            height: "0.5rem",
-            borderRadius: "0.2rem", // Adjust border-radius here
-            backgroundColor: "#e0e0e0", // Adjust color if needed
-          }}
-        /> */}
-        <p className="text-sm text-muted-foreground">or</p>
-
-        <SetApiKeyDialog />
-      </div>
-    </>
+                    <Copy />
+                    Copy code to clipboard
+                  </a>
+                </div>
+              </>
+            )}
+          </div>
+          <div className="my-4" />
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            {msaCode ? (
+              <Button type="button" disabled={isButtonDisabled}>
+                Waiting for MSA...
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                disabled={
+                  isButtonDisabled || isLoading || apiIpStatus !== "success"
+                }
+              >
+                {isLoading ? "Creating Bot..." : "Create Bot"}
+              </Button>
+            )}
+          </AlertDialogFooter>
+        </form>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 
 export function StopBotDialog() {
   const { toast } = useToast();
+  const { apiIp } = useApiIp();
   const handleDisconnect = async () => {
     try {
-      const response = await fetch("http://localhost:3001/stop-bot", {
+      const response = await fetch(`${apiIp}/stop-bot`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

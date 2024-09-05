@@ -34,7 +34,7 @@ import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { ModeToggle } from "@/components/modeswitch";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
+import { useApiIp } from "@/lib/utils/useApiIp";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -644,7 +644,7 @@ export default function Dashboard() {
   const [botState, setBotState] = useState({ created: false, spawned: false });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const { apiIp } = useApiIp();
   const handleIframeError = () => {
     setIframeError(true);
   };
@@ -655,7 +655,7 @@ export default function Dashboard() {
 
   const fetchChestIndex = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/chest-index");
+      const response = await axios.get(`${apiIp}/chest-index`);
       setChestIndex(response.data);
     } catch (error) {
       console.error("Error fetching chest index:", error);
@@ -664,7 +664,7 @@ export default function Dashboard() {
 
   const handleSetStorageArea = async () => {
     try {
-      await axios.post("http://localhost:3001/set-storage-area", storageArea);
+      await axios.post(`${apiIp}/set-storage-area`, storageArea);
       alert("Storage area set successfully");
     } catch (error) {
       console.error("Error setting storage area:", error);
@@ -675,7 +675,7 @@ export default function Dashboard() {
   const handleDeliver = async () => {
     try {
       setBotStatus("Delivering");
-      await axios.post("http://localhost:3001/deliver", {
+      await axios.post(`${apiIp}/deliver`, {
         items: deliveryItems,
         destination: destination,
       });
@@ -731,7 +731,7 @@ export default function Dashboard() {
   useEffect(() => {
     const checkBotState = async () => {
       try {
-        const response = await fetch("http://localhost:3001/bot-state");
+        const response = await fetch(`${apiIp}/bot-state`);
         if (!response.ok) {
           throw new Error("Failed to fetch bot state");
         }

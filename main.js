@@ -10,6 +10,8 @@ const express = require("express");
 const { Server } = require("socket.io");
 const bodyParser = require("body-parser");
 const toolPlugin = require("mineflayer-tool").plugin;
+const dns = require("node:dns");
+const os = require("node:os");
 const https = require("https");
 const http = require("http");
 const path = require("path");
@@ -19,6 +21,7 @@ const Vec3 = require("vec3").Vec3;
 const cors = require("cors");
 const { elytrafly } = require("mineflayer-elytrafly");
 const e = require("express");
+const prompt = require("prompt-sync")();
 const { createCanvas, loadImage } = require("canvas");
 const WebSocket = require("ws");
 const { fetch } = require("node-fetch");
@@ -56,7 +59,7 @@ var limiter = RateLimit({
 // apply rate limiter to all requests
 app.use(limiter);
 
-const PORT = 3001;
+const DEFAULT_PORT = 3001;
 const versions = require("minecraft-data").supportedVersions.pc;
 // Bot state
 let botState = {
@@ -1099,7 +1102,7 @@ app.get("/map-image", async (req, res) => {
 });
 
 // WebSocket server for real-time updates
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ host: "0.0.0.0", port: 8080 });
 
 wss.on("connection", (ws) => {
   ws.on("message", (message) => {
@@ -1586,11 +1589,81 @@ function getBot() {
   return bot;
 }
 
-// Start the API server
-server.listen(PORT, () => {
-  console.log(`API server running on port ${PORT}`);
-  console.log(
-    `Backend server is running. Please go to https://open-delivery-bot.vercel.app/`
-  );
-});
+let PORT;
+let ip_address;
+
+// Get the IPv4 address
+const getIPv4Address = () => {
+  return new Promise((resolve, reject) => {
+    const options = { family: 4 };
+    dns.lookup(os.hostname(), options, (err, addr) => {
+      if (err) {
+        console.error(err);
+        reject(err);
+      } else {
+        console.log(`IPv4 address: ${addr}`);
+        resolve(addr);
+      }
+    });
+  });
+};
+
+// Get the port number
+const getPort = () => {
+  while (true) {
+    PORT = prompt(
+      "Please enter the port you want the server to run at (default 3001): "
+    );
+    if (PORT === "") {
+      PORT = 3001;
+      break;
+    } else if (!isNaN(PORT)) {
+      PORT = parseInt(PORT);
+      break;
+    }
+  }
+  return PORT;
+};
+
+// Start the server
+const startServer = async () => {
+  try {
+    ip_address = await getIPv4Address();
+    PORT = getPort();
+
+    server.listen(PORT, () => {
+      console.clear();
+      console.log(`
+===========================================================
+Backend Server is Running!
+===========================================================
+
+To connect the frontend to this backend:
+
+1. Open your frontend application (https://open-delivery-bot.vercel.app/)
+2. Look for the "Set API Key" or "Connect a bot" option
+3. When prompted for the API IP, enter one of the following:
+   - Local machine:     http://localhost:${PORT}
+   - Same network:      http://${ip_address}:${PORT}
+   - Different network: http://YOUR_PUBLIC_IP:${PORT} (port forwarding required)
+
+For local development:
+- The backend is now ready to accept connections from your frontend
+- Make sure your frontend is configured to send requests to the appropriate URL
+
+If you encounter any issues:
+- Check that the port ${PORT} is not blocked by your firewall
+- Verify that your frontend is using the correct API IP address
+- For connections from different networks, set up port forwarding on your router
+
+===========================================================
+`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+  }
+};
+
+startServer();
+
 module.exports = { getBot };

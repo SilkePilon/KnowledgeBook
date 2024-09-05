@@ -21,8 +21,6 @@
   <a href="soon!"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Hungarian"></a>
 </p>
 
-
-
 <p align="center">
   <a href="#about-">About</a> •
   <a href="#freature-and-plugins-">Features</a> •
@@ -41,8 +39,8 @@ More info and docs about the new AI features will be added soon!
 </h1>
 
 ## YouTube Demo
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/tEXtJFuGw8Y/0.jpg)](https://www.youtube.com/watch?v=tEXtJFuGw8Y)
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/tEXtJFuGw8Y/0.jpg)](https://www.youtube.com/watch?v=tEXtJFuGw8Y)
 
 ## Getting Started
 
@@ -63,10 +61,10 @@ Check our [Wiki](link-to-wiki) for detailed guides on:
 
 ## Ready to download flows🕹
 
-| Flow name             | Description                                          | Download                                                                                   |
-| --------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Flow name             | Description                                          | Download                                                                                      |
+| --------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | Obtain crafting table | Collects wood to craft a crafting table and drops it | [Download](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flows/crafting_table.json) |
-|                       |                                                      |                                                                                            |
+|                       |                                                      |                                                                                               |
 
 ## How To Install 📥
 
@@ -84,25 +82,25 @@ Make sure you have the following installed:
 #### Linux:
 
 ```bash
-curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm install && cd .. && rm main.zip && cd OpenDeliveryBot-main && node main.js
+curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm install && npm rebuild && cd .. && rm main.zip && cd OpenDeliveryBot-main && node main.js
 ```
 
 #### Windows (curl):
 
 ```bash
-curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && tar -xf main.zip && cd OpenDeliveryBot-main && npm install && cd .. && del main.zip && cd OpenDeliveryBot-main && node main.js
+curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && tar -xf main.zip && cd OpenDeliveryBot-main && npm install && npm rebuild && cd .. && del main.zip && cd OpenDeliveryBot-main && node main.js
 ```
 
 #### Windows (PowerShell):
 
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip" -OutFile "main.zip"; Expand-Archive -Path "main.zip" -DestinationPath .; cd .\OpenDeliveryBot-main; npm install; cd ..; Remove-Item -Path "main.zip"; cd .\OpenDeliveryBot-main; node main.js
+Invoke-WebRequest -Uri "https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip" -OutFile "main.zip"; Expand-Archive -Path "main.zip" -DestinationPath .; cd .\OpenDeliveryBot-main; npm install; npm rebuild; cd ..; Remove-Item -Path "main.zip"; cd .\OpenDeliveryBot-main; node main.js
 ```
 
 #### MacOS:
 
 ```bash
-curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm install && cd .. && rm main.zip && cd OpenDeliveryBot-main && node main.js
+curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm install && npm rebuild && cd .. && rm main.zip && cd OpenDeliveryBot-main && node main.js
 ```
 
 ## Manual Install
@@ -123,6 +121,7 @@ Assuming you have [Node](https://nodejs.org/en/download/package-manager/current)
 
 ```bash
 npm install
+npm rebuild
 node main.js
 ```
 
@@ -256,10 +255,11 @@ Happy coding! 🚀
 
 [![Star History Chart](https://api.star-history.com/svg?repos=SilkePilon/OpenDeliveryBot&type=Date)](https://star-history.com/#SilkePilon/OpenDeliveryBot&Date)
 
-<!-- 
+<!--
 ![alt text](https://i.imgur.com/RRHOgzp.png) -->
 
 ## Sponsor me
-<a href="https://www.buymeacoffee.com/silkepilon"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=silkepilon&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" /></a>
+
+` <a href="https://www.buymeacoffee.com/silkepilon"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=silkepilon&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" />``</a> `
 
 </file-attachment-contents>

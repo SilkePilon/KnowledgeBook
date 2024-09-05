@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 const API_IP_KEY = "apiIp";
-const DEFAULT_API_IP = "http://localhost:3001";
+const DEFAULT_API_IP = "https://localhost:3001";
 
 export function useApiIp() {
   const [apiIp, setApiIp] = useState<string>(() => {

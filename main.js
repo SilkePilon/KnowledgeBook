@@ -38,16 +38,39 @@ const {
 // const pathfinder = createPlugin();
 // Express API setup
 console.clear();
+const dotenv = require("dotenv").config();
+const fs2 = require("fs");
+
 const app = express();
-const server = http.createServer(app);
+const morgan = require("morgan");
+const port = process.env.PORT || 4500;
+
+// Middleware
+app.use(morgan("dev"));
+app.use(bodyParser.json());
+app.use(cors()); // Add this line to enable CORS for all routes
+// Routes
+app.get("/", (req, res) => {
+  res.send("WELCOME TO THE BASIC EXPRESS APP WITH AN HTTPS SERVER");
+});
+
+// openssl genrsa -out localhost-key.pem 2048
+// openssl req -new -x509 -sha256 -key localhost-key.pem -out localhost.pem -days 365
+
+// Read SSL certificate and key files
+const options = {
+  key: fs2.readFileSync(path.join(__dirname, "localhost-key.pem")),
+  cert: fs2.readFileSync(path.join(__dirname, "localhost.pem")),
+};
+
+// Create HTTPS server
+const server = https.createServer(options, app);
 const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["*"],
   },
 });
-app.use(bodyParser.json());
-app.use(cors()); // Add this line to enable CORS for all routes
 
 // set up rate limiter: maximum of five requests per minute
 var RateLimit = require("express-rate-limit");
@@ -1643,9 +1666,9 @@ To connect the frontend to this backend:
 1. Open your frontend application (https://open-delivery-bot.vercel.app/)
 2. Look for the "Set API Key" or "Connect a bot" option
 3. When prompted for the API IP, enter one of the following:
-   - Local machine:     http://localhost:${PORT}
-   - Same network:      http://${ip_address}:${PORT}
-   - Different network: http://YOUR_PUBLIC_IP:${PORT} (port forwarding required)
+   - Local machine:     https://localhost:${PORT}
+   - Same network:      https://${ip_address}:${PORT}
+   - Different network: https://YOUR_PUBLIC_IP:${PORT} (port forwarding required)
 
 For local development:
 - The backend is now ready to accept connections from your frontend

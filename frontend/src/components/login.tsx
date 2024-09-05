@@ -331,7 +331,7 @@ export function CreateBotDialog() {
               <Input
                 id="apiIp"
                 name="apiIp"
-                placeholder="http://localhost:3001"
+                placeholder="https://localhost:3001"
                 type="text"
                 // value={apiIp}
                 onChange={handleApiIpChange}

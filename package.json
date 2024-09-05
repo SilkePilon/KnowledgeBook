@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@nxg-org/mineflayer-pathfinder": "^0.0.21",
+    "@nxg-org/mineflayer-pathfinder": "^0.0.24",
     "@nxg-org/mineflayer-physics-util": "^1.5.8",
     "body-parser": "^1.20.2",
     "canvas": "^2.11.2",

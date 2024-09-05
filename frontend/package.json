@@ -43,6 +43,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.52.1",
+    "react-icons": "^5.3.0",
     "react-markdown": "^9.0.1",
     "react-resizable-panels": "^2.0.22",
     "react-skinview3d": "^5.1.0",

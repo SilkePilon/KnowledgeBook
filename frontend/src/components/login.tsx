@@ -35,6 +35,7 @@ import {
 import { set } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { useApiIp } from "@/lib/utils/useApiIp";
+import { TbRefresh } from "react-icons/tb";
 
 export function SetApiKeyDialog() {
   const { apiIp } = useApiIp();
@@ -218,12 +219,16 @@ export function CreateBotDialog() {
     setApiIpStatus("default");
 
     if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current); // Clear the previous timeout
+      clearTimeout(debounceTimeout.current);
     }
 
     debounceTimeout.current = setTimeout(() => {
-      testApiIp(newApiIp); // Call the API after the user has stopped typing
-    }, 500); // Adjust this delay (500ms) based on preference
+      testApiIp(newApiIp);
+    }, 500);
+  };
+
+  const handleRefresh = () => {
+    testApiIp(apiIp);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -317,33 +322,64 @@ export function CreateBotDialog() {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Create a Minecraft Bot</AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogTitle className="text-center">
+            Create a Minecraft Bot
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-center">
             Enter the details to create and connect a Minecraft bot.
           </AlertDialogDescription>
         </AlertDialogHeader>
+
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <label htmlFor="apiIp" className="text-right">
                 API IP
               </label>
-              <Input
-                id="apiIp"
-                name="apiIp"
-                placeholder="https://localhost:3001"
-                type="text"
-                // value={apiIp}
-                onChange={handleApiIpChange}
-                className={`col-span-3 ${
-                  apiIpStatus === "success"
-                    ? "border-green-500"
-                    : apiIpStatus === "error"
-                    ? "border-red-500"
-                    : ""
-                }`}
-              />
+              <div className="col-span-3 flex items-center gap-2">
+                <Input
+                  id="apiIp"
+                  name="apiIp"
+                  placeholder="https://localhost:3001"
+                  type="text"
+                  onChange={handleApiIpChange}
+                  className={`flex-grow ${
+                    apiIpStatus === "success"
+                      ? "border-green-500"
+                      : apiIpStatus === "error"
+                      ? "border-red-500"
+                      : ""
+                  }`}
+                />
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="outline"
+                  onClick={handleRefresh}
+                  className="flex-shrink-0"
+                >
+                  <TbRefresh className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
+            {apiIpStatus === "error" && (
+              <>
+                <AlertDialogDescription className="text-center">
+                  PS. If the input box above is showing red but the api is valid
+                  follow these steps: <br />
+                  1.{" "}
+                  <a target="_blank" href={`${apiIp}`} className="underline">
+                    Open the backend ip
+                  </a>{" "}
+                  in a new tab in your preferred browser.
+                  <br />
+                  2. there should be an option to proceed to the site. (this is
+                  because the site is using a self signed certificate)
+                  <br />
+                  3. Also make shure there is no / at the end of the url
+                </AlertDialogDescription>
+              </>
+            )}
             {apiIpStatus === "success" && (
               <>
                 <div className="grid grid-cols-4 items-center gap-4">

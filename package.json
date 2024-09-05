@@ -6,7 +6,7 @@
     "canvas": "^2.11.2",
     "express": "^4.19.2",
     "express-rate-limit": "^7.4.0",
-    "minecraft-data": "^3.66.0",
+    "minecraft-data": "^3.68.0",
     "mineflayer": "^4.20.1",
     "mineflayer-auto-eat": "^4.0.0",
     "mineflayer-collectblock": "^1.4.1",

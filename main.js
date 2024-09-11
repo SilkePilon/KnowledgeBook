@@ -38,6 +38,7 @@ const {
 } = require("@nxg-org/mineflayer-physics-util");
 var createRsaKeys = require("rsa-json");
 var pem = require("pem");
+const { exit } = require("node:process");
 // const pathfinder = createPlugin();
 // Express API setup
 
@@ -1669,12 +1670,55 @@ async function main() {
     return PORT;
   };
 
+  const getIp = async () => {
+    let ip_address;
+
+    while (true) {
+      const defaultIp = await getIPv4Address();
+      console.log(`1. Use default IP: ${defaultIp}`);
+      console.log("2. Use localhost (127.0.0.1)");
+      console.log("3. Use all interfaces (0.0.0.0)");
+      console.log("4. Enter a custom IP");
+
+      const choice = prompt("Enter your choice (1-4 or exit): ");
+
+      switch (choice) {
+        case "exit":
+          exit();
+        case "1":
+          ip_address = defaultIp;
+          break;
+        case "2":
+          ip_address = "127.0.0.1";
+          break;
+        case "3":
+          ip_address = "0.0.0.0";
+          break;
+        case "4":
+          const customIp = prompt("Enter the custom IP address: ");
+          if (customIp && customIp.trim() !== "") {
+            ip_address = customIp.trim();
+          } else {
+            console.log("Invalid IP address. Please try again.");
+            continue;
+          }
+          break;
+        default:
+          console.log("Invalid choice. Please enter a number between 1 and 4.");
+          continue;
+      }
+
+      if (ip_address) break;
+    }
+
+    return ip_address;
+  };
+
   // Start the server
   const startServer = async () => {
     try {
-      ip_address = await getIPv4Address();
       PORT = getPort();
-
+      ip_address = await getIp();
       server.listen(PORT, () => {
         console.clear();
         console.log(`

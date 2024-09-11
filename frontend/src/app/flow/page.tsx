@@ -761,7 +761,7 @@ export default function Dashboard() {
 
   const formatChatMessages = () => {
     if (chatMessages.length === 0) {
-      return "No chat messages to show.\n\nHow about you gives us a star on GitHub?\ngithub.com/SilkePilon/OpenDeliveryBot";
+      return "No chat messages to show.\n\nHow about you gives us a star on GitHub?\ngithub.com/SilkePilon/KnowledgeBook";
     }
     return chatMessages
       .map((msg) => {
@@ -1577,7 +1577,7 @@ export default function Dashboard() {
                         <a
                           className="underline"
                           href={
-                            "https://github.com/SilkePilon/OpenDeliveryBot/tree/main"
+                            "https://github.com/SilkePilon/KnowledgeBook/tree/main"
                           }
                         >
                           GitHub

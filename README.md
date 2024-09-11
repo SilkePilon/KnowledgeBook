@@ -29,7 +29,7 @@
 
 ## About 📬
 
-Project Skyview (idk if this is a good name?) is an open-source Minecraft bot management platform that provides players with a user-friendly web interface to create and control helpful bots. Our goal is to enhance the Minecraft multiplayer experience with powerful automation tools, all at no cost to the player.
+Project KnowledgeBook is an open-source Minecraft bot management platform that provides players with a user-friendly web interface to create and control helpful bots. Our goal is to enhance the Minecraft multiplayer experience with powerful automation tools, all at no cost to the player.
 
 **AI Stuff**
 More info and docs about the new AI features will be added soon!
@@ -44,7 +44,7 @@ More info and docs about the new AI features will be added soon!
 
 ## Getting Started
 
-Check our [Wiki](link-to-wiki) for detailed guides on:
+Check our (soon) [Wiki](link-to-wiki) for detailed guides on:
 
 - Setting up Project Skyview
 - Creating and managing bots
@@ -61,16 +61,16 @@ Check our [Wiki](link-to-wiki) for detailed guides on:
 
 ## Ready to download flows🕹
 
-| Flow name             | Description                                          | Download                                                                                      |
-| --------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Obtain crafting table | Collects wood to craft a crafting table and drops it | [Download](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flows/crafting_table.json) |
-|                       |                                                      |                                                                                               |
+| Flow name             | Description                                          | Download                                                                                    |
+| --------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Obtain crafting table | Collects wood to craft a crafting table and drops it | [Download](https://github.com/SilkePilon/KnowledgeBook/blob/main/flows/crafting_table.json) |
+|                       |                                                      |                                                                                             |
 
 ## How To Install 📥
 
 ## Simple 1 liner install
 
-OpenDeliveryBot can be installed using 1 line of code!
+Project KnowledgeBook can be installed using 1 line of code!
 
 #### Prerequisites
 
@@ -82,25 +82,25 @@ Make sure you have the following installed:
 #### Linux:
 
 ```bash
-curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm install && npm rebuild && cd .. && rm main.zip && cd OpenDeliveryBot-main && node main.js
+curl -sL -o main.zip https://github.com/SilkePilon/KnowledgeBook/archive/refs/heads/main.zip && unzip main.zip && cd KnowledgeBook-main && npm install && npm rebuild && cd .. && rm main.zip && cd KnowledgeBook-main && node main.js
 ```
 
 #### Windows (curl):
 
 ```bash
-curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && tar -xf main.zip && cd OpenDeliveryBot-main && npm install && npm rebuild && cd .. && del main.zip && cd OpenDeliveryBot-main && node main.js
+curl -sL -o main.zip https://github.com/SilkePilon/KnowledgeBook/archive/refs/heads/main.zip && tar -xf main.zip && cd KnowledgeBook-main && npm install && npm rebuild && cd .. && del main.zip && cd KnowledgeBook-main && node main.js
 ```
 
 #### Windows (PowerShell):
 
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip" -OutFile "main.zip"; Expand-Archive -Path "main.zip" -DestinationPath .; cd .\OpenDeliveryBot-main; npm install; npm rebuild; cd ..; Remove-Item -Path "main.zip"; cd .\OpenDeliveryBot-main; node main.js
+Invoke-WebRequest -Uri "https://github.com/SilkePilon/KnowledgeBook/archive/refs/heads/main.zip" -OutFile "main.zip"; Expand-Archive -Path "main.zip" -DestinationPath .; cd .\KnowledgeBook-main; npm install; npm rebuild; cd ..; Remove-Item -Path "main.zip"; cd .\KnowledgeBook-main; node main.js
 ```
 
 #### MacOS:
 
 ```bash
-curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/heads/main.zip && unzip main.zip && cd OpenDeliveryBot-main && npm install && npm rebuild && cd .. && rm main.zip && cd OpenDeliveryBot-main && node main.js
+curl -sL -o main.zip https://github.com/SilkePilon/KnowledgeBook/archive/refs/heads/main.zip && unzip main.zip && cd KnowledgeBook-main && npm install && npm rebuild && cd .. && rm main.zip && cd KnowledgeBook-main && node main.js
 ```
 
 ## Manual Install
@@ -110,7 +110,7 @@ curl -sL -o main.zip https://github.com/SilkePilon/OpenDeliveryBot/archive/refs/
 First, make a local copy of the repository:
 
 ```bash
-git clone https://github.com/SilkePilon/OpenDeliveryBot.git
+git clone https://github.com/SilkePilon/KnowledgeBook.git
 ```
 
 Open the cloned repository in your preferred terminal app.
@@ -140,7 +140,7 @@ Welcome to the project! This guide will walk you through the steps to add custom
 First, make a local copy of the repository:
 
 ```bash
-git clone https://github.com/SilkePilon/OpenDeliveryBot.git
+git clone https://github.com/SilkePilon/KnowledgeBook.git
 ```
 
 Open the cloned repository in your preferred IDE.
@@ -226,9 +226,9 @@ the parameter name is based on the key provided in the input.
 
 You can also checkout some of the already made nodes:
 
-- [Chat](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flow_functions/chat.js)
-- [Wait for chat message](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flow_functions/wait_for_chat_message.js)
-- [Walk to](https://github.com/SilkePilon/OpenDeliveryBot/blob/main/flow_functions/walk_to.js)
+- [Chat](https://github.com/SilkePilon/KnowledgeBook/blob/main/flow_functions/chat.js)
+- [Wait for chat message](https://github.com/SilkePilon/KnowledgeBook/blob/main/flow_functions/wait_for_chat_message.js)
+- [Walk to](https://github.com/SilkePilon/KnowledgeBook/blob/main/flow_functions/walk_to.js)
 
 **Limitations**
 
@@ -253,7 +253,7 @@ Thank you for contributing to the project! If you have any questions or need fur
 
 Happy coding! 🚀
 
-[![Star History Chart](https://api.star-history.com/svg?repos=SilkePilon/OpenDeliveryBot&type=Date)](https://star-history.com/#SilkePilon/OpenDeliveryBot&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=SilkePilon/KnowledgeBook&type=Date)](https://star-history.com/#SilkePilon/KnowledgeBook&Date)
 
 <!--
 ![alt text](https://i.imgur.com/RRHOgzp.png) -->

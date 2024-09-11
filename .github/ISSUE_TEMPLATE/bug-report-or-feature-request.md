@@ -2,7 +2,7 @@
 name: Bug report or Feature request
 about: Create a report to help me improve or fix things
 title: ''
-labels: ''
+labels: bug, enhancement
 assignees: SilkePilon
 
 ---

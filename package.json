@@ -4,7 +4,7 @@
     "body-parser": "^1.20.2",
     "canvas": "^2.11.2",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
     "express-rate-limit": "^7.4.0",
     "minecraft-data": "^3.66.0",
     "mineflayer": "^4.20.1",

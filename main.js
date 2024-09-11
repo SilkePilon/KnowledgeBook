@@ -1728,7 +1728,7 @@ async function main() {
 
   To connect the frontend to this backend:
 
-  1. Open your frontend application (https://open-delivery-bot.vercel.app/)
+  1. Open your frontend application (https://knowledgebook.vercel.app/)
   2. Look for the "Set API Key" or "Connect a bot" option
   3. When prompted for the API IP, enter one of the following:
     - Local machine:     https://localhost:${PORT}

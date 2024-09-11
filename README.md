@@ -125,7 +125,7 @@ npm rebuild
 node main.js
 ```
 
-That's it! You can now open up https://open-delivery-bot.vercel.app/ and start creating!
+That's it! You can now open up https://knowledgebook.vercel.app/ and start creating!
 
 ## Adding Custom Nodes to the Project
 

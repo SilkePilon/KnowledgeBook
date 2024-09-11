@@ -36,6 +36,7 @@ import { set } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { useApiIp } from "@/lib/utils/useApiIp";
 import { TbRefresh } from "react-icons/tb";
+import e from "cors";
 
 export function SetApiKeyDialog() {
   const { apiIp } = useApiIp();
@@ -228,7 +229,15 @@ export function CreateBotDialog() {
   };
 
   const handleRefresh = () => {
-    testApiIp(apiIp);
+    if (apiIp != "") {
+      testApiIp(apiIp);
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter a valid API IP",
+      });
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

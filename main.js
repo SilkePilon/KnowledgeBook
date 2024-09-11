@@ -994,6 +994,10 @@ async function main() {
     });
   }
 
+  app.get("/", async (req, res) => {
+    res.json({ message: "Successfully reached the api." });
+  });
+
   app.post("/create-bot", async (req, res) => {
     const { username, server, port, version } = req.body;
     console.log("Creating bot...");

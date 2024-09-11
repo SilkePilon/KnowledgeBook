@@ -2,7 +2,7 @@
 
 <h1 align="center">
   <br>
-  <a href="/"><img src="assets/bg_gif.gif" alt="..." width="900"></a>
+  <a href="/"><img src="assets/bg_dwa.gif" alt="..." width="900"></a>
   <br>
 </h1>
 

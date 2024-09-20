@@ -326,5 +326,17 @@
       "z": "number"
     },
     "author": "YourGitHubUsername"
+  },
+  "DISCONNECT_ON_PLAYER_PROXIMITY": {
+    "name": "DISCONNECT_ON_PLAYER_PROXIMITY",
+    "file": "disconnect_on_player_proximity.js",
+    "id": "DISCONNECT_ON_PLAYER_PROXIMITY",
+    "label": "Disconnect on Player Proximity",
+    "hasInput": true,
+    "description": "Disconnects the bot when a player comes within a specified radius",
+    "input": {
+      "radius": "number"
+    },
+    "author": "Assistant"
   }
 }

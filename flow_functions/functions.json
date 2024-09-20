@@ -13,9 +13,7 @@
       "Test Switch 2": "switch"
     },
     "author": "SilkePilon",
-    "badges": [
-      "test"
-    ]
+    "badges": ["test"]
   },
   "chat": {
     "name": "chat",
@@ -40,9 +38,7 @@
       "x y z": "text"
     },
     "author": "SilkePilon",
-    "badges": [
-      "Not Working"
-    ]
+    "badges": ["Not Working"]
   },
   "wait_for_chat_message": {
     "name": "wait_for_chat_message",
@@ -81,10 +77,7 @@
       "amount": "number"
     },
     "author": "Ash",
-    "badges": [
-      "beta",
-      "user made"
-    ]
+    "badges": ["beta", "user made"]
   },
   "place_block": {
     "name": "place_block",
@@ -177,9 +170,7 @@
       "range": "number"
     },
     "author": "AI model",
-    "badges": [
-      "Not Working"
-    ]
+    "badges": ["Not Working"]
   },
   "toggle_options": {
     "name": "toggle_options",
@@ -225,9 +216,7 @@
       "range": "number"
     },
     "author": "AI model",
-    "badges": [
-      "Not Working"
-    ]
+    "badges": ["Not Working"]
   },
   "smelt_item": {
     "name": "smelt_item",
@@ -267,9 +256,7 @@
       "message": "text"
     },
     "author": "meta/llama-3.1-405b-instruct",
-    "badges": [
-      "Made With AI"
-    ]
+    "badges": ["Made With AI"]
   },
   "get_item_from_chest": {
     "name": "get_item_from_chest",
@@ -283,9 +270,7 @@
       "itemName": "text"
     },
     "author": "meta/llama-3.1-405b-instruct",
-    "badges": [
-      "Made With AI @ 29/7/2024"
-    ]
+    "badges": ["Made With AI @ 29/7/2024"]
   },
   "get_item_from_nearby_chest": {
     "name": "get_item_from_nearby_chest",
@@ -299,9 +284,7 @@
       "radius": "number"
     },
     "author": "meta/llama-3.1-405b-instruct",
-    "badges": [
-      "Made With AI @ 29/7/2024"
-    ]
+    "badges": ["Made With AI @ 29/7/2024"]
   },
   "javascript_code_executor": {
     "name": "javascript_code_executor",
@@ -314,9 +297,7 @@
       "code": "text"
     },
     "author": "meta/llama-3.1-405b-instruct",
-    "badges": [
-      "Made With AI @ 31/7/2024"
-    ]
+    "badges": ["Made With AI @ 31/7/2024"]
   },
   "find_item_in_chests": {
     "name": "find_item_in_chests",
@@ -330,8 +311,20 @@
       "range": "number"
     },
     "author": "meta/llama-3.1-405b-instruct",
-    "badges": [
-      "Made With AI @ 31/7/2024"
-    ]
+    "badges": ["Made With AI @ 31/7/2024"]
+  },
+  "ELYTRA_FLY_TO_LOCATION": {
+    "name": "ELYTRA_FLY_TO_LOCATION",
+    "file": "elytra_fly_to_location.js",
+    "id": "ELYTRA_FLY_TO_LOCATION",
+    "label": "Elytra Fly to Location",
+    "hasInput": true,
+    "description": "Uses elytra to fly to a specified location",
+    "input": {
+      "x": "number",
+      "y": "number",
+      "z": "number"
+    },
+    "author": "YourGitHubUsername"
   }
 }

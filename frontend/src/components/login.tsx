@@ -276,6 +276,7 @@ export function CreateBotDialog() {
       });
     } finally {
       setIsLoading(false);
+      setIsOpen(false);
     }
   };
 

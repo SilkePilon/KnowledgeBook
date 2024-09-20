@@ -253,7 +253,15 @@ Thank you for contributing to the project! If you have any questions or need fur
 
 Happy coding! 🚀
 
-[![Star History Chart](https://api.star-history.com/svg?repos=SilkePilon/KnowledgeBook&type=Date)](https://star-history.com/#SilkePilon/KnowledgeBook&Date)
+## Star History
+
+<a href="https://star-history.com/#SilkePilon/KnowledgeBook&Timeline">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=SilkePilon/KnowledgeBook&type=Timeline&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=SilkePilon/KnowledgeBook&type=Timeline" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=SilkePilon/KnowledgeBook&type=Timeline" />
+ </picture>
+</a>
 
 <!--
 ![alt text](https://i.imgur.com/RRHOgzp.png) -->

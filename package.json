@@ -14,7 +14,7 @@
     "mineflayer-tool": "^1.2.0",
     "morgan": "^1.10.0",
     "node-fetch": "2.7.0",
-    "openai": "^4.55.3",
+    "openai": "^4.67.1",
     "pem": "^1.14.8",
     "prismarine-viewer": "^1.28.0",
     "prompt-sync": "^4.2.0",

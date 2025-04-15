@@ -2,7 +2,7 @@
 
 <h1 align="center">
   <br>
-  <a href="/"><img src="assets/bg_1.gif" alt="..." width="900"></a>
+  <a href="/"><img src=".github/media/bg_1.gif" alt="..." width="900"></a>
   <br>
 </h1>
 
@@ -35,7 +35,7 @@ Project KnowledgeBook is an open-source Minecraft bot management platform that p
 More info and docs about the new AI features will be added soon!
 
 <h1>
-  <a href="/"><img src="assets/node_example.png" alt="..." width="100%"></a>
+  <a href="/"><img src=".github/media/node_example.png" alt="..." width="100%"></a>
 </h1>
 
 ## YouTube Demo
@@ -68,36 +68,54 @@ Check our (soon) [Wiki](link-to-wiki) for detailed guides on:
 
 ## How To Install 📥
 
-## Simple 1 liner install
-
-Project KnowledgeBook can be installed using 1 line of code!
-
-#### Prerequisites
+### Prerequisites
 
 Make sure you have the following installed:
 
-- [Node.js](https://nodejs.org/) 18 or above
+- [Node.js](https://nodejs.org/) 22.0.0 or above
 - [npm](https://www.npmjs.com/)
 
-#### Linux:
+### Installation Steps
 
+1. Clone the repository:
 ```bash
-curl -sL -o main.zip https://github.com/SilkePilon/KnowledgeBook/archive/refs/heads/main.zip && unzip main.zip && cd KnowledgeBook-main && npm install && npm rebuild && cd .. && rm main.zip && cd KnowledgeBook-main && node main.js
+git clone https://github.com/SilkePilon/KnowledgeBook.git
+cd KnowledgeBook
 ```
 
-#### Windows (curl):
-
+2. Install dependencies for all workspaces:
 ```bash
-curl -sL -o main.zip https://github.com/SilkePilon/KnowledgeBook/archive/refs/heads/main.zip && tar -xf main.zip && cd KnowledgeBook-main && npm install && npm rebuild && cd .. && del main.zip && cd KnowledgeBook-main && node main.js
+npm run install:all
 ```
 
-#### Windows (PowerShell):
+This will install dependencies for both the frontend and backend.
 
-```powershell
-Invoke-WebRequest -Uri "https://github.com/SilkePilon/KnowledgeBook/archive/refs/heads/main.zip" -OutFile "main.zip"; Expand-Archive -Path "main.zip" -DestinationPath .; cd .\KnowledgeBook-main; npm install; npm rebuild; cd ..; Remove-Item -Path "main.zip"; cd .\KnowledgeBook-main; node main.js
+### Running the Application
+
+You can run the frontend and backend separately or together:
+
+#### Run both frontend and backend:
+```bash
+npm run dev
 ```
 
-#### MacOS:
+#### Run only the frontend:
+```bash
+npm run frontend
+```
+
+#### Run only the backend:
+```bash
+npm run backend
+```
+
+The frontend will be available at `http://localhost:3000` and the backend at `http://localhost:8080` by default.
+
+### Development
+
+- Frontend code is located in the `frontend/` directory
+- Backend code is located in the `backend/` directory
+- Each directory has its own `package.json` with specific dependencies and scripts
 
 ```bash
 curl -sL -o main.zip https://github.com/SilkePilon/KnowledgeBook/archive/refs/heads/main.zip && unzip main.zip && cd KnowledgeBook-main && npm install && npm rebuild && cd .. && rm main.zip && cd KnowledgeBook-main && node main.js
@@ -130,7 +148,7 @@ That's it! You can now open up https://knowledgebook.vercel.app/ and start creat
 ## Adding Custom Nodes to the Project
 
 <h1>
-  <a href="/"><img src="assets/custom_node2.png" alt="..." width="100%"></a>
+  <a href="/"><img src=".github/media/custom_node2.png" alt="..." width="100%"></a>
 </h1>
 
 Welcome to the project! This guide will walk you through the steps to add custom nodes. Follow these instructions to contribute your custom functionality.

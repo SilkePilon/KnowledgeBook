@@ -37,7 +37,7 @@
     "html-to-image": "^1.11.11",
     "input-otp": "^1.1.0",
     "ldrs": "^1.0.1",
-    "lucide-react": "^0.350.0",
+    "lucide-react": "^0.488.0",
     "next": "^14.2.6",
     "next-themes": "^0.3.0",
     "react": "^18.2.0",

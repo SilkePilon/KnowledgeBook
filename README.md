@@ -88,7 +88,18 @@ cd KnowledgeBook
 npm run install:all
 ```
 
-This will install dependencies for both the frontend and backend.
+3. Set up HTTPS for development:
+```bash
+cd backend
+npm run setup-https
+```
+
+This will:
+- Install dependencies for both frontend and backend
+- Generate trusted SSL certificates for local development
+- Configure HTTPS for secure communication
+
+> **Note:** When first accessing the backend API in your browser, you may need to accept the self-signed certificate. This is normal for local development and doesn't affect security.
 
 ### Running the Application
 

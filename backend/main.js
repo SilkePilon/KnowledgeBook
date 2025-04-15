@@ -59,26 +59,19 @@ async function main() {
 
   // openssl genrsa -out localhost-key.pem 2048
   // openssl req -new -x509 -sha256 -key localhost-key.pem -out localhost.pem -days 365
+  const { generateCertificate } = require('./config/ssl');
+  
+  // Set up HTTPS server with SSL certificates
+  const sslOptions = await generateCertificate();
+  const server = https.createServer(sslOptions, app);
 
-  // Generate self-signed certificate
-  function generateCertificate() {
-    return new Promise((resolve, reject) => {
-      pem.createCertificate({ days: 1, selfSigned: true }, (err, keys) => {
-        if (err) {
-          reject(err);
-        } else {
-          console.log("Certificate generated successfully");
-          resolve(keys);
-        }
-      });
-    });
-  }
-
-  const rsa_keys = await generateCertificate();
-  const server = https.createServer(
-    { key: rsa_keys.clientKey, cert: rsa_keys.certificate },
-    app
-  );
+  // Configure CORS for the frontend
+  app.use(cors({
+    origin: ['https://knowledgebook.vercel.app', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  }));
   const io = new Server(server, {
     cors: {
       origin: "*",

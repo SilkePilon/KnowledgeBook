@@ -48,7 +48,8 @@
     "react-resizable-panels": "^2.0.9",
     "react-skinview3d": "^5.0.3",
     "react-zoom-pan-pinch": "^3.4.2",
-    "recharts": "^2.12.1"
+    "recharts": "^2.12.1",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

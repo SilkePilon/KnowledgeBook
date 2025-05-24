@@ -1,5 +1,5 @@
-# Use Node.js 22 Alpine as base
-FROM node:22-alpine
+# Stage 1: Build
+FROM node:22-alpine AS build
 
 # Set working directory
 WORKDIR /usr/src/app

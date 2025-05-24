@@ -66,95 +66,51 @@ Check our (soon) [Wiki](link-to-wiki) for detailed guides on:
 | Obtain crafting table | Collects wood to craft a crafting table and drops it | [Download](https://github.com/SilkePilon/KnowledgeBook/blob/main/flows/crafting_table.json) |
 |                       |                                                      |                                                                                             |
 
-## How To Install 📥
+## Setup and Running with Docker 🐳
+
+This project uses Docker Compose for a consistent and easy-to-manage development environment.
 
 ### Prerequisites
 
 Make sure you have the following installed:
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/) (usually included with Docker Desktop)
 
-- [Node.js](https://nodejs.org/) 22.0.0 or above
-- [npm](https://www.npmjs.com/)
+### Installation & Running
 
-### Installation Steps
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/SilkePilon/KnowledgeBook.git
+    cd KnowledgeBook
+    ```
 
-1. Clone the repository:
+2.  **Start the application using Docker Compose:**
+    ```bash
+    docker-compose up --build
+    ```
+    This command will:
+    - Build the Docker images for the frontend and backend services (if they don't exist or if their Dockerfiles have changed).
+    - Start all services defined in the `docker-compose.yml` file.
+    - Frontend will be accessible at `http://localhost:3000`.
+    - Backend will be accessible at `http://localhost:8080`.
+
+    To run the application in detached mode (in the background), use:
+    ```bash
+    docker-compose up --build -d
+    ```
+
+### Stopping the Application
+
+To stop and remove the containers, networks, and volumes created by `docker-compose up`:
 ```bash
-git clone https://github.com/SilkePilon/KnowledgeBook.git
-cd KnowledgeBook
+docker-compose down
 ```
-
-2. Install dependencies for all workspaces:
-```bash
-npm run install:all
-```
-
-3. Set up HTTPS for development:
-```bash
-cd backend
-npm run setup-https
-```
-
-This will:
-- Install dependencies for both frontend and backend
-- Generate trusted SSL certificates for local development
-- Configure HTTPS for secure communication
-
-> **Note:** When first accessing the backend API in your browser, you may need to accept the self-signed certificate. This is normal for local development and doesn't affect security.
-
-### Running the Application
-
-You can run the frontend and backend separately or together:
-
-#### Run both frontend and backend:
-```bash
-npm run dev
-```
-
-#### Run only the frontend:
-```bash
-npm run frontend
-```
-
-#### Run only the backend:
-```bash
-npm run backend
-```
-
-The frontend will be available at `http://localhost:3000` and the backend at `http://localhost:8080` by default.
 
 ### Development
 
-- Frontend code is located in the `frontend/` directory
-- Backend code is located in the `backend/` directory
-- Each directory has its own `package.json` with specific dependencies and scripts
-
-```bash
-curl -sL -o main.zip https://github.com/SilkePilon/KnowledgeBook/archive/refs/heads/main.zip && unzip main.zip && cd KnowledgeBook-main && npm install && npm rebuild && cd .. && rm main.zip && cd KnowledgeBook-main && node main.js
-```
-
-## Manual Install
-
-#### 1. Clone the Repository
-
-First, make a local copy of the repository:
-
-```bash
-git clone https://github.com/SilkePilon/KnowledgeBook.git
-```
-
-Open the cloned repository in your preferred terminal app.
-
-#### 1. Install packages
-
-Assuming you have [Node](https://nodejs.org/en/download/package-manager/current) and [NPM](https://www.npmjs.com/) installed you can run the following commands:
-
-```bash
-npm install
-npm rebuild
-node main.js
-```
-
-That's it! You can now open up https://knowledgebook.vercel.app/ and start creating!
+- Frontend code is located in the `frontend/` directory.
+- Backend code is located in the `backend/` directory.
+- Changes to the code in these directories will be reflected live in the running containers due to volume mounts configured in `docker-compose.yml`. You might need to restart services or they might hot-reload depending on their individual configurations.
 
 ## Adding Custom Nodes to the Project
 

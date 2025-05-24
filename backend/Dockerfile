@@ -5,7 +5,7 @@ FROM node:22-alpine
 WORKDIR /usr/src/app
 
 # Install system dependencies for canvas
-RUN apk add --no-cache build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+RUN apk add --no-cache build-base cairo-dev pango-dev jpeg-dev giflib-dev librsvg-dev
 
 # Copy package files
 COPY package.json package-lock.json ./

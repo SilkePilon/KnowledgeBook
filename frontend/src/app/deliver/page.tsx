@@ -487,7 +487,7 @@ const columns: ColumnDef<Payment>[] = [
                     try {
                       // First, try to fetch from items API
                       let response = await fetch(
-                        "https://minecraft-api.vercel.app/api/items"
+                        "https://minecraft-api.vercel.app/api/items",
                       );
                       if (!response.ok) {
                         throw new Error("Network response was not ok");
@@ -500,20 +500,20 @@ const columns: ColumnDef<Payment>[] = [
                         .replace(/ /g, "_");
 
                       let item = data.find(
-                        (i: any) => i.namespacedId === namespacedId
+                        (i: any) => i.namespacedId === namespacedId,
                       );
 
                       // If not found in items, try blocks API
                       if (!item) {
                         response = await fetch(
-                          "https://minecraft-api.vercel.app/api/blocks"
+                          "https://minecraft-api.vercel.app/api/blocks",
                         );
                         if (!response.ok) {
                           throw new Error("Network response was not ok");
                         }
                         data = await response.json();
                         item = data.find(
-                          (b: any) => b.namespacedId === namespacedId
+                          (b: any) => b.namespacedId === namespacedId,
                         );
                       }
 
@@ -540,8 +540,8 @@ const columns: ColumnDef<Payment>[] = [
                         : ""
                     }
                     <img src="${item.image}" alt="${
-                            item.name
-                          }" style="width: 64px; height: 64px; image-rendering: pixelated;">
+                      item.name
+                    }" style="width: 64px; height: 64px; image-rendering: pixelated;">
                   `;
                         }
                       } else {
@@ -698,7 +698,7 @@ export default function Dashboard() {
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -859,30 +859,7 @@ export default function Dashboard() {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-lg"
-                  aria-label="Models"
-                  onClick={() => {
-                    window.location.href = "/map";
-                  }}
-                >
-                  <img
-                    style={{ imageRendering: "pixelated" }}
-                    className="size-7 fill-foreground"
-                    src="https://minecraft.wiki/images/Invicon_Map.png?24187"
-                  ></img>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                Map & Stats
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -1310,7 +1287,7 @@ export default function Dashboard() {
                                         {table
                                           .getAllColumns()
                                           .filter((column) =>
-                                            column.getCanHide()
+                                            column.getCanHide(),
                                           )
                                           .map((column) => {
                                             return (
@@ -1320,7 +1297,7 @@ export default function Dashboard() {
                                                 checked={column.getIsVisible()}
                                                 onCheckedChange={(value) =>
                                                   column.toggleVisibility(
-                                                    !!value
+                                                    !!value,
                                                   )
                                                 }
                                               >
@@ -1347,11 +1324,11 @@ export default function Dashboard() {
                                                         : flexRender(
                                                             header.column
                                                               .columnDef.header,
-                                                            header.getContext()
+                                                            header.getContext(),
                                                           )}
                                                     </TableHead>
                                                   );
-                                                }
+                                                },
                                               )}
                                             </TableRow>
                                           ))}
@@ -1375,7 +1352,7 @@ export default function Dashboard() {
                                                       {flexRender(
                                                         cell.column.columnDef
                                                           .cell,
-                                                        cell.getContext()
+                                                        cell.getContext(),
                                                       )}
                                                     </TableCell>
                                                   ))}
@@ -1847,7 +1824,7 @@ export default function Dashboard() {
                                                 : flexRender(
                                                     header.column.columnDef
                                                       .header,
-                                                    header.getContext()
+                                                    header.getContext(),
                                                   )}
                                             </TableHead>
                                           );
@@ -1868,7 +1845,7 @@ export default function Dashboard() {
                                           <TableCell key={cell.id}>
                                             {flexRender(
                                               cell.column.columnDef.cell,
-                                              cell.getContext()
+                                              cell.getContext(),
                                             )}
                                           </TableCell>
                                         ))}

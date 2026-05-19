@@ -81,10 +81,11 @@ cd KnowledgeBook
 docker compose up -d
 ```
 
-| Service  | URL                   |
-| -------- | --------------------- |
-| Frontend | http://localhost:3000 |
-| Backend  | http://localhost:3001 |
+| Service  | URL                      | Protocol                                           |
+| -------- | ------------------------ | -------------------------------------------------- |
+| Frontend | `http://localhost:3000`  | HTTP                                               |
+| Backend  | `https://localhost:3001` | HTTPS (self-signed — accept the cert warning once) |
+| Backend  | `http://localhost:4500`  | HTTP                                               |
 
 That's it! To stop: `docker compose down`
 
@@ -117,6 +118,9 @@ docker build -f Dockerfile.frontend -t knowledgebook-frontend .
 | Variable              | Default      | Description                                |
 | --------------------- | ------------ | ------------------------------------------ |
 | `NODE_ENV`            | `production` | Node environment                           |
+| `PORT`                | `3001`       | HTTPS port for the backend                 |
+| `HTTP_PORT`           | `4500`       | HTTP port for the backend                  |
+| `IP_ADDRESS`          | `0.0.0.0`    | Interface the backend binds to             |
 | `NEXT_PUBLIC_API_URL` | —            | Backend URL for the frontend to connect to |
 
 ---

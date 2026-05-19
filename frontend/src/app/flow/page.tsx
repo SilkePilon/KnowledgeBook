@@ -247,7 +247,7 @@ function DownloadButton() {
       imageWidth,
       imageHeight,
       0.5,
-      2
+      2,
     );
     // @ts-ignore
     toPng(document.querySelector(".react-flow__viewport"), {
@@ -275,7 +275,7 @@ function animateCenter(
   reactFlowInstance: any,
   nodeId: string,
   duration = 1000,
-  onComplete?: () => void
+  onComplete?: () => void,
 ) {
   const startTime = Date.now();
   const startViewport = reactFlowInstance.getViewport();
@@ -463,7 +463,7 @@ const CustomNode = ({ data, id }: { data: any; id: string }) => {
       console.log("Clicked on node", id);
       setIsInFocus(true);
       animateCenter(data.reactFlowInstance, id, 2000, () =>
-        setIsInFocus(false)
+        setIsInFocus(false),
       );
     }
   };
@@ -701,7 +701,7 @@ export default function Dashboard() {
     socketRef.current = io(`${apiIp}`);
     socketRef.current.on("chatMessage", (message: any) => {
       setChatMessages((prevMessages) =>
-        [message, ...prevMessages].slice(0, 100)
+        [message, ...prevMessages].slice(0, 100),
       );
     });
 
@@ -827,7 +827,7 @@ export default function Dashboard() {
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -901,7 +901,7 @@ export default function Dashboard() {
       document.addEventListener("mousemove", doDrag);
       document.addEventListener("mouseup", stopDrag);
     },
-    [height]
+    [height],
   );
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -930,7 +930,7 @@ export default function Dashboard() {
         ...node,
         // @ts-ignore
         data: { ...node.data, runningNodeId: runningNodeId },
-      }))
+      })),
     );
   }, [runningNodeId]);
 
@@ -940,7 +940,7 @@ export default function Dashboard() {
     (params: any) => {
       setEdges((eds: any[]) => addEdge(params, eds));
     },
-    [setEdges]
+    [setEdges],
   );
 
   const exportFlow = () => {
@@ -1035,8 +1035,8 @@ export default function Dashboard() {
                           },
                         },
                       }
-                    : n
-                )
+                    : n,
+                ),
               );
             },
           },
@@ -1166,8 +1166,8 @@ export default function Dashboard() {
                         },
                       },
                     }
-                  : node
-              )
+                  : node,
+              ),
             );
           },
           onDelete: deleteNode,
@@ -1209,7 +1209,7 @@ export default function Dashboard() {
       theme,
       runningNodeId,
       reactFlowInstance,
-    ]
+    ],
   );
 
   const deleteNode = useCallback(
@@ -1228,7 +1228,7 @@ export default function Dashboard() {
           });
           return [
             ...eds.filter(
-              (edge: any) => edge.source !== nodeId && edge.target !== nodeId
+              (edge: any) => edge.source !== nodeId && edge.target !== nodeId,
             ),
             {
               id: `edge-${incomingEdge.source}-${outgoingEdge.target}`,
@@ -1244,7 +1244,7 @@ export default function Dashboard() {
             description: `The node with ID ${nodeId} has been deleted.`,
           });
           return eds.filter(
-            (edge: any) => edge.source !== nodeId && edge.target !== nodeId
+            (edge: any) => edge.source !== nodeId && edge.target !== nodeId,
           );
         }
       });
@@ -1252,7 +1252,7 @@ export default function Dashboard() {
       // Reposition remaining nodes
       setNodes((nds: any) => {
         const sortedNodes = nds.sort(
-          (a: any, b: any) => a.position.x - b.position.x
+          (a: any, b: any) => a.position.x - b.position.x,
         );
         return sortedNodes.map((node: any, index: any) => ({
           ...node,
@@ -1264,13 +1264,13 @@ export default function Dashboard() {
         reactFlowInstance.fitView({ padding: 0.2, duration: 800 });
       }, 0);
     },
-    [setNodes, setEdges, reactFlowInstance]
+    [setNodes, setEdges, reactFlowInstance],
   );
 
   const runFlow = async () => {
     setIsRunning(true);
     const sortedNodes = nodes.sort(
-      (a: any, b: any) => a.position.x - b.position.x
+      (a: any, b: any) => a.position.x - b.position.x,
     ) as any[];
 
     if (sortedNodes.length === 0) {
@@ -1286,7 +1286,7 @@ export default function Dashboard() {
       setRunningNodeId(node.id);
       console.log(
         `Executing ${node.data.label} with inputs`,
-        node.data.inputValues
+        node.data.inputValues,
       );
       toast({
         title: "Executing node",
@@ -1297,14 +1297,14 @@ export default function Dashboard() {
 
       try {
         const flowNameFinder = nodeTypes.find(
-          (nt) => nt.label === node.data.label
+          (nt) => nt.label === node.data.label,
         );
         const flowName = flowNameFinder ? flowNameFinder.id : "";
         console.log(flowName);
 
         const response = await axios.post(
           `${apiIp}/flow/${flowName}`,
-          node.data.inputValues
+          node.data.inputValues,
         );
 
         if (response.status === 200) {
@@ -1428,30 +1428,7 @@ export default function Dashboard() {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-lg"
-                  aria-label="Models"
-                  onClick={() => {
-                    window.location.href = "/map";
-                  }}
-                >
-                  <img
-                    style={{ imageRendering: "pixelated" }}
-                    className="size-7 fill-foreground"
-                    src="https://minecraft.wiki/images/Invicon_Map.png?24187"
-                  ></img>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                Map & Stats
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -1615,7 +1592,7 @@ export default function Dashboard() {
                               node.description
                                 ?.toLowerCase()
                                 .includes(searchTerm.toLowerCase())) ??
-                            false
+                            false,
                         )
                         .reverse() // Reverses the order of the filtered array
                         .map((nodeType) => (
@@ -1652,7 +1629,7 @@ export default function Dashboard() {
                                             .replace(" ", "_")}
                                         </span>
                                       </li>
-                                    )
+                                    ),
                                   )}
                                 </ul>
                                 {/* <Separator></Separator> */}
@@ -1802,8 +1779,8 @@ export default function Dashboard() {
                     {!botState.created
                       ? "Not Connected"
                       : isRunning
-                      ? "Executing flow..."
-                      : "Run Flow"}
+                        ? "Executing flow..."
+                        : "Run Flow"}
                   </Button>
                 </div>
               </fieldset>

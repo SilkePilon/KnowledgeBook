@@ -160,7 +160,7 @@ export default function Dashboard() {
     socketRef.current = io(`${apiIp}`);
     socketRef.current.on("chatMessage", (message: any) => {
       setChatMessages((prevMessages) =>
-        [message, ...prevMessages].slice(0, 100)
+        [message, ...prevMessages].slice(0, 100),
       );
     });
 
@@ -286,7 +286,7 @@ export default function Dashboard() {
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -360,7 +360,7 @@ export default function Dashboard() {
       document.addEventListener("mousemove", doDrag);
       document.addEventListener("mouseup", stopDrag);
     },
-    [height]
+    [height],
   );
 
   return (
@@ -449,30 +449,7 @@ export default function Dashboard() {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-lg"
-                  aria-label="Models"
-                  onClick={() => {
-                    window.location.href = "/map";
-                  }}
-                >
-                  <img
-                    style={{ imageRendering: "pixelated" }}
-                    className="size-7 fill-foreground"
-                    src="https://minecraft.wiki/images/Invicon_Map.png?24187"
-                  ></img>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right" sideOffset={5}>
-                Map & Stats
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>

@@ -1639,6 +1639,10 @@ async function main() {
 
   // Get the port number
   const getPort = () => {
+    if (!process.stdin.isTTY) {
+      PORT = parseInt(process.env.PORT || "3001");
+      return PORT;
+    }
     while (true) {
       PORT = prompt(
         "Please enter the port you want the server to run at (default 3001): ",
@@ -1655,6 +1659,10 @@ async function main() {
   };
 
   const getIp = async () => {
+    if (!process.stdin.isTTY) {
+      return process.env.IP_ADDRESS || "0.0.0.0";
+    }
+
     let ip_address;
 
     while (true) {
@@ -1703,7 +1711,17 @@ async function main() {
     try {
       PORT = getPort();
       ip_address = await getIp();
-      server.listen(PORT, () => {
+
+      // Also start an HTTP server on a separate port
+      const HTTP_PORT = parseInt(process.env.HTTP_PORT || port || "4500");
+      const httpServer = http.createServer(app);
+      httpServer.listen(HTTP_PORT, ip_address, () => {
+        console.log(
+          `HTTP server listening on http://${ip_address}:${HTTP_PORT}`,
+        );
+      });
+
+      server.listen(PORT, ip_address, () => {
         console.clear();
         console.log(`
   ===========================================================
@@ -1718,6 +1736,8 @@ async function main() {
     - Local machine:     https://localhost:${PORT}
     - Same network:      https://${ip_address}:${PORT}
     - Different network: https://YOUR_PUBLIC_IP:${PORT} (port forwarding required)
+
+  HTTP (no SSL) is also available at port ${HTTP_PORT}.
 
   For local development:
   - The backend is now ready to accept connections from your frontend

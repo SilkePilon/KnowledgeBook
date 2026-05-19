@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     python3 \
     pkg-config \
+    git \
     libcairo2-dev \
     libpango1.0-dev \
     libgif-dev \
@@ -20,12 +21,16 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
 # Copy workspace config files
-COPY pnpm-workspace.yaml package.json .npmrc ./
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml .npmrc ./
 COPY backend/package.json ./backend/
+COPY frontend/package.json ./frontend/
 COPY scripts/ ./scripts/
 
 # Install backend dependencies only (--ignore-scripts to skip failing pathfinder postinstall)
-RUN pnpm install --filter backend --ignore-scripts --frozen-lockfile || pnpm install --filter backend --ignore-scripts
+RUN pnpm install --filter knowledgebook-backend --ignore-scripts --frozen-lockfile || pnpm install --filter knowledgebook-backend --ignore-scripts
+
+# Rebuild native addons that need compilation (canvas, sharp, etc.)
+RUN pnpm rebuild canvas --filter knowledgebook-backend
 
 # Build and link @nxg-org/mineflayer-pathfinder (2026-rewrite has no pre-built dist)
 RUN node scripts/build-pathfinder.mjs
@@ -59,6 +64,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libjpeg62-turbo \
     librsvg2-2 \
     libpixman-1-0 \
+    openssl \
     && rm -rf /var/lib/apt/lists/*
 
 RUN corepack enable && corepack prepare pnpm@latest --activate

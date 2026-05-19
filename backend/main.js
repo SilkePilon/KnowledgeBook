@@ -23,7 +23,10 @@ const fetch = require("node-fetch");
 const { EventEmitter } = require("events");
 const OpenAI = require("openai");
 const sharp = require("sharp");
-const { createPlugin: createPathfinderPlugin, goals: pathfinderGoals } = require("@nxg-org/mineflayer-pathfinder");
+const {
+  createPlugin: createPathfinderPlugin,
+  goals: pathfinderGoals,
+} = require("@nxg-org/mineflayer-pathfinder");
 const { GoalNear, GoalBlock } = pathfinderGoals;
 const {
   default: loader,
@@ -53,19 +56,21 @@ async function main() {
 
   // openssl genrsa -out localhost-key.pem 2048
   // openssl req -new -x509 -sha256 -key localhost-key.pem -out localhost.pem -days 365
-  const { generateCertificate } = require('./config/ssl');
-  
+  const { generateCertificate } = require("./config/ssl");
+
   // Set up HTTPS server with SSL certificates
   const sslOptions = await generateCertificate();
   const server = https.createServer(sslOptions, app);
 
   // Configure CORS for the frontend
-  app.use(cors({
-    origin: ['https://knowledgebook.vercel.app', 'http://localhost:3000'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-  }));
+  app.use(
+    cors({
+      origin: ["https://knowledgebook.vercel.app", "http://localhost:3000"],
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+      credentials: true,
+    }),
+  );
   const io = new Server(server, {
     cors: {
       origin: "*",
@@ -169,8 +174,8 @@ async function main() {
           if (response.statusCode !== 200) {
             reject(
               new Error(
-                `Failed to fetch fallback texture: ${response.statusCode} ${url}`
-              )
+                `Failed to fetch fallback texture: ${response.statusCode} ${url}`,
+              ),
             );
             return;
           }
@@ -314,17 +319,17 @@ async function main() {
 
       if (!water) {
         console.log(
-          "No water or lava found nearby. Searching for a larger area..."
+          "No water or lava found nearby. Searching for a larger area...",
         );
         return;
       }
 
       console.log(
-        `Water or lava found at ${water.position}. Moving to location.`
+        `Water or lava found at ${water.position}. Moving to location.`,
       );
       try {
         await bot.pathfinder.goto(
-          new GoalBlock(water.position.x, water.position.y, water.position.z)
+          new GoalBlock(water.position.x, water.position.y, water.position.z),
         );
       } catch (error) {
         console.error("Notice respawn");
@@ -484,7 +489,7 @@ async function main() {
     const functionsPath = path.join(
       __dirname,
       "flow_functions",
-      "functions.json"
+      "functions.json",
     );
     const functionsData = await fs.readFile(functionsPath, "utf-8");
     const functionsJson = JSON.parse(functionsData);
@@ -664,7 +669,7 @@ async function main() {
         .match(/```javascript([\s\S]*?)```/)[1]
         .trim();
       const jsonObject = JSON.parse(
-        generatedContent.match(/```json([\s\S]*?)```/)[1].trim()
+        generatedContent.match(/```json([\s\S]*?)```/)[1].trim(),
       );
 
       // Generate a filename for the new node
@@ -851,7 +856,7 @@ async function main() {
       const functionsPath = path.join(
         __dirname,
         "flow_functions",
-        "functions.json"
+        "functions.json",
       );
       const functionsData = await fs.readFile(functionsPath, "utf-8");
       const functionsJson = JSON.parse(functionsData);
@@ -867,7 +872,7 @@ async function main() {
           author: value.author,
           input: value.input,
           badges: value.badges,
-        })
+        }),
       );
 
       res.json(formattedFunctions);
@@ -1228,7 +1233,7 @@ async function main() {
     } catch (error) {
       console.error(
         "Error retrieving and tossing items from ender chest:",
-        error.message
+        error.message,
       );
       throw error;
     }
@@ -1300,7 +1305,7 @@ async function main() {
     } catch (error) {
       console.error(
         `Error withdrawing ${item.name} from ender chest:`,
-        error.message
+        error.message,
       );
     }
   }
@@ -1438,7 +1443,7 @@ async function main() {
 
   async function goToLocation(location, useElytra = true) {
     const distanceToLocation = bot.entity.position.distanceTo(
-      new Vec3(location.x, location.y, location.z)
+      new Vec3(location.x, location.y, location.z),
     );
 
     if (distanceToLocation <= 50) {
@@ -1448,13 +1453,13 @@ async function main() {
 
     if (!bot.supportFeature("hasElytraFlying")) {
       console.log(
-        "Elytra flying is not supported in this version of Minecraft"
+        "Elytra flying is not supported in this version of Minecraft",
       );
       return usePathfinding(location);
     }
 
     const elytraItem = bot.inventory.slots.find(
-      (item) => item && item.name === "elytra"
+      (item) => item && item.name === "elytra",
     );
     if (!elytraItem || !useElytra) {
       console.log("No elytra available for long-distance travel");
@@ -1463,7 +1468,7 @@ async function main() {
 
     await bot.equip(elytraItem, "torso");
     const fireworkItem = bot.inventory.slots.find(
-      (item) => item && item.name === "firework_rocket"
+      (item) => item && item.name === "firework_rocket",
     );
     if (!fireworkItem) {
       console.log("No fireworks");
@@ -1490,7 +1495,7 @@ async function main() {
       const currentPos = bot.entity.position.clone();
       const distanceToTarget = currentPos.xzDistanceTo(location);
       console.log(
-        `Current distance to target: ${distanceToTarget.toFixed(2)} blocks`
+        `Current distance to target: ${distanceToTarget.toFixed(2)} blocks`,
       );
 
       if (distanceToTarget <= 40) {
@@ -1561,7 +1566,7 @@ async function main() {
 
   async function usePathfinding(location) {
     await bot.pathfinder.goto(
-      new GoalNear(location.x, location.y, location.z, 1)
+      new GoalNear(location.x, location.y, location.z, 1),
     );
   }
 
@@ -1636,7 +1641,7 @@ async function main() {
   const getPort = () => {
     while (true) {
       PORT = prompt(
-        "Please enter the port you want the server to run at (default 3001): "
+        "Please enter the port you want the server to run at (default 3001): ",
       );
       if (PORT === "") {
         PORT = 3001;

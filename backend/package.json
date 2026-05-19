@@ -36,7 +36,8 @@
   "devDependencies": {
     "@types/node": "^22.5.4",
     "typescript": "^5.6.2"
-  },  "scripts": {
+  },
+  "scripts": {
     "start": "node main.js",
     "dev": "node main.js",
     "setup-https": "node scripts/setup-https.js"

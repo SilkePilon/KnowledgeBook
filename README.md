@@ -81,10 +81,10 @@ cd KnowledgeBook
 docker compose up -d
 ```
 
-| Service  | URL                        |
-|----------|----------------------------|
-| Frontend | http://localhost:3000      |
-| Backend  | http://localhost:3001      |
+| Service  | URL                   |
+| -------- | --------------------- |
+| Frontend | http://localhost:3000 |
+| Backend  | http://localhost:3001 |
 
 That's it! To stop: `docker compose down`
 
@@ -115,7 +115,7 @@ docker build -f Dockerfile.frontend -t knowledgebook-frontend .
 #### Environment variables
 
 | Variable              | Default      | Description                                |
-|-----------------------|--------------|--------------------------------------------|
+| --------------------- | ------------ | ------------------------------------------ |
 | `NODE_ENV`            | `production` | Node environment                           |
 | `NEXT_PUBLIC_API_URL` | —            | Backend URL for the frontend to connect to |
 
@@ -126,16 +126,19 @@ docker build -f Dockerfile.frontend -t knowledgebook-frontend .
 > Use this if you want to contribute or run without Docker.
 
 **Prerequisites:**
+
 - [Node.js](https://nodejs.org/) 22.0.0 or above
 - [pnpm](https://pnpm.io/) 9.0.0 or above (`npm install -g pnpm`)
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/SilkePilon/KnowledgeBook.git
 cd KnowledgeBook
 ```
 
 2. Install dependencies:
+
 ```bash
 pnpm install --ignore-scripts && node scripts/build-pathfinder.mjs
 ```
@@ -143,12 +146,14 @@ pnpm install --ignore-scripts && node scripts/build-pathfinder.mjs
 > **Note:** `--ignore-scripts` is required because `@nxg-org/mineflayer-pathfinder` (2026-rewrite) has a failing upstream TypeScript build step. The `build-pathfinder.mjs` script compiles and links it correctly.
 
 3. Set up HTTPS for development:
+
 ```bash
 cd backend
 pnpm run setup-https
 ```
 
 4. Start the application:
+
 ```bash
 # Run both frontend and backend together
 pnpm run dev
@@ -301,6 +306,6 @@ Happy coding! 🚀
 
 ## Sponsor me
 
-` <a href="https://www.buymeacoffee.com/silkepilon"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=silkepilon&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" />``</a> `
+`<a href="https://www.buymeacoffee.com/silkepilon"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=silkepilon&button_colour=5F7FFF&font_colour=ffffff&font_family=Poppins&outline_colour=000000&coffee_colour=FFDD00" />``</a>`
 
 </file-attachment-contents>

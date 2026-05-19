@@ -1,82 +1,82 @@
 name: Build and Publish Docker Images
 
 on:
-  push:
-    branches:
-      - main
-  release:
-    types: [published]
+    push:
+        branches:
+            - main
+    release:
+        types: [published]
 
 env:
-  REGISTRY: ghcr.io
-  BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/knowledgebook-backend
-  FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/knowledgebook-frontend
+    REGISTRY: ghcr.io
+    BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/knowledgebook-backend
+    FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/knowledgebook-frontend
 
 jobs:
-  build-and-push:
-    name: Build and push Docker images
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    build-and-push:
+        name: Build and push Docker images
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Log in to GitHub Container Registry
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata for backend image
-        id: backend-meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.BACKEND_IMAGE }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest,enable={{is_default_branch}}
+            - name: Extract metadata for backend image
+              id: backend-meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.BACKEND_IMAGE }}
+                  tags: |
+                      type=ref,event=branch
+                      type=ref,event=pr
+                      type=semver,pattern={{version}}
+                      type=semver,pattern={{major}}.{{minor}}
+                      type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and push backend image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: Dockerfile
-          target: backend
-          push: true
-          tags: ${{ steps.backend-meta.outputs.tags }}
-          labels: ${{ steps.backend-meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            - name: Build and push backend image
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  file: Dockerfile
+                  target: backend
+                  push: true
+                  tags: ${{ steps.backend-meta.outputs.tags }}
+                  labels: ${{ steps.backend-meta.outputs.labels }}
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
 
-      - name: Extract metadata for frontend image
-        id: frontend-meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.FRONTEND_IMAGE }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest,enable={{is_default_branch}}
+            - name: Extract metadata for frontend image
+              id: frontend-meta
+              uses: docker/metadata-action@v5
+              with:
+                  images: ${{ env.FRONTEND_IMAGE }}
+                  tags: |
+                      type=ref,event=branch
+                      type=ref,event=pr
+                      type=semver,pattern={{version}}
+                      type=semver,pattern={{major}}.{{minor}}
+                      type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and push frontend image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: Dockerfile.frontend
-          push: true
-          tags: ${{ steps.frontend-meta.outputs.tags }}
-          labels: ${{ steps.frontend-meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            - name: Build and push frontend image
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  file: Dockerfile.frontend
+                  push: true
+                  tags: ${{ steps.frontend-meta.outputs.tags }}
+                  labels: ${{ steps.frontend-meta.outputs.labels }}
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max

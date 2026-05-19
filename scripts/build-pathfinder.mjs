@@ -9,7 +9,13 @@
  */
 
 import { execFileSync, execSync } from "node:child_process";
-import { existsSync, mkdirSync, readdirSync, symlinkSync, unlinkSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  symlinkSync,
+  unlinkSync,
+} from "node:fs";
 import { resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -18,15 +24,23 @@ const PNPM_STORE = join(ROOT, "node_modules", ".pnpm");
 
 // Find the pathfinder in the virtual store
 const entries = readdirSync(PNPM_STORE).filter((e) =>
-  e.startsWith("@nxg-org+mineflayer-pathfinder@")
+  e.startsWith("@nxg-org+mineflayer-pathfinder@"),
 );
 
 if (entries.length === 0) {
-  console.log("[build-pathfinder] Package not found in virtual store, skipping.");
+  console.log(
+    "[build-pathfinder] Package not found in virtual store, skipping.",
+  );
   process.exit(0);
 }
 
-const pkgDir = join(PNPM_STORE, entries[0], "node_modules", "@nxg-org", "mineflayer-pathfinder");
+const pkgDir = join(
+  PNPM_STORE,
+  entries[0],
+  "node_modules",
+  "@nxg-org",
+  "mineflayer-pathfinder",
+);
 const distIndex = join(pkgDir, "dist", "index.js");
 
 // Build if dist is missing
@@ -34,12 +48,23 @@ if (!existsSync(distIndex)) {
   console.log("[build-pathfinder] Building @nxg-org/mineflayer-pathfinder...");
 
   // Find tsc in the virtual store
-  const tscEntries = readdirSync(PNPM_STORE).filter((e) => e.startsWith("typescript@"));
+  const tscEntries = readdirSync(PNPM_STORE).filter((e) =>
+    e.startsWith("typescript@"),
+  );
   if (tscEntries.length === 0) {
-    console.error("[build-pathfinder] TypeScript not found in virtual store, cannot build.");
+    console.error(
+      "[build-pathfinder] TypeScript not found in virtual store, cannot build.",
+    );
     process.exit(1);
   }
-  const tsc = join(PNPM_STORE, tscEntries[0], "node_modules", "typescript", "bin", "tsc");
+  const tsc = join(
+    PNPM_STORE,
+    tscEntries[0],
+    "node_modules",
+    "typescript",
+    "bin",
+    "tsc",
+  );
 
   try {
     execFileSync(process.execPath, [tsc, "-p", join(pkgDir, "tsconfig.json")], {
@@ -49,7 +74,9 @@ if (!existsSync(distIndex)) {
   } catch {
     // tsc exits non-zero on type errors even when it emits — check if dist was created
     if (!existsSync(distIndex)) {
-      console.error("[build-pathfinder] Build failed and dist/index.js was not created.");
+      console.error(
+        "[build-pathfinder] Build failed and dist/index.js was not created.",
+      );
       process.exit(1);
     }
   }

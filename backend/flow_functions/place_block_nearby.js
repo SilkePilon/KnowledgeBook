@@ -23,14 +23,14 @@ async function main(data) {
 
     if (placementPositions.length === 0) {
       throw new Error(
-        `No suitable location found within ${range} blocks to place ${blockName}`
+        `No suitable location found within ${range} blocks to place ${blockName}`,
       );
     }
 
     // Sort positions by distance to the bot
     placementPositions.sort(
       (a, b) =>
-        bot.entity.position.distanceTo(a) - bot.entity.position.distanceTo(b)
+        bot.entity.position.distanceTo(a) - bot.entity.position.distanceTo(b),
     );
 
     const placementPos = placementPositions[0].offset(0, 1, 0);
@@ -44,7 +44,9 @@ async function main(data) {
 
     // Move closer to the placement position if needed
     if (bot.entity.position.distanceTo(placementPos) > 4) {
-      await bot.pathfinder.goto(new GoalNear(placementPos.x, placementPos.y, placementPos.z, 2));
+      await bot.pathfinder.goto(
+        new GoalNear(placementPos.x, placementPos.y, placementPos.z, 2),
+      );
     }
 
     // Look at the placement position

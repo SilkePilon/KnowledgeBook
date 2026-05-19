@@ -17,7 +17,7 @@ async function main(data) {
   }
 
   const elytraItem = bot.inventory.slots.find(
-    (item) => item && item.name === "elytra"
+    (item) => item && item.name === "elytra",
   );
   if (!elytraItem) {
     console.log("No elytra available for long-distance travel");
@@ -26,7 +26,7 @@ async function main(data) {
 
   await bot.equip(elytraItem, "torso");
   const fireworkItem = bot.inventory.slots.find(
-    (item) => item && item.name === "firework_rocket"
+    (item) => item && item.name === "firework_rocket",
   );
   if (!fireworkItem) {
     console.log("No fireworks available");
@@ -54,7 +54,7 @@ async function main(data) {
     const currentPos = bot.entity.position.clone();
     const distanceToTarget = currentPos.xzDistanceTo(location);
     console.log(
-      `Current distance to target: ${distanceToTarget.toFixed(2)} blocks`
+      `Current distance to target: ${distanceToTarget.toFixed(2)} blocks`,
     );
 
     if (distanceToTarget <= 40) {

@@ -11,14 +11,16 @@ async function main(data) {
     const items = bot.nearestEntity(
       (entity) =>
         entity.type === "object" &&
-        bot.entity.position.distanceTo(entity.position) <= range
+        bot.entity.position.distanceTo(entity.position) <= range,
     );
     if (!items) {
       console.log("No dropped items found within range");
       return;
     }
 
-    await bot.pathfinder.goto(new GoalNear(items.position.x, items.position.y, items.position.z, 1));
+    await bot.pathfinder.goto(
+      new GoalNear(items.position.x, items.position.y, items.position.z, 1),
+    );
     console.log("Collected dropped items");
   } catch (error) {
     console.error(error);

@@ -23,6 +23,7 @@
 
 <p align="center">
   <a href="#about-">About</a> •
+  <a href="#docker-">Docker</a> •
   <a href="#freature-and-plugins-">Features</a> •
   <a href="#how-to-install-">Install</a>
 </p>
@@ -68,14 +69,65 @@ Check our (soon) [Wiki](link-to-wiki) for detailed guides on:
 
 ## How To Install 📥
 
-### Prerequisites
+### 🐳 Docker (Recommended)
 
-Make sure you have the following installed:
+The easiest way to run KnowledgeBook. Pre-built images are published to the GitHub Container Registry on every push to `main` — no Node.js or build tools required.
 
+**Prerequisites:** [Docker](https://docs.docker.com/get-docker/) with Compose plugin
+
+```bash
+git clone https://github.com/SilkePilon/KnowledgeBook.git
+cd KnowledgeBook
+docker compose up -d
+```
+
+| Service  | URL                        |
+|----------|----------------------------|
+| Frontend | http://localhost:3000      |
+| Backend  | http://localhost:3001      |
+
+That's it! To stop: `docker compose down`
+
+#### Pull pre-built images manually
+
+```bash
+docker pull ghcr.io/silkepilon/knowledgebook-backend:latest
+docker pull ghcr.io/silkepilon/knowledgebook-frontend:latest
+```
+
+#### Run the backend only
+
+```bash
+docker run -d \
+  -p 3001:3001 \
+  -p 4500:4500 \
+  --name knowledgebook-backend \
+  ghcr.io/silkepilon/knowledgebook-backend:latest
+```
+
+#### Build images locally
+
+```bash
+docker build --target backend -t knowledgebook-backend .
+docker build -f Dockerfile.frontend -t knowledgebook-frontend .
+```
+
+#### Environment variables
+
+| Variable              | Default      | Description                                |
+|-----------------------|--------------|--------------------------------------------|
+| `NODE_ENV`            | `production` | Node environment                           |
+| `NEXT_PUBLIC_API_URL` | —            | Backend URL for the frontend to connect to |
+
+---
+
+### Manual Install
+
+> Use this if you want to contribute or run without Docker.
+
+**Prerequisites:**
 - [Node.js](https://nodejs.org/) 22.0.0 or above
-- [npm](https://www.npmjs.com/)
-
-### Installation Steps
+- [pnpm](https://pnpm.io/) 9.0.0 or above (`npm install -g pnpm`)
 
 1. Clone the repository:
 ```bash
@@ -83,78 +135,30 @@ git clone https://github.com/SilkePilon/KnowledgeBook.git
 cd KnowledgeBook
 ```
 
-2. Install dependencies for all workspaces:
+2. Install dependencies:
 ```bash
-npm run install:all
+pnpm install --ignore-scripts && node scripts/build-pathfinder.mjs
 ```
+
+> **Note:** `--ignore-scripts` is required because `@nxg-org/mineflayer-pathfinder` (2026-rewrite) has a failing upstream TypeScript build step. The `build-pathfinder.mjs` script compiles and links it correctly.
 
 3. Set up HTTPS for development:
 ```bash
 cd backend
-npm run setup-https
+pnpm run setup-https
 ```
 
-This will:
-- Install dependencies for both frontend and backend
-- Generate trusted SSL certificates for local development
-- Configure HTTPS for secure communication
-
-> **Note:** When first accessing the backend API in your browser, you may need to accept the self-signed certificate. This is normal for local development and doesn't affect security.
-
-### Running the Application
-
-You can run the frontend and backend separately or together:
-
-#### Run both frontend and backend:
+4. Start the application:
 ```bash
-npm run dev
+# Run both frontend and backend together
+pnpm run dev
+
+# Or separately
+pnpm run frontend
+pnpm run backend
 ```
 
-#### Run only the frontend:
-```bash
-npm run frontend
-```
-
-#### Run only the backend:
-```bash
-npm run backend
-```
-
-The frontend will be available at `http://localhost:3000` and the backend at `http://localhost:8080` by default.
-
-### Development
-
-- Frontend code is located in the `frontend/` directory
-- Backend code is located in the `backend/` directory
-- Each directory has its own `package.json` with specific dependencies and scripts
-
-```bash
-curl -sL -o main.zip https://github.com/SilkePilon/KnowledgeBook/archive/refs/heads/main.zip && unzip main.zip && cd KnowledgeBook-main && npm install && npm rebuild && cd .. && rm main.zip && cd KnowledgeBook-main && node main.js
-```
-
-## Manual Install
-
-#### 1. Clone the Repository
-
-First, make a local copy of the repository:
-
-```bash
-git clone https://github.com/SilkePilon/KnowledgeBook.git
-```
-
-Open the cloned repository in your preferred terminal app.
-
-#### 1. Install packages
-
-Assuming you have [Node](https://nodejs.org/en/download/package-manager/current) and [NPM](https://www.npmjs.com/) installed you can run the following commands:
-
-```bash
-npm install
-npm rebuild
-node main.js
-```
-
-That's it! You can now open up https://knowledgebook.vercel.app/ and start creating!
+The frontend will be available at `http://localhost:3000` and the backend at `http://localhost:3001`.
 
 ## Adding Custom Nodes to the Project
 

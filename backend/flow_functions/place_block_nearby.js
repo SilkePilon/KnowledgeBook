@@ -1,6 +1,8 @@
 // place_block_nearby.js
 const { getBot } = require("../main.js");
 const Vec3 = require("vec3");
+const { goals: pathfinderGoals } = require("@nxg-org/mineflayer-pathfinder");
+const { GoalNear } = pathfinderGoals;
 
 async function main(data) {
   const bot = getBot();
@@ -42,7 +44,7 @@ async function main(data) {
 
     // Move closer to the placement position if needed
     if (bot.entity.position.distanceTo(placementPos) > 4) {
-      await bot.pathfinder.goto(placementPos);
+      await bot.pathfinder.goto(new GoalNear(placementPos.x, placementPos.y, placementPos.z, 2));
     }
 
     // Look at the placement position

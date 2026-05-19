@@ -1,15 +1,10 @@
 "use strict";
 console.log("Please wait...");
 const mineflayer = require("mineflayer");
-// const {
-//   pathfinder,
-//   Movements,
-//   goals: { GoalNear, GoalBlock },
-// } = require("mineflayer-pathfinder");
+
 const { mineflayer: mineflayerViewer, viewer } = require("prismarine-viewer");
 const express = require("express");
 const { Server } = require("socket.io");
-const bodyParser = require("body-parser");
 const toolPlugin = require("mineflayer-tool").plugin;
 const dns = require("node:dns");
 const os = require("node:os");
@@ -21,17 +16,15 @@ const fs = require("fs").promises;
 const Vec3 = require("vec3").Vec3;
 const cors = require("cors");
 const { elytrafly } = require("mineflayer-elytrafly");
-const e = require("express");
 const prompt = require("prompt-sync")();
 const { createCanvas, loadImage } = require("canvas");
 const WebSocket = require("ws");
-const { fetch } = require("node-fetch");
+const fetch = require("node-fetch");
 const { EventEmitter } = require("events");
 const OpenAI = require("openai");
 const sharp = require("sharp");
-const pathfinder = require("mineflayer-pathfinder").pathfinder;
-const Movements = require("mineflayer-pathfinder").Movements;
-const { GoalNear, GoalBlock } = require("mineflayer-pathfinder").goals;
+const { createPlugin: createPathfinderPlugin, goals: pathfinderGoals } = require("@nxg-org/mineflayer-pathfinder");
+const { GoalNear, GoalBlock } = pathfinderGoals;
 const {
   default: loader,
   EntityState,
@@ -53,7 +46,8 @@ async function main() {
 
   // Middleware
   app.use(morgan("dev"));
-  app.use(bodyParser.json());
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
   app.use(cors()); // Add this line to enable CORS for all routes
   // Routes
 
@@ -341,7 +335,7 @@ async function main() {
 
       // Wait for the bot to respawn
       await new Promise((resolve) => bot.once("death", resolve));
-      bot.pathfinder.stop();
+      bot.pathfinder.cancel();
       console.log("Respawned at spawn point.");
       bot.setControlState("sneak", false);
     } catch (error) {
@@ -1028,7 +1022,7 @@ async function main() {
           port: 3007,
           firstPerson: true,
         });
-        bot.loadPlugin(pathfinder);
+        bot.loadPlugin(createPathfinderPlugin());
         bot.loadPlugin(loader);
         bot.loadPlugin(require("mineflayer-collectblock").plugin);
 
@@ -1037,11 +1031,7 @@ async function main() {
         setupChatListener();
 
         bot.physics.autojumpCooldown = 0;
-        const defaultMove = new Movements(bot);
-
-        defaultMove.digCost = 10;
-        defaultMove.placeCost = 10;
-        bot.pathfinder.setMovements(defaultMove); // Update the movement instance pathfinder uses
+        bot.pathfinder.setMoveOptions({ digCost: 10, placeCost: 10 });
 
         console.log("Bot spawned and ready!");
         // loadChestIndex();
@@ -1570,13 +1560,9 @@ async function main() {
   }
 
   async function usePathfinding(location) {
-    // await bot.pathfinder.goto(
-    //   new GoalNear(location.x, location.y, location.z, 1)
-    // );
-    await bot.pathfinder.setGoal(
+    await bot.pathfinder.goto(
       new GoalNear(location.x, location.y, location.z, 1)
     );
-    await sleep(1000);
   }
 
   function sleep(ms) {

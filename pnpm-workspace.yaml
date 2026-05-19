@@ -1,0 +1,8 @@
+packages:
+  - 'frontend'
+  - 'backend'
+allowBuilds:
+  '@nxg-org/mineflayer-pathfinder': true
+  canvas: true
+  sharp: true
+  unrs-resolver: true

@@ -1,6 +1,7 @@
 const { getBot } = require("../main.js");
 const { Vec3 } = require("vec3");
-const { GoalNear } = require("mineflayer-pathfinder").goals;
+const { goals: pathfinderGoals } = require("@nxg-org/mineflayer-pathfinder");
+const { GoalNear } = pathfinderGoals;
 
 async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));

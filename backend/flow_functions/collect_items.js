@@ -1,5 +1,7 @@
 // collect_items.js
 const { getBot } = require("../main.js");
+const { goals: pathfinderGoals } = require("@nxg-org/mineflayer-pathfinder");
+const { GoalNear } = pathfinderGoals;
 
 async function main(data) {
   const bot = getBot();
@@ -16,7 +18,7 @@ async function main(data) {
       return;
     }
 
-    await bot.pathfinder.goto(items.position);
+    await bot.pathfinder.goto(new GoalNear(items.position.x, items.position.y, items.position.z, 1));
     console.log("Collected dropped items");
   } catch (error) {
     console.error(error);

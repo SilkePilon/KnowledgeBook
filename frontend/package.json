@@ -38,7 +38,7 @@
     "input-otp": "^1.1.0",
     "ldrs": "^1.0.1",
     "lucide-react": "^1.16.0",
-    "next": "^16.2.6",
+    "next": "^9.3.3",
     "next-themes": "^0.4.6",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
@@ -49,12 +49,14 @@
     "react-skinview3d": "^5.0.3",
     "react-zoom-pan-pinch": "^3.4.2",
     "recharts": "^2.12.1",
-    "socket.io-client": "^4.8.1",
-    "vaul": "^1.0.0",
+    "socket.io": "4.5.4",
+    "socket.io-client": "^4.2.0",
     "tailwind-merge": "^3.2.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vaul": "^1.0.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.0",
     "@types/cors": "^2.8.17",
     "@types/node": "^22",
     "@types/react": "^19",
@@ -62,7 +64,6 @@
     "eslint": "^9",
     "eslint-config-next": "^16.2.6",
     "postcss": "^8",
-    "@tailwindcss/postcss": "^4.3.0",
     "tailwindcss": "^4.3.0",
     "typescript": "^5"
   }

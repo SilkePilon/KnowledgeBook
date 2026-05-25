@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.8.0",
+    "@hookform/resolvers": "^5.4.0",
     "@radix-ui/react-alert-dialog": "^1.1.5",
     "@radix-ui/react-checkbox": "^1.1.4",
     "@radix-ui/react-collapsible": "^1.1.3",

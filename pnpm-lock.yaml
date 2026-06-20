@@ -21,7 +21,7 @@ importers:
     dependencies:
       '@nxg-org/mineflayer-pathfinder':
         specifier: github:Minecraft-Pathfinding/minecraft-pathfinding#2026-rewrite
-        version: https://codeload.github.com/Minecraft-Pathfinding/minecraft-pathfinding/tar.gz/a93f2b9ce34510e4c07727e104c83bda8db99b13
+        version: https://codeload.github.com/Minecraft-Pathfinding/minecraft-pathfinding/tar.gz/d0ef47229e65d69ac33b4eb2bb30203335de0e00
       '@nxg-org/mineflayer-physics-util':
         specifier: ^1.9.2
         version: 1.9.3
@@ -693,8 +693,8 @@ packages:
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
     engines: {node: '>=12.4.0'}
 
-  '@nxg-org/mineflayer-pathfinder@https://codeload.github.com/Minecraft-Pathfinding/minecraft-pathfinding/tar.gz/a93f2b9ce34510e4c07727e104c83bda8db99b13':
-    resolution: {gitHosted: true, integrity: sha512-cCJMvo7wsUQreiC8C3KSFhI09J8JrAxCM81DS7MNj6aNGvz6KyUlkQwS4+LuFBCHt2a5/M1FkB0E9gGSvsXnPA==, tarball: https://codeload.github.com/Minecraft-Pathfinding/minecraft-pathfinding/tar.gz/a93f2b9ce34510e4c07727e104c83bda8db99b13}
+  '@nxg-org/mineflayer-pathfinder@https://codeload.github.com/Minecraft-Pathfinding/minecraft-pathfinding/tar.gz/d0ef47229e65d69ac33b4eb2bb30203335de0e00':
+    resolution: {tarball: https://codeload.github.com/Minecraft-Pathfinding/minecraft-pathfinding/tar.gz/d0ef47229e65d69ac33b4eb2bb30203335de0e00}
     version: 0.0.26
 
   '@nxg-org/mineflayer-physics-util@1.9.3':
@@ -3786,6 +3786,7 @@ packages:
   recharts@2.15.4:
     resolution: {integrity: sha512-UT/q6fwS3c1dHbXv2uFgYJ9BMFHu3fwnd7AYZaEQhXuYQ4hgsxLvsUXzGdKeZrW5xopzDCvuA2N41WJ88I7zIw==}
     engines: {node: '>=14'}
+    deprecated: 1.x and 2.x branches are no longer active. Bump to Recharts v3 to receive latest features and bugfixes. See https://github.com/recharts/recharts/wiki/3.0-migration-guide
     peerDependencies:
       react: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
@@ -4838,7 +4839,7 @@ snapshots:
 
   '@nolyfill/is-core-module@1.0.39': {}
 
-  '@nxg-org/mineflayer-pathfinder@https://codeload.github.com/Minecraft-Pathfinding/minecraft-pathfinding/tar.gz/a93f2b9ce34510e4c07727e104c83bda8db99b13':
+  '@nxg-org/mineflayer-pathfinder@https://codeload.github.com/Minecraft-Pathfinding/minecraft-pathfinding/tar.gz/d0ef47229e65d69ac33b4eb2bb30203335de0e00':
     dependencies:
       '@nxg-org/mineflayer-physics-util': 1.9.3
       '@nxg-org/mineflayer-util-plugin': 1.9.3
@@ -6532,7 +6533,7 @@ snapshots:
       '@next/eslint-plugin-next': 16.2.6
       eslint: 9.39.4(jiti@2.7.0)
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.4(jiti@2.7.0))
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4(jiti@2.7.0))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.4(jiti@2.7.0))
       eslint-plugin-react: 7.37.5(eslint@9.39.4(jiti@2.7.0))
@@ -6555,7 +6556,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0)):
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.4(jiti@2.7.0)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3
@@ -6570,14 +6571,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0)):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4(jiti@2.7.0)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3)
       eslint: 9.39.4(jiti@2.7.0)
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.4(jiti@2.7.0))
     transitivePeerDependencies:
       - supports-color
 
@@ -6592,7 +6593,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.39.4(jiti@2.7.0)
       eslint-import-resolver-node: 0.3.10
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.59.4(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4(jiti@2.7.0))
       hasown: 2.0.3
       is-core-module: 2.16.2
       is-glob: 4.0.3

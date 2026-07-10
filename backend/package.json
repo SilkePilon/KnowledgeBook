@@ -20,7 +20,7 @@
     "mineflayer-elytrafly": "^1.4.6",
     "@nxg-org/mineflayer-pathfinder": "github:Minecraft-Pathfinding/minecraft-pathfinding#2026-rewrite",
     "mineflayer-tool": "^1.2.0",
-    "morgan": "^1.10.0",
+    "morgan": "^1.11.0",
     "node-fetch": "2.7.0",
     "openai": "^6.38.0",
     "pem": "^1.14.8",

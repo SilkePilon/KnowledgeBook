@@ -28,7 +28,7 @@
     "prismarine-viewer": "^1.28.0",
     "prompt-sync": "^4.2.0",
     "rsa-json": "^0.0.2",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.0",
     "socket.io": "^4.8.1",
     "vec3": "^0.1.10",
     "ws": "^8.18.0"
